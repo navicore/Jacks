@@ -29,6 +29,16 @@ presumptious name, we  are not part of the jack audio project).
 ---
 
 
+Status:
+              **************************************************
+              **************************************************
+              *** PRE ALPHA QUALITY!                         ***
+              *** The messy build system is the biggest prob ***
+              *** right now, but the session and sample-ing  ***
+              *** works for me, all the unit tests pass      ***
+              **************************************************
+              **************************************************
+
 Design:
 
 1 - Jacks code should run in lock-step with jack callbacks.
