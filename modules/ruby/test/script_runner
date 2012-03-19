@@ -1,0 +1,5 @@
+#!/bin/sh
+
+ruby ./test_swig_api.rb
+if [ $? -ne 0 ]; then echo "$0 failed"; exit 1; fi
+

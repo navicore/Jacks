@@ -1,0 +1,49 @@
+Installation Instructions
+
+*************************
+PLEASE READ THE WHOLE FILE!  THIS BUILD SYSTEM IS NOT 100% YET!
+*************************
+
+If you have downloaded the entire repo with git, run ./autogen.sh before
+running ./configure
+
+./configure --help
+./configure --with-perl [--with-python2 --with-python3 --with-ruby --with-lua]
+make
+make check
+sudo make install
+
+
+*************************
+when configuring for a version of python that is not the
+default, use PYTHON_VERSION= on configure command.
+
+./configure --with-python3 PYTHON_VERSION=3
+
+
+*************************
+Note, "make install" seems to work for perl but the other langs
+need some tweaking.  Best to cd to the example-client dir
+of the module/lang you are interested in installing and 
+manually copy the required files from there.  Some modules
+are implemented with a single shared lib and some a wrapper
+for shared lib.
+
+ie: for python, 
+
+cd modules/python2/example-clients
+the files you need to deploy are: _jackscript.so and jackscript.py
+
+
+for lua,
+
+cd modules/lua/example-clients
+the file you need to deploy is jackscript.so
+
+
+*************************
+This situation should be temporary, I'll make the build 
+system automate the creationg of idiomatically correct 
+distributions for each lang we support.
+*************************
+

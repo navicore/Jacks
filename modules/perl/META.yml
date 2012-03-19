@@ -1,0 +1,37 @@
+---
+abstract: 'Scripting API for the Jack Audio Connection Kit'
+author:
+  - 'Ed Sweeney <ed@onextent.com>'
+build_requires:
+  Test::More: 0
+configure_requires:
+  Module::Build: 0.38
+dynamic_config: 1
+generated_by: 'Module::Build version 0.38, CPAN::Meta::Converter version 2.112621'
+license: apache
+meta-spec:
+  url: http://module-build.sourceforge.net/META-spec-v1.4.html
+  version: 1.4
+name: jackscript
+provides:
+  jackscript:
+    file: lib/jackscript.pm
+    version: 0
+  jackscript::JsClient:
+    file: lib/jackscript.pm
+    version: 0
+  jackscript::JsEvent:
+    file: lib/jackscript.pm
+    version: 0
+  jackscript::JsPort:
+    file: lib/jackscript.pm
+    version: 0
+  jackscript::JsPortBuffer:
+    file: lib/jackscript.pm
+    version: 0
+  jackscriptc:
+    file: lib/jackscript.pm
+    version: 0
+resources:
+  license: http://apache.org/licenses/LICENSE-2.0
+version: v0.1.1

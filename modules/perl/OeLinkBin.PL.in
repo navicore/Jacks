@@ -1,0 +1,17 @@
+#!/bin/perl
+
+use Shell qw(cp);
+use File::Find;
+
+sub wanted {
+    if ($_ eq "$File::Find::dir/libjacks_perl.so") {
+        print("found shared lib\n");
+        my $sh = Shell->new;
+        print $sh->cp("$File::Find::name blib/arch/jacks.so");
+    }
+}
+
+@directories = ('@PREFIX@/lib', '/usr/local/lib', '/usr/lib', './.libs');
+
+find({ wanted => \&wanted, no_chdir => 1 }, @directories);
+

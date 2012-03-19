@@ -1,0 +1,15 @@
+Build.PL
+Changes
+MANIFEST
+Makefile.PL
+README
+OeLinkBin.PL
+blib/arch/jackscript.so
+lib/jackscript.pm
+t/00-load.t
+t/manifest.t
+t/pod.t
+t/test_swig_api.t
+META.yml
+
+META.json

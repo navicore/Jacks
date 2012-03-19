@@ -1,0 +1,254 @@
+<!DOCTYPE Project SYSTEM "http://www.slickedit.com/dtd/vse/10.0/vpj.dtd">
+<Project
+    Version="10.0"
+    VendorName="SlickEdit"
+    TemplateName="Other C/C++"
+    WorkingDir=".">
+    <Config
+        Name="Debug"
+        Type="cpp"
+        DebugCallbackName="gdb"
+        OutputFile="%bdjackpl"
+        CompilerConfigName="Latest Version">
+        <Menu>
+            <Target
+                Name="Compile"
+                MenuCaption="&amp;Compile"
+                CaptureOutputWith="ProcessBuffer"
+                OutputExts="*.o"
+                SaveOption="SaveCurrent"
+                RunFromDir="%rw">
+                <Exec CmdLine='cc -c -g %i %defd -o "%bd%n.o" "%f"'/>
+            </Target>
+            <Target
+                Name="Link"
+                MenuCaption="&amp;Link">
+                <Exec CmdLine='cc -g -o "%o" %f %libs'/>
+            </Target>
+            <Target
+                Name="Build"
+                MenuCaption="&amp;Build"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%(VSLICKBIN1)vsbuild" build "%w" "%r"'/>
+            </Target>
+            <Target
+                Name="Rebuild"
+                MenuCaption="&amp;Rebuild"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%(VSLICKBIN1)vsbuild" rebuild "%w" "%r"'/>
+            </Target>
+            <Target
+                Name="Debug"
+                MenuCaption="&amp;Debug"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='vsdebugio -prog "%o"'/>
+            </Target>
+            <Target
+                Name="Execute"
+                MenuCaption="E&amp;xecute"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%o"'/>
+            </Target>
+        </Menu>
+    </Config>
+    <Config
+        Name="Release"
+        Type="cpp"
+        DebugCallbackName="gdb"
+        OutputFile="%bdjackpl"
+        CompilerConfigName="Latest Version">
+        <Menu>
+            <Target
+                Name="Compile"
+                MenuCaption="&amp;Compile"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveCurrent"
+                OutputExts="*.o"
+                RunFromDir="%rw">
+                <Exec CmdLine='cc -c -O %i %defd -o "%bd%n.o" "%f"'/>
+            </Target>
+            <Target
+                Name="Link"
+                MenuCaption="&amp;Link">
+                <Exec CmdLine='cc -O -o "%o" %f %libs'/>
+            </Target>
+            <Target
+                Name="Build"
+                MenuCaption="&amp;Build"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%(VSLICKBIN1)vsbuild" build "%w" "%r"'/>
+            </Target>
+            <Target
+                Name="Rebuild"
+                MenuCaption="&amp;Rebuild"
+                CaptureOutputWith="ProcessBuffer"
+                SaveOption="SaveWorkspaceFiles"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%(VSLICKBIN1)vsbuild" rebuild "%w" "%r"'/>
+            </Target>
+            <Target
+                Name="Debug"
+                MenuCaption="&amp;Debug"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='vsdebugio -prog "%o"'/>
+            </Target>
+            <Target
+                Name="Execute"
+                MenuCaption="E&amp;xecute"
+                SaveOption="SaveNone"
+                BuildFirst="1"
+                CaptureOutputWith="ProcessBuffer"
+                RunFromDir="%rw">
+                <Exec CmdLine='"%o"'/>
+            </Target>
+        </Menu>
+    </Config>
+    <Rules Name="Compile">
+        <Rule
+            InputExts="*.s"
+            OutputExts="*.o"
+            LinkObject="1">
+            <Exec CmdLine='as -o "%bd%n.o" "%f"'/>
+        </Rule>
+    </Rules>
+    <Files>
+        <Folder
+            Name="Source Files"
+            Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d">
+            <F N="corelib/test/floatsize.c"/>
+            <F N="corelib/JacksClient.c"/>
+            <F N="modules/python2/example-clients/jackscript.py"/>
+            <F N="modules/python2/test/jackscript.py"/>
+            <F N="modules/python3/example-clients/tmp/jackscript.py"/>
+            <F N="corelib/JacksEvent.c"/>
+            <F N="corelib/JacksEventQueue.c"/>
+            <F N="corelib/JacksHelper.c"/>
+            <F N="corelib/JacksLatch.c"/>
+            <F N="corelib/JacksPort.c"/>
+            <F N="modules/perl/example-clients/metro.pl"/>
+            <F N="modules/perl/example-clients/playc.pl"/>
+            <F N="modules/python2/setup.py"/>
+            <F N="modules/python3/setup.py"/>
+            <F N="modules/perl/example-clients/simple_client.pl"/>
+            <F N="modules/python2/example-clients/simple_client.py"/>
+            <F N="modules/python3/example-clients/simple_client.py"/>
+            <F N="modules/python3/example-clients/tmp/simple_client.py"/>
+            <F N="corelib/test/test_events.c"/>
+            <F N="corelib/test/test_jackclient.c"/>
+            <F N="modules/perl/example-clients/test_swig_api.pl"/>
+            <F N="modules/python2/test/test_swig_api.py"/>
+            <F N="modules/python3/test/test_swig_api.py"/>
+        </Folder>
+        <Folder
+            Name="Header Files"
+            Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if">
+            <F N="autogen.sh"/>
+            <F N="config.h"/>
+            <F N="modules/jack_headers.h"/>
+            <F N="corelib/Jacks.h"/>
+            <F N="corelib/JacksClient.h"/>
+            <F N="corelib/JacksEvent.h"/>
+            <F N="corelib/JacksEventQueue.h"/>
+            <F N="corelib/JacksLatch.h"/>
+            <F N="corelib/JacksPort.h"/>
+        </Folder>
+        <Folder
+            Name="Resource Files"
+            Filters="*.ico;*.cur;*.dlg"/>
+        <Folder
+            Name="Bitmaps"
+            Filters="*.bmp"/>
+        <Folder
+            Name="Other Files"
+            Filters="">
+            <F N="modules/perl/t/00-load.t"/>
+            <F N="m4/ax_oe_jack.m4"/>
+            <F N="m4/ax_perl_ext_flags.m4"/>
+            <F N="modules/perl/Build.PL.in"/>
+            <F N="config.h.in"/>
+            <F N="configure.ac"/>
+            <F
+                N="Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="corelib/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="corelib/test/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/lua/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/lua/example-clients/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/lua/test/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/perl/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/perl/example-clients/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/perl/t/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/python2/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/python2/example-clients/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/python2/test/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/python3/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/python3/example-clients/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/python3/test/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/ruby/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/ruby/example-clients/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/ruby/test/Makefile.am"
+                Type="Makefile"/>
+            <F N="modules/perl/t/manifest.t"/>
+            <F N="modules/perl/OeLinkBin.PL.in"/>
+            <F N="modules/perl/t/pod.t"/>
+            <F N="modules/python2/setup.py.in"/>
+            <F N="modules/python3/setup.py.in"/>
+            <F N="modules/lua/example-clients/simple_client.lua"/>
+            <F N="modules/ruby/example-clients/simple_client.rb"/>
+            <F N="modules/lua/test/test_swig_api.lua"/>
+            <F N="modules/ruby/test/test_swig_api.rb"/>
+            <F N="modules/perl/t/test_swig_api.t"/>
+        </Folder>
+    </Files>
+</Project>

@@ -1,0 +1,9 @@
+from distutils.core import setup
+
+setup(name = "jacks",
+            version = "@VERSION@",
+            py_modules = ['jacks'],
+    )
+
+#todo: add a copy command that finds the *.so file and puts it in build/lib
+

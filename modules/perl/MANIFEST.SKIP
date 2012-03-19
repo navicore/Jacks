@@ -1,0 +1,7 @@
+^MYMETA.yml$
+^Makefile.am$
+^Makefile.in$
+^Makefile$
+^Build.PL.in$
+^OeLinkBin.PL.in$
+^jackscript.pod.in$
