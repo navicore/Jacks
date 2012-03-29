@@ -33,8 +33,6 @@
 
 #define T JacksClient
 
-//todo: rename JacksClient
-
 struct T {
 
     jack_client_t *client;

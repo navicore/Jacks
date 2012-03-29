@@ -132,22 +132,17 @@
             Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d">
             <F N="corelib/test/floatsize.c"/>
             <F N="corelib/JacksClient.c"/>
-            <F N="modules/python2/example-clients/jackscript.py"/>
-            <F N="modules/python2/test/jackscript.py"/>
-            <F N="modules/python3/example-clients/tmp/jackscript.py"/>
             <F N="corelib/JacksEvent.c"/>
             <F N="corelib/JacksEventQueue.c"/>
             <F N="corelib/JacksHelper.c"/>
             <F N="corelib/JacksLatch.c"/>
             <F N="corelib/JacksPort.c"/>
+            <F N="corelib/JacksRbClient.c"/>
             <F N="modules/perl/example-clients/metro.pl"/>
             <F N="modules/perl/example-clients/playc.pl"/>
-            <F N="modules/python2/setup.py"/>
-            <F N="modules/python3/setup.py"/>
             <F N="modules/perl/example-clients/simple_client.pl"/>
             <F N="modules/python2/example-clients/simple_client.py"/>
             <F N="modules/python3/example-clients/simple_client.py"/>
-            <F N="modules/python3/example-clients/tmp/simple_client.py"/>
             <F N="corelib/test/test_events.c"/>
             <F N="corelib/test/test_jackclient.c"/>
             <F N="modules/perl/example-clients/test_swig_api.pl"/>
@@ -158,7 +153,6 @@
             Name="Header Files"
             Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if">
             <F N="autogen.sh"/>
-            <F N="config.h"/>
             <F N="modules/jack_headers.h"/>
             <F N="corelib/Jacks.h"/>
             <F N="corelib/JacksClient.h"/>
@@ -166,6 +160,7 @@
             <F N="corelib/JacksEventQueue.h"/>
             <F N="corelib/JacksLatch.h"/>
             <F N="corelib/JacksPort.h"/>
+            <F N="corelib/JacksRbClient.h"/>
         </Folder>
         <Folder
             Name="Resource Files"
@@ -182,6 +177,7 @@
             <F N="modules/perl/Build.PL.in"/>
             <F N="config.h.in"/>
             <F N="configure.ac"/>
+            <F N="modules/Jacks.i"/>
             <F
                 N="Makefile.am"
                 Type="Makefile"/>

@@ -62,6 +62,7 @@
 
 typedef struct {
     %extend {
+        //ejs todo: wrap ringbuffer
         ~JsPortBuffer() {
             free($self);
         }
@@ -106,10 +107,12 @@ typedef struct {
     %extend {
         ~JsPort() {
             JacksPort_free(&$self->impl);
+            //ejs todo: return instanciate JsPortBuffer
             free($self);
         }
 
         JsPortBuffer* getBuffer() {
+            //ejs todo: return JsPortBuffer from $self
             JsPortBuffer *holder;
             holder = malloc(sizeof(JsPortBuffer));
             holder->portimpl = $self->impl;

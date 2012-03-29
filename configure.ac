@@ -1,8 +1,8 @@
 AC_PREREQ(2.60)
-AC_INIT([Jacks Pre Alpha], [0.1.2], [info@onextent.com])
+AC_INIT([Jacks Pre Alpha], [0.1.3], [info@onextent.com])
 AC_DEFINE([OE_VERSION_MAJ],[0],[major version])
 AC_DEFINE([OE_VERSION_MIN],[1],[minor version])
-AC_DEFINE([OE_VERSION_UPT],[2],[update version])
+AC_DEFINE([OE_VERSION_UPT],[3],[update version])
 AC_CONFIG_AUX_DIR([scripts])
 AC_PROG_LIBTOOL
 AM_INIT_AUTOMAKE( [-Wall] )
