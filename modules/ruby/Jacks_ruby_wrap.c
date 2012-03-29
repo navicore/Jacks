@@ -2157,6 +2157,7 @@ SWIG_FromCharPtr(const char *cptr)
 }
 
 SWIGINTERN JsPortBuffer *JsPort_getBuffer(JsPort *self){
+            //ejs todo: return JsPortBuffer from self
             JsPortBuffer *holder;
             holder = malloc(sizeof(JsPortBuffer));
             holder->portimpl = self->impl;
@@ -2579,6 +2580,7 @@ swig_class SwigClassJsPort;
 
 SWIGINTERN void delete_JsPort(JsPort *self){
             JacksPort_free(&self->impl);
+            //ejs todo: return instanciate JsPortBuffer
             free(self);
         }
 SWIGINTERN void
