@@ -23,6 +23,7 @@
 #include <jack/types.h>
 #include <jack/session.h>
 #include <jack/transport.h>
+#include <jack/ringbuffer.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -33,9 +34,11 @@
 struct T {
     jack_port_t *jport;
     JacksClient jackclient;
+    //jack_ringbuffer_t *rb;
+    //jack_default_audio_sample_t **in;
 };
 
-//new wrapper
+// contructor/wrapper for existing ports the user looks up
 T JacksPort_new(jack_port_t *jport, JacksClient jackclient) {
 
     T _this_ = malloc(sizeof *_this_);
@@ -47,10 +50,12 @@ T JacksPort_new(jack_port_t *jport, JacksClient jackclient) {
     _this_->jport = jport;
     _this_->jackclient = jackclient;
 
+	//in = (jack_default_audio_sample_t **) malloc (sample_size);
+	//rb = jack_ringbuffer_create (nports * sample_size * info->rb_size);
     return _this_;
 }
 
-//new wrapper AND new port
+// contstructor for ports the user creates
 T JacksPort_new_port(const char *name, unsigned long options, JacksClient jackclient) {
 
     //todo: midi option
@@ -80,7 +85,15 @@ int JacksPort_connect(T _this_, T _that_) {
     return rc;
 }
 
-jack_default_audio_sample_t* JacksPort_get_buffer(T _this_) {
+/*
+int JacksPort_write_to_ringbuffer(T _this_, jack_nframes_t nframes) {
+}
+
+sample_t* JacksPort_read_from_ringbuffer(T _this_) {
+}
+*/ 
+
+sample_t* JacksPort_get_buffer(T _this_) {
 
     jack_nframes_t nframes = JacksClient_get_nframes(_this_->jackclient);
 

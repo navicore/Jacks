@@ -29,12 +29,25 @@
 #define T JacksPort
 typedef struct T *T;
 
-extern T    JacksPort_new(jack_port_t *, JacksClient);
-extern T    JacksPort_new_port(const char *, unsigned long, JacksClient);
-extern void JacksPort_free(T *);
-extern int  JacksPort_connect(T, T);
+//const size_t sample_size = sizeof(jack_default_audio_sample_t);
 
-extern jack_default_audio_sample_t* JacksPort_get_buffer(T);
+#define DEFAULT_RB_SIZE 16384		/* ringbuffer size in frames */
+
+typedef jack_default_audio_sample_t sample_t;
+
+extern T            JacksPort_new(jack_port_t *, JacksClient);
+
+extern T            JacksPort_new_port(const char *, unsigned long, JacksClient);
+
+extern void         JacksPort_free(T *);
+
+extern int          JacksPort_connect(T, T);
+
+//extern int          JacksPort_write_to_ringbuffer(T);
+
+//extern sample_t*    JacksPort_read_from_ringbuffer(T);
+
+extern sample_t*    JacksPort_get_buffer(T);
 
 #undef T
 #endif
