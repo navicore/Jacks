@@ -141,6 +141,10 @@
             <F N="corelib/JacksRbPort.c"/>
             <F N="modules/perl/example-clients/metro.pl"/>
             <F N="modules/perl/example-clients/playc.pl"/>
+            <F N="corelib/queue_delete.c"/>
+            <F N="corelib/queue_new.c"/>
+            <F N="corelib/queue_query.c"/>
+            <F N="corelib/queue_queue.c"/>
             <F N="modules/perl/example-clients/simple_client.pl"/>
             <F N="modules/python2/example-clients/simple_client.py"/>
             <F N="modules/python3/example-clients/simple_client.py"/>
@@ -163,6 +167,9 @@
             <F N="corelib/JacksPort.h"/>
             <F N="corelib/JacksRbClient.h"/>
             <F N="corelib/JacksRbPort.h"/>
+            <F N="corelib/liblfds.h"/>
+            <F N="corelib/liblfds_internal.h"/>
+            <F N="corelib/queue_internal.h"/>
         </Folder>
         <Folder
             Name="Resource Files"

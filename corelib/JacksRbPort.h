@@ -16,38 +16,29 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef _JSPORT_H_
-#define _JSPORT_H_
+#ifndef _JS_RB_PORT_H_
+#define _JS_RB_PORT_H_
 
 #include "config.h"
-#include "JacksClient.h"
+#include "JacksRbClient.h"
 #include <jack/jack.h>
-#include <jack/session.h>
-#include <jack/transport.h>
 #include <assert.h>
 
 #define T JacksRbPort
 typedef struct T *T;
 
-//const size_t sample_size = sizeof(jack_default_audio_sample_t);
+extern T            JacksRbPort_new(jack_port_t *, JacksRbClient, jack_nframes_t);
 
-#define DEFAULT_RB_SIZE 16384		/* ringbuffer size in frames */
-
-typedef jack_default_audio_sample_t sample_t;
-
-extern T            JacksRbPort_new(jack_port_t *, JacksClient);
-
-extern T            JacksRbPort_new_port(const char *, unsigned long, JacksClient);
+extern T            JacksRbPort_new_port(const char *, 
+                                         unsigned long, JacksRbClient, jack_nframes_t);
 
 extern void         JacksRbPort_free(T *);
 
 extern int          JacksRbPort_connect(T, T);
 
-//extern int          JacksRbPort_write_to_ringbuffer(T);
+extern int          JacksRbPort_write_to_ringbuffer(T, jack_nframes_t);
 
-//extern sample_t*    JacksRbPort_read_from_ringbuffer(T);
-
-extern sample_t*    JacksRbPort_get_buffer(T);
+extern sample_t*    JacksRbPort_read_from_ringbuffer(T, int*);
 
 #undef T
 #endif

@@ -29,10 +29,6 @@
 #define T JacksPort
 typedef struct T *T;
 
-//const size_t sample_size = sizeof(jack_default_audio_sample_t);
-
-#define DEFAULT_RB_SIZE 16384		/* ringbuffer size in frames */
-
 typedef jack_default_audio_sample_t sample_t;
 
 extern T            JacksPort_new(jack_port_t *, JacksClient);

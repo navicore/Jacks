@@ -18,7 +18,7 @@
 
 #include "config.h"
 #include "JacksRbPort.h"
-#include "JacksClient.h"
+#include "JacksRbClient.h"
 #include <jack/jack.h>
 #include <jack/types.h>
 #include <jack/session.h>
@@ -32,14 +32,18 @@
 #define T JacksRbPort
 
 struct T {
+    jack_nframes_t rb_size;
     jack_port_t *jport;
-    JacksClient jackclient;
-    //jack_ringbuffer_t *rb;
-    //jack_default_audio_sample_t **in;
+    JacksRbClient jackclient;
+    jack_ringbuffer_t *rb;
+    void *framebuf;
+    volatile int overruns;
 };
 
+const size_t jacks_sample_size = sizeof(jack_default_audio_sample_t);
+
 // contructor/wrapper for existing ports the user looks up
-T JacksRbPort_new(jack_port_t *jport, JacksClient jackclient) {
+T JacksRbPort_new(jack_port_t *jport, JacksRbClient jackclient, jack_nframes_t rb_size) {
 
     T _this_ = malloc(sizeof *_this_);
     if (_this_ == NULL) {
@@ -47,27 +51,32 @@ T JacksRbPort_new(jack_port_t *jport, JacksClient jackclient) {
         return NULL;
     }
 
+    _this_->rb_size = rb_size;
     _this_->jport = jport;
     _this_->jackclient = jackclient;
+    _this_->framebuf = malloc(rb_size);
 
-	//in = (jack_default_audio_sample_t **) malloc (sample_size);
-	//rb = jack_ringbuffer_create (nports * sample_size * info->rb_size);
+	_this_->rb = jack_ringbuffer_create(jacks_sample_size * rb_size);
     return _this_;
 }
 
 // contstructor for ports the user creates
-T JacksRbPort_new_port(const char *name, unsigned long options, JacksClient jackclient) {
+T JacksRbPort_new_port(const char *name, 
+                       unsigned long options, 
+                       JacksRbClient jackclient,
+                       jack_nframes_t rb_size) {
 
     //todo: midi option
-    jack_port_t *jport = jack_port_register(JacksClient_get_client(jackclient), name, 
+    jack_port_t *jport = jack_port_register(JacksRbClient_get_client(jackclient), name, 
                                            JACK_DEFAULT_AUDIO_TYPE, options, 0);
 
-    return JacksRbPort_new(jport, jackclient);
+    return JacksRbPort_new(jport, jackclient, rb_size);
 }
 
 void JacksRbPort_free(T *_this_p_) {
     assert(_this_p_ && *_this_p_);
     T _this_ = *_this_p_;
+    free(_this_->framebuf);
     free(_this_);
 }
 
@@ -75,7 +84,7 @@ int JacksRbPort_connect(T _this_, T _that_) {
 
     int rc = 0;
 
-    if (jack_connect(JacksClient_get_client(_this_->jackclient), 
+    if (jack_connect(JacksRbClient_get_client(_this_->jackclient), 
                      jack_port_name(_this_->jport), 
                      jack_port_name (_that_->jport))) {
         fprintf (stderr, "cannot connect ports\n");
@@ -85,19 +94,29 @@ int JacksRbPort_connect(T _this_, T _that_) {
     return rc;
 }
 
-/*
 int JacksRbPort_write_to_ringbuffer(T _this_, jack_nframes_t nframes) {
+
+    void *buff = jack_port_get_buffer(_this_->jport, nframes);
+
+    size_t write_size = jacks_sample_size * nframes;
+
+    if (jack_ringbuffer_write (_this_->rb, buff, write_size) < write_size)
+         _this_->overruns++;
 }
 
-sample_t* JacksRbPort_read_from_ringbuffer(T _this_) {
-}
-*/ 
+sample_t* JacksRbPort_read_from_ringbuffer(T _this_, int *len) {
 
-sample_t* JacksRbPort_get_buffer(T _this_) {
+    jack_ringbuffer_t *rb   = _this_->rb;
+    jack_nframes_t rb_size  = _this_->rb_size;
 
-    jack_nframes_t nframes = JacksClient_get_nframes(_this_->jackclient);
+    size_t avail = jack_ringbuffer_read_space(_this_->rb);
+    size_t blen =  avail < rb_size ? avail : rb_size;
 
-    return jack_port_get_buffer(_this_->jport, nframes);
+    jack_ringbuffer_read(_this_->rb, _this_->framebuf, blen);
+
+    *len = blen;
+
+    return _this_->framebuf;
 }
 
 

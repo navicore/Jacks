@@ -29,6 +29,10 @@
 #define NOT_POSTED 0
 #define POSTED 1
 
+////////////////////////////////////////
+/// todo: reimplement with semaphore ///
+////////////////////////////////////////
+
 struct T {
     int status;
     pthread_mutex_t latchlock;

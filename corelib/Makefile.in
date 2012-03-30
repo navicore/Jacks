@@ -64,7 +64,16 @@ am__objects_1 = libjacks_la-JacksRbClient.lo \
 	libjacks_la-JacksClient.lo libjacks_la-JacksHelper.lo \
 	libjacks_la-JacksLatch.lo libjacks_la-JacksEvent.lo \
 	libjacks_la-JacksEventQueue.lo libjacks_la-JacksPort.lo \
-	libjacks_la-JacksRbPort.lo
+	libjacks_la-JacksRbPort.lo libjacks_la-queue_delete.lo \
+	libjacks_la-queue_new.lo libjacks_la-queue_query.lo \
+	libjacks_la-queue_queue.lo libjacks_la-freelist_delete.lo \
+	libjacks_la-freelist_pop_push.lo \
+	libjacks_la-freelist_get_and_set.lo \
+	libjacks_la-freelist_new.lo libjacks_la-freelist_query.lo \
+	libjacks_la-abstraction_aligned_free.lo \
+	libjacks_la-abstraction_aligned_malloc.lo \
+	libjacks_la-abstraction_cas.lo libjacks_la-abstraction_dcas.lo \
+	libjacks_la-abstraction_increment.lo
 am_libjacks_la_OBJECTS = $(am__objects_1)
 libjacks_la_OBJECTS = $(am_libjacks_la_OBJECTS)
 libjacks_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -296,8 +305,8 @@ top_srcdir = @top_srcdir@
 SUBDIRS = . test
 doc_DATA = 
 noinst_LTLIBRARIES = libjacks.la
-MYSOURCES = JacksRbClient.c JacksClient.c JacksHelper.c JacksLatch.c JacksEvent.c JacksEventQueue.c JacksPort.c JacksRbPort.c
-include_HEADERS = Jacks.h JacksEventQueue.h JacksRbClient.h JacksClient.h JacksLatch.h JacksEvent.h JacksPort.h JacksRbPort.c
+MYSOURCES = JacksRbClient.c JacksClient.c JacksHelper.c JacksLatch.c JacksEvent.c JacksEventQueue.c JacksPort.c JacksRbPort.c queue_delete.c queue_new.c queue_query.c queue_queue.c freelist_delete.c freelist_pop_push.c freelist_get_and_set.c freelist_new.c freelist_query.c abstraction_aligned_free.c abstraction_aligned_malloc.c abstraction_cas.c abstraction_dcas.c abstraction_increment.c abstraction_internal.h
+include_HEADERS = Jacks.h JacksEventQueue.h JacksRbClient.h JacksClient.h JacksLatch.h JacksEvent.h JacksPort.h JacksRbPort.h queue_internal.h liblfds.h freelist_internal.h 
 libjacks_la_SOURCES = ${MYSOURCES}
 libjacks_la_LIBADD = @JACK_LIBS@
 libjacks_la_CFLAGS = @JACK_CFLAGS@
@@ -362,6 +371,20 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-JacksPort.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-JacksRbClient.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-JacksRbPort.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-abstraction_aligned_free.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-abstraction_aligned_malloc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-abstraction_cas.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-abstraction_dcas.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-abstraction_increment.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-freelist_delete.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-freelist_get_and_set.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-freelist_new.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-freelist_pop_push.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-freelist_query.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-queue_delete.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-queue_new.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-queue_query.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-queue_queue.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	$(COMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<
@@ -439,6 +462,104 @@ libjacks_la-JacksRbPort.lo: JacksRbPort.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='JacksRbPort.c' object='libjacks_la-JacksRbPort.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-JacksRbPort.lo `test -f 'JacksRbPort.c' || echo '$(srcdir)/'`JacksRbPort.c
+
+libjacks_la-queue_delete.lo: queue_delete.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-queue_delete.lo -MD -MP -MF $(DEPDIR)/libjacks_la-queue_delete.Tpo -c -o libjacks_la-queue_delete.lo `test -f 'queue_delete.c' || echo '$(srcdir)/'`queue_delete.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-queue_delete.Tpo $(DEPDIR)/libjacks_la-queue_delete.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='queue_delete.c' object='libjacks_la-queue_delete.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-queue_delete.lo `test -f 'queue_delete.c' || echo '$(srcdir)/'`queue_delete.c
+
+libjacks_la-queue_new.lo: queue_new.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-queue_new.lo -MD -MP -MF $(DEPDIR)/libjacks_la-queue_new.Tpo -c -o libjacks_la-queue_new.lo `test -f 'queue_new.c' || echo '$(srcdir)/'`queue_new.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-queue_new.Tpo $(DEPDIR)/libjacks_la-queue_new.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='queue_new.c' object='libjacks_la-queue_new.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-queue_new.lo `test -f 'queue_new.c' || echo '$(srcdir)/'`queue_new.c
+
+libjacks_la-queue_query.lo: queue_query.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-queue_query.lo -MD -MP -MF $(DEPDIR)/libjacks_la-queue_query.Tpo -c -o libjacks_la-queue_query.lo `test -f 'queue_query.c' || echo '$(srcdir)/'`queue_query.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-queue_query.Tpo $(DEPDIR)/libjacks_la-queue_query.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='queue_query.c' object='libjacks_la-queue_query.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-queue_query.lo `test -f 'queue_query.c' || echo '$(srcdir)/'`queue_query.c
+
+libjacks_la-queue_queue.lo: queue_queue.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-queue_queue.lo -MD -MP -MF $(DEPDIR)/libjacks_la-queue_queue.Tpo -c -o libjacks_la-queue_queue.lo `test -f 'queue_queue.c' || echo '$(srcdir)/'`queue_queue.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-queue_queue.Tpo $(DEPDIR)/libjacks_la-queue_queue.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='queue_queue.c' object='libjacks_la-queue_queue.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-queue_queue.lo `test -f 'queue_queue.c' || echo '$(srcdir)/'`queue_queue.c
+
+libjacks_la-freelist_delete.lo: freelist_delete.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-freelist_delete.lo -MD -MP -MF $(DEPDIR)/libjacks_la-freelist_delete.Tpo -c -o libjacks_la-freelist_delete.lo `test -f 'freelist_delete.c' || echo '$(srcdir)/'`freelist_delete.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-freelist_delete.Tpo $(DEPDIR)/libjacks_la-freelist_delete.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='freelist_delete.c' object='libjacks_la-freelist_delete.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-freelist_delete.lo `test -f 'freelist_delete.c' || echo '$(srcdir)/'`freelist_delete.c
+
+libjacks_la-freelist_pop_push.lo: freelist_pop_push.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-freelist_pop_push.lo -MD -MP -MF $(DEPDIR)/libjacks_la-freelist_pop_push.Tpo -c -o libjacks_la-freelist_pop_push.lo `test -f 'freelist_pop_push.c' || echo '$(srcdir)/'`freelist_pop_push.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-freelist_pop_push.Tpo $(DEPDIR)/libjacks_la-freelist_pop_push.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='freelist_pop_push.c' object='libjacks_la-freelist_pop_push.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-freelist_pop_push.lo `test -f 'freelist_pop_push.c' || echo '$(srcdir)/'`freelist_pop_push.c
+
+libjacks_la-freelist_get_and_set.lo: freelist_get_and_set.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-freelist_get_and_set.lo -MD -MP -MF $(DEPDIR)/libjacks_la-freelist_get_and_set.Tpo -c -o libjacks_la-freelist_get_and_set.lo `test -f 'freelist_get_and_set.c' || echo '$(srcdir)/'`freelist_get_and_set.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-freelist_get_and_set.Tpo $(DEPDIR)/libjacks_la-freelist_get_and_set.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='freelist_get_and_set.c' object='libjacks_la-freelist_get_and_set.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-freelist_get_and_set.lo `test -f 'freelist_get_and_set.c' || echo '$(srcdir)/'`freelist_get_and_set.c
+
+libjacks_la-freelist_new.lo: freelist_new.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-freelist_new.lo -MD -MP -MF $(DEPDIR)/libjacks_la-freelist_new.Tpo -c -o libjacks_la-freelist_new.lo `test -f 'freelist_new.c' || echo '$(srcdir)/'`freelist_new.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-freelist_new.Tpo $(DEPDIR)/libjacks_la-freelist_new.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='freelist_new.c' object='libjacks_la-freelist_new.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-freelist_new.lo `test -f 'freelist_new.c' || echo '$(srcdir)/'`freelist_new.c
+
+libjacks_la-freelist_query.lo: freelist_query.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-freelist_query.lo -MD -MP -MF $(DEPDIR)/libjacks_la-freelist_query.Tpo -c -o libjacks_la-freelist_query.lo `test -f 'freelist_query.c' || echo '$(srcdir)/'`freelist_query.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-freelist_query.Tpo $(DEPDIR)/libjacks_la-freelist_query.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='freelist_query.c' object='libjacks_la-freelist_query.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-freelist_query.lo `test -f 'freelist_query.c' || echo '$(srcdir)/'`freelist_query.c
+
+libjacks_la-abstraction_aligned_free.lo: abstraction_aligned_free.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-abstraction_aligned_free.lo -MD -MP -MF $(DEPDIR)/libjacks_la-abstraction_aligned_free.Tpo -c -o libjacks_la-abstraction_aligned_free.lo `test -f 'abstraction_aligned_free.c' || echo '$(srcdir)/'`abstraction_aligned_free.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-abstraction_aligned_free.Tpo $(DEPDIR)/libjacks_la-abstraction_aligned_free.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='abstraction_aligned_free.c' object='libjacks_la-abstraction_aligned_free.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-abstraction_aligned_free.lo `test -f 'abstraction_aligned_free.c' || echo '$(srcdir)/'`abstraction_aligned_free.c
+
+libjacks_la-abstraction_aligned_malloc.lo: abstraction_aligned_malloc.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-abstraction_aligned_malloc.lo -MD -MP -MF $(DEPDIR)/libjacks_la-abstraction_aligned_malloc.Tpo -c -o libjacks_la-abstraction_aligned_malloc.lo `test -f 'abstraction_aligned_malloc.c' || echo '$(srcdir)/'`abstraction_aligned_malloc.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-abstraction_aligned_malloc.Tpo $(DEPDIR)/libjacks_la-abstraction_aligned_malloc.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='abstraction_aligned_malloc.c' object='libjacks_la-abstraction_aligned_malloc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-abstraction_aligned_malloc.lo `test -f 'abstraction_aligned_malloc.c' || echo '$(srcdir)/'`abstraction_aligned_malloc.c
+
+libjacks_la-abstraction_cas.lo: abstraction_cas.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-abstraction_cas.lo -MD -MP -MF $(DEPDIR)/libjacks_la-abstraction_cas.Tpo -c -o libjacks_la-abstraction_cas.lo `test -f 'abstraction_cas.c' || echo '$(srcdir)/'`abstraction_cas.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-abstraction_cas.Tpo $(DEPDIR)/libjacks_la-abstraction_cas.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='abstraction_cas.c' object='libjacks_la-abstraction_cas.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-abstraction_cas.lo `test -f 'abstraction_cas.c' || echo '$(srcdir)/'`abstraction_cas.c
+
+libjacks_la-abstraction_dcas.lo: abstraction_dcas.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-abstraction_dcas.lo -MD -MP -MF $(DEPDIR)/libjacks_la-abstraction_dcas.Tpo -c -o libjacks_la-abstraction_dcas.lo `test -f 'abstraction_dcas.c' || echo '$(srcdir)/'`abstraction_dcas.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-abstraction_dcas.Tpo $(DEPDIR)/libjacks_la-abstraction_dcas.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='abstraction_dcas.c' object='libjacks_la-abstraction_dcas.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-abstraction_dcas.lo `test -f 'abstraction_dcas.c' || echo '$(srcdir)/'`abstraction_dcas.c
+
+libjacks_la-abstraction_increment.lo: abstraction_increment.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-abstraction_increment.lo -MD -MP -MF $(DEPDIR)/libjacks_la-abstraction_increment.Tpo -c -o libjacks_la-abstraction_increment.lo `test -f 'abstraction_increment.c' || echo '$(srcdir)/'`abstraction_increment.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-abstraction_increment.Tpo $(DEPDIR)/libjacks_la-abstraction_increment.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='abstraction_increment.c' object='libjacks_la-abstraction_increment.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-abstraction_increment.lo `test -f 'abstraction_increment.c' || echo '$(srcdir)/'`abstraction_increment.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

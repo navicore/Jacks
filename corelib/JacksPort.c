@@ -34,8 +34,6 @@
 struct T {
     jack_port_t *jport;
     JacksClient jackclient;
-    //jack_ringbuffer_t *rb;
-    //jack_default_audio_sample_t **in;
 };
 
 // contructor/wrapper for existing ports the user looks up
@@ -50,8 +48,6 @@ T JacksPort_new(jack_port_t *jport, JacksClient jackclient) {
     _this_->jport = jport;
     _this_->jackclient = jackclient;
 
-	//in = (jack_default_audio_sample_t **) malloc (sample_size);
-	//rb = jack_ringbuffer_create (nports * sample_size * info->rb_size);
     return _this_;
 }
 
@@ -84,14 +80,6 @@ int JacksPort_connect(T _this_, T _that_) {
 
     return rc;
 }
-
-/*
-int JacksPort_write_to_ringbuffer(T _this_, jack_nframes_t nframes) {
-}
-
-sample_t* JacksPort_read_from_ringbuffer(T _this_) {
-}
-*/ 
 
 sample_t* JacksPort_get_buffer(T _this_) {
 
