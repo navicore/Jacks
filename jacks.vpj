@@ -138,6 +138,7 @@
             <F N="corelib/JacksLatch.c"/>
             <F N="corelib/JacksPort.c"/>
             <F N="corelib/JacksRbClient.c"/>
+            <F N="corelib/JacksRbPort.c"/>
             <F N="modules/perl/example-clients/metro.pl"/>
             <F N="modules/perl/example-clients/playc.pl"/>
             <F N="modules/perl/example-clients/simple_client.pl"/>
@@ -161,6 +162,7 @@
             <F N="corelib/JacksLatch.h"/>
             <F N="corelib/JacksPort.h"/>
             <F N="corelib/JacksRbClient.h"/>
+            <F N="corelib/JacksRbPort.h"/>
         </Folder>
         <Folder
             Name="Resource Files"
