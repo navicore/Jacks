@@ -256,6 +256,7 @@ AC_OUTPUT(
         Makefile
         corelib/Makefile
         corelib/test/Makefile
+        corelib/lfds/Makefile
         modules/Makefile
         modules/python2/Makefile
         modules/python2/example-clients/Makefile
