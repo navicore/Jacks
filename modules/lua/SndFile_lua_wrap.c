@@ -1545,9 +1545,9 @@ SWIGINTERN void delete_SndFile(SndFile *self){
         }
 SWIGINTERN void SndFile_writeFloat(SndFile *self,char *framebuf,int cnt){
 
-            //static jack_nframes_t total_captured = 0;
-            jack_nframes_t samples_per_frame = self->channels;
             const size_t sample_size = sizeof(jack_default_audio_sample_t);
+
+            jack_nframes_t samples_per_frame = self->channels;
             size_t bytes_per_frame = samples_per_frame * sample_size;
 
 			if (sf_writef_float (self->sf, framebuf, cnt) != 1) {
