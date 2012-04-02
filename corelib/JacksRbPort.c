@@ -36,7 +36,8 @@ struct T {
     jack_port_t *jport;
     JacksRbClient jackclient;
     jack_ringbuffer_t *rb;
-    void *framebuf;
+    //void *framebuf;
+    char *framebuf;
     volatile int overruns;
 };
 
@@ -106,10 +107,9 @@ int JacksRbPort_write_to_ringbuffer(T _this_, jack_nframes_t nframes) {
 
 sample_t* JacksRbPort_read_from_ringbuffer(T _this_, int *len) {
 
-    jack_ringbuffer_t *rb   = _this_->rb;
-    jack_nframes_t rb_size  = _this_->rb_size;
-
     size_t avail = jack_ringbuffer_read_space(_this_->rb);
+
+    jack_nframes_t rb_size  = _this_->rb_size;
     size_t blen =  avail < rb_size ? avail : rb_size;
 
     jack_ringbuffer_read(_this_->rb, _this_->framebuf, blen);

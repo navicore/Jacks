@@ -1514,25 +1514,24 @@ static swig_module_info swig_module = {swig_types, 11, 0, 0, 0, 0};
 #include <stdbool.h>
 #include <string.h>
 #include <string.h>
-#include "JacksClient.h"
+#include "JacksRbClient.h"
 #include "JacksEvent.h"
-#include "JacksPort.h"
+#include "JacksRbPort.h"
 #include "Jacks.h"
 
 SWIGINTERN void delete_JsPortBuffer(JsPortBuffer *self){
             free(self);
         }
-SWIGINTERN float JsPortBuffer_getf(JsPortBuffer *self,unsigned int i){
-            jack_default_audio_sample_t *b = JacksPort_get_buffer(self->portimpl);
-            return (float) b[i];
+SWIGINTERN float const *JsPortBuffer_getf(JsPortBuffer *self,unsigned int i){
+            return (float*) self->framebuf[i];
         }
 SWIGINTERN void JsPortBuffer_setf(JsPortBuffer *self,unsigned int i,float val){
 
-            jack_default_audio_sample_t *b = JacksPort_get_buffer(self->portimpl);
-            b[i] = (jack_default_audio_sample_t) val;
+            throw_exception("unsupported opperation");
+            return;
         }
 SWIGINTERN unsigned int JsPortBuffer_length(JsPortBuffer *self){
-            return JacksClient_get_nframes(self->clientimpl);
+            return self->len;
         }
 
 SWIGINTERN int SWIG_lua_isnilstring(lua_State *L, int idx) {
@@ -1543,7 +1542,7 @@ SWIGINTERN int SWIG_lua_isnilstring(lua_State *L, int idx) {
 }
 
 SWIGINTERN char *JsPortBuffer_toHexString(JsPortBuffer *self,unsigned int start,unsigned int len,char sep){
-            float* b = (float*) JacksPort_get_buffer(self->portimpl);
+            float* b = (float*) self->framebuf;
             int dlen = 12;
             char *hex_text = malloc(dlen * len + 1);
             for (int i = 0; i < len ; i++) {
@@ -1559,21 +1558,20 @@ SWIGINTERN char *JsPortBuffer_toHexString(JsPortBuffer *self,unsigned int start,
             return hex_text;
         }
 SWIGINTERN void delete_JsPort(JsPort *self){
-            JacksPort_free(&self->impl);
-            //ejs todo: return instanciate JsPortBuffer
+            JacksRbPort_free(&self->impl);
             free(self);
         }
 SWIGINTERN JsPortBuffer *JsPort_getBuffer(JsPort *self){
-            //ejs todo: return JsPortBuffer from self
             JsPortBuffer *holder;
             holder = malloc(sizeof(JsPortBuffer));
-            holder->portimpl = self->impl;
-            holder->clientimpl = self->clientimpl;
+            int len = 0;
+            holder->framebuf = JacksRbPort_read_from_ringbuffer(self->impl, &len);
+            holder->len = len;
             return holder;
         }
 SWIGINTERN int JsPort_connect(JsPort *self,JsPort *_that_){
 
-            return JacksPort_connect(self->impl, _that_->impl);
+            return JacksRbPort_connect(self->impl, _that_->impl);
         }
 SWIGINTERN void delete_JsEvent(JsEvent *self){
             JacksEvent_free(&self->impl);
@@ -1634,9 +1632,10 @@ SWIGINTERN void JsEvent_setSessionEventFlags(JsEvent *self,jack_session_flags_t 
             if (se == NULL) throw_exception("not a session event");
             se->flags = flags;
         }
-SWIGINTERN JsClient *new_JsClient(char const *name,char const *option_str,jack_options_t option){
+SWIGINTERN JsClient *new_JsClient(char const *name,char const *option_str,jack_options_t option,unsigned int rb_size){
 
-            JacksClient j = JacksClient_new(name, option_str, option);
+            JacksRbClient j = JacksRbClient_new(name, option_str, option, 
+                                                (jack_nframes_t) rb_size);
 
             JsClient *holder;
             holder = malloc(sizeof(JsClient));
@@ -1645,12 +1644,12 @@ SWIGINTERN JsClient *new_JsClient(char const *name,char const *option_str,jack_o
             return holder;
         }
 SWIGINTERN void delete_JsClient(JsClient *self){
-            JacksClient_free(&self->impl);
+            JacksRbClient_free(&self->impl);
             free(self);
         }
 SWIGINTERN JsPort *JsClient_getPortByType(JsClient *self,char const *namepattern,char const *typepattern,unsigned long options,int pos){
 
-            jack_client_t *client = JacksClient_get_client(self->impl);
+            jack_client_t *client = JacksRbClient_get_client(self->impl);
 
             const char **jports = jack_get_ports(client, namepattern, typepattern, options);
             if (jports == NULL) {
@@ -1659,7 +1658,8 @@ SWIGINTERN JsPort *JsClient_getPortByType(JsClient *self,char const *namepattern
             jack_port_t *jport = jack_port_by_name(client, jports[pos]);
             if (jport == NULL) return NULL;
 
-            JacksPort p = JacksPort_new(jport, self->impl);
+            jack_nframes_t rb_size = JacksRbClient_get_rb_size(self->impl);
+            JacksRbPort p = JacksRbPort_new(jport, self->impl, rb_size);
             JsPort *holder;
             holder = malloc(sizeof(JsPort));
             holder->impl = p;
@@ -1668,10 +1668,11 @@ SWIGINTERN JsPort *JsClient_getPortByType(JsClient *self,char const *namepattern
         }
 SWIGINTERN JsPort *JsClient_getPortByName(JsClient *self,char *name){
 
-            jack_port_t *jport = jack_port_by_name(JacksClient_get_client(self->impl), name);
+            jack_port_t *jport = jack_port_by_name(JacksRbClient_get_client(self->impl), name);
             if (jport == NULL) return NULL;
 
-            JacksPort p = JacksPort_new(jport, self->impl);
+            jack_nframes_t rb_size = JacksRbClient_get_rb_size(self->impl);
+            JacksRbPort p = JacksRbPort_new(jport, self->impl, rb_size);
             JsPort *holder;
             holder = malloc(sizeof(JsPort));
             holder->impl = p;
@@ -1679,7 +1680,8 @@ SWIGINTERN JsPort *JsClient_getPortByName(JsClient *self,char *name){
         }
 SWIGINTERN JsPort *JsClient_registerPort(JsClient *self,char *name,unsigned long options){
 
-            JacksPort p = JacksPort_new_port(name, options, self->impl);
+            jack_nframes_t rb_size = JacksRbClient_get_rb_size(self->impl);
+            JacksRbPort p = JacksRbPort_new_port(name, options, self->impl, rb_size);
             JsPort *holder;
             holder = malloc(sizeof(JsPort));
             holder->impl = p;
@@ -1688,25 +1690,25 @@ SWIGINTERN JsPort *JsClient_registerPort(JsClient *self,char *name,unsigned long
             return holder;
         }
 SWIGINTERN JsEvent *JsClient_getEvent(JsClient *self,long timeout){
-            JacksEvent e = JacksClient_get_event(self->impl, timeout);
+            JacksEvent e = JacksRbClient_get_event(self->impl, timeout);
             JsEvent *holder;
             holder = malloc(sizeof(JsEvent));
             holder->impl = e;
             return holder;
         }
 SWIGINTERN unsigned int JsClient_getSampleRate(JsClient *self){
-            return JacksClient_get_sample_rate(self->impl);
+            return JacksRbClient_get_sample_rate(self->impl);
         }
 SWIGINTERN int JsClient_activate(JsClient *self){
-            return JacksClient_activate(self->impl, self->process_audio);
+            return JacksRbClient_activate(self->impl, self->process_audio);
         }
 SWIGINTERN char *JsClient_getName(JsClient *self){
-            return JacksClient_get_name(self->impl);
+            return JacksRbClient_get_name(self->impl);
         }
 SWIGINTERN jack_transport_state_t JsClient_getTransportState(JsClient *self){
             jack_position_t position; //todo: do something with this!
             jack_transport_state_t t = jack_transport_query(
-                JacksClient_get_client(self->impl), &position);
+                JacksRbClient_get_client(self->impl), &position);
             return t;
         }
 #ifdef __cplusplus
@@ -1716,7 +1718,7 @@ static int _wrap_JsPortBuffer_getf(lua_State* L) {
   int SWIG_arg = 0;
   JsPortBuffer *arg1 = (JsPortBuffer *) 0 ;
   unsigned int arg2 ;
-  float result;
+  float *result = 0 ;
   
   SWIG_check_num_args("JsPortBuffer::getf",2,2)
   if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsPortBuffer::getf",1,"JsPortBuffer *");
@@ -1731,7 +1733,7 @@ static int _wrap_JsPortBuffer_getf(lua_State* L) {
   {
     char *err;
     clear_exception();
-    result = (float)JsPortBuffer_getf(arg1,arg2);
+    result = (float *)JsPortBuffer_getf(arg1,arg2);
     if ((err = check_exception())) {
       luaL_error(L, err);
       return -1; 
@@ -1741,7 +1743,7 @@ static int _wrap_JsPortBuffer_getf(lua_State* L) {
       
     }
   }
-  lua_pushnumber(L, (lua_Number) result); SWIG_arg++;
+  SWIG_NewPointerObj(L,result,SWIGTYPE_p_float,0); SWIG_arg++; 
   return SWIG_arg;
   
   if(0) SWIG_fail;
@@ -2547,19 +2549,23 @@ static int _wrap_new_JsClient(lua_State* L) {
   char *arg1 = (char *) 0 ;
   char *arg2 = (char *) 0 ;
   jack_options_t arg3 ;
+  unsigned int arg4 ;
   JsClient *result = 0 ;
   
-  SWIG_check_num_args("JsClient::JsClient",3,3)
+  SWIG_check_num_args("JsClient::JsClient",4,4)
   if(!SWIG_lua_isnilstring(L,1)) SWIG_fail_arg("JsClient::JsClient",1,"char const *");
   if(!SWIG_lua_isnilstring(L,2)) SWIG_fail_arg("JsClient::JsClient",2,"char const *");
   if(!lua_isnumber(L,3)) SWIG_fail_arg("JsClient::JsClient",3,"jack_options_t");
+  if(!lua_isnumber(L,4)) SWIG_fail_arg("JsClient::JsClient",4,"unsigned int");
   arg1 = (char *)lua_tostring(L, 1);
   arg2 = (char *)lua_tostring(L, 2);
   arg3 = (jack_options_t)(int)lua_tonumber(L, 3);
+  SWIG_contract_assert((lua_tonumber(L,4)>=0),"number must not be negative")
+  arg4 = (unsigned int)lua_tonumber(L, 4);
   {
     char *err;
     clear_exception();
-    result = (JsClient *)new_JsClient((char const *)arg1,(char const *)arg2,arg3);
+    result = (JsClient *)new_JsClient((char const *)arg1,(char const *)arg2,arg3,arg4);
     if ((err = check_exception())) {
       luaL_error(L, err);
       return -1; 

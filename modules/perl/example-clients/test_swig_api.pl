@@ -5,6 +5,6 @@ use warnings;
 use Math::Trig;
 use Test::More tests => 1;
 
-my $jc = jacks::JsClient->new("test", undef, $jacks::JackNullOption);
+my $jc = jacks::JsClient->new("test", undef, $jacks::JackNullOption, 0);
 ok($jc, "got client");
 

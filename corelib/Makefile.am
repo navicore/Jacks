@@ -5,9 +5,9 @@ doc_DATA =
 
 noinst_LTLIBRARIES = libjacks.la
 
-MYSOURCES = JacksRbClient.c JacksClient.c JacksHelper.c JacksLatch.c JacksEvent.c JacksEventQueue.c JacksPort.c JacksRbPort.c 
+MYSOURCES = JacksRbClient.c JacksHelper.c JacksLatch.c JacksEvent.c JacksRbPort.c 
 
-MYHEADERS = Jacks.h JacksEventQueue.h JacksRbClient.h JacksClient.h JacksLatch.h JacksEvent.h JacksPort.h JacksRbPort.h
+MYHEADERS = Jacks.h JacksRbClient.h JacksLatch.h JacksEvent.h JacksRbPort.h
 
 include_HEADERS = ${MYHEADERS}
 

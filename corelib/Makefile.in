@@ -61,10 +61,8 @@ CONFIG_CLEAN_VPATH_FILES =
 LTLIBRARIES = $(noinst_LTLIBRARIES)
 libjacks_la_DEPENDENCIES =
 am__objects_1 = libjacks_la-JacksRbClient.lo \
-	libjacks_la-JacksClient.lo libjacks_la-JacksHelper.lo \
-	libjacks_la-JacksLatch.lo libjacks_la-JacksEvent.lo \
-	libjacks_la-JacksEventQueue.lo libjacks_la-JacksPort.lo \
-	libjacks_la-JacksRbPort.lo
+	libjacks_la-JacksHelper.lo libjacks_la-JacksLatch.lo \
+	libjacks_la-JacksEvent.lo libjacks_la-JacksRbPort.lo
 am_libjacks_la_OBJECTS = $(am__objects_1)
 libjacks_la_OBJECTS = $(am_libjacks_la_OBJECTS)
 libjacks_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
@@ -296,8 +294,8 @@ top_srcdir = @top_srcdir@
 SUBDIRS = lfds . test
 doc_DATA = 
 noinst_LTLIBRARIES = libjacks.la
-MYSOURCES = JacksRbClient.c JacksClient.c JacksHelper.c JacksLatch.c JacksEvent.c JacksEventQueue.c JacksPort.c JacksRbPort.c 
-MYHEADERS = Jacks.h JacksEventQueue.h JacksRbClient.h JacksClient.h JacksLatch.h JacksEvent.h JacksPort.h JacksRbPort.h
+MYSOURCES = JacksRbClient.c JacksHelper.c JacksLatch.c JacksEvent.c JacksRbPort.c 
+MYHEADERS = Jacks.h JacksRbClient.h JacksLatch.h JacksEvent.h JacksRbPort.h
 include_HEADERS = ${MYHEADERS}
 libjacks_la_SOURCES = ${MYSOURCES}
 libjacks_la_LIBADD = @JACK_LIBS@ -L${top_builddir}/corelib/lfds -ljacks_lfds
@@ -355,12 +353,9 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-JacksClient.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-JacksEvent.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-JacksEventQueue.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-JacksHelper.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-JacksLatch.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-JacksPort.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-JacksRbClient.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libjacks_la-JacksRbPort.Plo@am__quote@
 
@@ -392,13 +387,6 @@ libjacks_la-JacksRbClient.lo: JacksRbClient.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-JacksRbClient.lo `test -f 'JacksRbClient.c' || echo '$(srcdir)/'`JacksRbClient.c
 
-libjacks_la-JacksClient.lo: JacksClient.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-JacksClient.lo -MD -MP -MF $(DEPDIR)/libjacks_la-JacksClient.Tpo -c -o libjacks_la-JacksClient.lo `test -f 'JacksClient.c' || echo '$(srcdir)/'`JacksClient.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-JacksClient.Tpo $(DEPDIR)/libjacks_la-JacksClient.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='JacksClient.c' object='libjacks_la-JacksClient.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-JacksClient.lo `test -f 'JacksClient.c' || echo '$(srcdir)/'`JacksClient.c
-
 libjacks_la-JacksHelper.lo: JacksHelper.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-JacksHelper.lo -MD -MP -MF $(DEPDIR)/libjacks_la-JacksHelper.Tpo -c -o libjacks_la-JacksHelper.lo `test -f 'JacksHelper.c' || echo '$(srcdir)/'`JacksHelper.c
 @am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-JacksHelper.Tpo $(DEPDIR)/libjacks_la-JacksHelper.Plo
@@ -419,20 +407,6 @@ libjacks_la-JacksEvent.lo: JacksEvent.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='JacksEvent.c' object='libjacks_la-JacksEvent.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-JacksEvent.lo `test -f 'JacksEvent.c' || echo '$(srcdir)/'`JacksEvent.c
-
-libjacks_la-JacksEventQueue.lo: JacksEventQueue.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-JacksEventQueue.lo -MD -MP -MF $(DEPDIR)/libjacks_la-JacksEventQueue.Tpo -c -o libjacks_la-JacksEventQueue.lo `test -f 'JacksEventQueue.c' || echo '$(srcdir)/'`JacksEventQueue.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-JacksEventQueue.Tpo $(DEPDIR)/libjacks_la-JacksEventQueue.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='JacksEventQueue.c' object='libjacks_la-JacksEventQueue.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-JacksEventQueue.lo `test -f 'JacksEventQueue.c' || echo '$(srcdir)/'`JacksEventQueue.c
-
-libjacks_la-JacksPort.lo: JacksPort.c
-@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-JacksPort.lo -MD -MP -MF $(DEPDIR)/libjacks_la-JacksPort.Tpo -c -o libjacks_la-JacksPort.lo `test -f 'JacksPort.c' || echo '$(srcdir)/'`JacksPort.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libjacks_la-JacksPort.Tpo $(DEPDIR)/libjacks_la-JacksPort.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='JacksPort.c' object='libjacks_la-JacksPort.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -c -o libjacks_la-JacksPort.lo `test -f 'JacksPort.c' || echo '$(srcdir)/'`JacksPort.c
 
 libjacks_la-JacksRbPort.lo: JacksRbPort.c
 @am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libjacks_la_CFLAGS) $(CFLAGS) -MT libjacks_la-JacksRbPort.lo -MD -MP -MF $(DEPDIR)/libjacks_la-JacksRbPort.Tpo -c -o libjacks_la-JacksRbPort.lo `test -f 'JacksRbPort.c' || echo '$(srcdir)/'`JacksRbPort.c

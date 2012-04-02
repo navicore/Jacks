@@ -2967,9 +2967,9 @@ static swig_module_info swig_module = {swig_types, 12, 0, 0, 0, 0};
 #include <stdbool.h>
 #include <string.h>
 #include <string.h>
-#include "JacksClient.h"
+#include "JacksRbClient.h"
 #include "JacksEvent.h"
-#include "JacksPort.h"
+#include "JacksRbPort.h"
 #include "Jacks.h"
 
 
@@ -3135,20 +3135,9 @@ SWIG_AsVal_unsigned_SS_int (PyObject * obj, unsigned int *val)
   return res;
 }
 
-SWIGINTERN float JsPortBuffer_getf(JsPortBuffer *self,unsigned int i){
-            jack_default_audio_sample_t *b = JacksPort_get_buffer(self->portimpl);
-            return (float) b[i];
+SWIGINTERN float const *JsPortBuffer_getf(JsPortBuffer *self,unsigned int i){
+            return (float*) self->framebuf[i];
         }
-
-  #define SWIG_From_double   PyFloat_FromDouble 
-
-
-SWIGINTERNINLINE PyObject *
-SWIG_From_float  (float value)
-{    
-  return SWIG_From_double  (value);
-}
-
 
 SWIGINTERN int
 SWIG_AsVal_float (PyObject * obj, float *val)
@@ -3167,11 +3156,11 @@ SWIG_AsVal_float (PyObject * obj, float *val)
 
 SWIGINTERN void JsPortBuffer_setf(JsPortBuffer *self,unsigned int i,float val){
 
-            jack_default_audio_sample_t *b = JacksPort_get_buffer(self->portimpl);
-            b[i] = (jack_default_audio_sample_t) val;
+            throw_exception("unsupported opperation");
+            return;
         }
 SWIGINTERN unsigned int JsPortBuffer_length(JsPortBuffer *self){
-            return JacksClient_get_nframes(self->clientimpl);
+            return self->len;
         }
 
 SWIGINTERNINLINE PyObject* 
@@ -3360,7 +3349,7 @@ SWIG_AsVal_char (PyObject * obj, char *val)
 }
 
 SWIGINTERN char *JsPortBuffer_toHexString(JsPortBuffer *self,unsigned int start,unsigned int len,char sep){
-            float* b = (float*) JacksPort_get_buffer(self->portimpl);
+            float* b = (float*) self->framebuf;
             int dlen = 12;
             char *hex_text = malloc(dlen * len + 1);
             for (int i = 0; i < len ; i++) {
@@ -3404,21 +3393,20 @@ SWIG_FromCharPtr(const char *cptr)
 }
 
 SWIGINTERN void delete_JsPort(JsPort *self){
-            JacksPort_free(&self->impl);
-            //ejs todo: return instanciate JsPortBuffer
+            JacksRbPort_free(&self->impl);
             free(self);
         }
 SWIGINTERN JsPortBuffer *JsPort_getBuffer(JsPort *self){
-            //ejs todo: return JsPortBuffer from self
             JsPortBuffer *holder;
             holder = malloc(sizeof(JsPortBuffer));
-            holder->portimpl = self->impl;
-            holder->clientimpl = self->clientimpl;
+            int len = 0;
+            holder->framebuf = JacksRbPort_read_from_ringbuffer(self->impl, &len);
+            holder->len = len;
             return holder;
         }
 SWIGINTERN int JsPort_connect(JsPort *self,JsPort *_that_){
 
-            return JacksPort_connect(self->impl, _that_->impl);
+            return JacksRbPort_connect(self->impl, _that_->impl);
         }
 SWIGINTERN void delete_JsEvent(JsEvent *self){
             JacksEvent_free(&self->impl);
@@ -3498,9 +3486,10 @@ SWIGINTERN void JsEvent_setSessionEventFlags(JsEvent *self,jack_session_flags_t 
             if (se == NULL) throw_exception("not a session event");
             se->flags = flags;
         }
-SWIGINTERN JsClient *new_JsClient(char const *name,char const *option_str,jack_options_t option){
+SWIGINTERN JsClient *new_JsClient(char const *name,char const *option_str,jack_options_t option,unsigned int rb_size){
 
-            JacksClient j = JacksClient_new(name, option_str, option);
+            JacksRbClient j = JacksRbClient_new(name, option_str, option, 
+                                                (jack_nframes_t) rb_size);
 
             JsClient *holder;
             holder = malloc(sizeof(JsClient));
@@ -3509,12 +3498,12 @@ SWIGINTERN JsClient *new_JsClient(char const *name,char const *option_str,jack_o
             return holder;
         }
 SWIGINTERN void delete_JsClient(JsClient *self){
-            JacksClient_free(&self->impl);
+            JacksRbClient_free(&self->impl);
             free(self);
         }
 SWIGINTERN JsPort *JsClient_getPortByType(JsClient *self,char const *namepattern,char const *typepattern,unsigned long options,int pos){
 
-            jack_client_t *client = JacksClient_get_client(self->impl);
+            jack_client_t *client = JacksRbClient_get_client(self->impl);
 
             const char **jports = jack_get_ports(client, namepattern, typepattern, options);
             if (jports == NULL) {
@@ -3523,7 +3512,8 @@ SWIGINTERN JsPort *JsClient_getPortByType(JsClient *self,char const *namepattern
             jack_port_t *jport = jack_port_by_name(client, jports[pos]);
             if (jport == NULL) return NULL;
 
-            JacksPort p = JacksPort_new(jport, self->impl);
+            jack_nframes_t rb_size = JacksRbClient_get_rb_size(self->impl);
+            JacksRbPort p = JacksRbPort_new(jport, self->impl, rb_size);
             JsPort *holder;
             holder = malloc(sizeof(JsPort));
             holder->impl = p;
@@ -3532,10 +3522,11 @@ SWIGINTERN JsPort *JsClient_getPortByType(JsClient *self,char const *namepattern
         }
 SWIGINTERN JsPort *JsClient_getPortByName(JsClient *self,char *name){
 
-            jack_port_t *jport = jack_port_by_name(JacksClient_get_client(self->impl), name);
+            jack_port_t *jport = jack_port_by_name(JacksRbClient_get_client(self->impl), name);
             if (jport == NULL) return NULL;
 
-            JacksPort p = JacksPort_new(jport, self->impl);
+            jack_nframes_t rb_size = JacksRbClient_get_rb_size(self->impl);
+            JacksRbPort p = JacksRbPort_new(jport, self->impl, rb_size);
             JsPort *holder;
             holder = malloc(sizeof(JsPort));
             holder->impl = p;
@@ -3543,7 +3534,8 @@ SWIGINTERN JsPort *JsClient_getPortByName(JsClient *self,char *name){
         }
 SWIGINTERN JsPort *JsClient_registerPort(JsClient *self,char *name,unsigned long options){
 
-            JacksPort p = JacksPort_new_port(name, options, self->impl);
+            jack_nframes_t rb_size = JacksRbClient_get_rb_size(self->impl);
+            JacksRbPort p = JacksRbPort_new_port(name, options, self->impl, rb_size);
             JsPort *holder;
             holder = malloc(sizeof(JsPort));
             holder->impl = p;
@@ -3552,25 +3544,25 @@ SWIGINTERN JsPort *JsClient_registerPort(JsClient *self,char *name,unsigned long
             return holder;
         }
 SWIGINTERN JsEvent *JsClient_getEvent(JsClient *self,long timeout){
-            JacksEvent e = JacksClient_get_event(self->impl, timeout);
+            JacksEvent e = JacksRbClient_get_event(self->impl, timeout);
             JsEvent *holder;
             holder = malloc(sizeof(JsEvent));
             holder->impl = e;
             return holder;
         }
 SWIGINTERN unsigned int JsClient_getSampleRate(JsClient *self){
-            return JacksClient_get_sample_rate(self->impl);
+            return JacksRbClient_get_sample_rate(self->impl);
         }
 SWIGINTERN int JsClient_activate(JsClient *self){
-            return JacksClient_activate(self->impl, self->process_audio);
+            return JacksRbClient_activate(self->impl, self->process_audio);
         }
 SWIGINTERN char *JsClient_getName(JsClient *self){
-            return JacksClient_get_name(self->impl);
+            return JacksRbClient_get_name(self->impl);
         }
 SWIGINTERN jack_transport_state_t JsClient_getTransportState(JsClient *self){
             jack_position_t position; //todo: do something with this!
             jack_transport_state_t t = jack_transport_query(
-                JacksClient_get_client(self->impl), &position);
+                JacksRbClient_get_client(self->impl), &position);
             return t;
         }
 #ifdef __cplusplus
@@ -3626,7 +3618,7 @@ SWIGINTERN PyObject *_wrap_JsPortBuffer_getf(PyObject *SWIGUNUSEDPARM(self), PyO
   int ecode2 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
-  float result;
+  float *result = 0 ;
   
   if (!PyArg_ParseTuple(args,(char *)"OO:JsPortBuffer_getf",&obj0,&obj1)) SWIG_fail;
   res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_JsPortBuffer, 0 |  0 );
@@ -3642,7 +3634,7 @@ SWIGINTERN PyObject *_wrap_JsPortBuffer_getf(PyObject *SWIGUNUSEDPARM(self), PyO
   {
     char *err;
     clear_exception();
-    result = (float)JsPortBuffer_getf(arg1,arg2);
+    result = (float *)JsPortBuffer_getf(arg1,arg2);
     if ((err = check_exception())) {
       PyErr_SetString(PyExc_RuntimeError, err);
       return NULL;
@@ -3659,7 +3651,7 @@ SWIGINTERN PyObject *_wrap_JsPortBuffer_getf(PyObject *SWIGUNUSEDPARM(self), PyO
       
     }
   }
-  resultobj = SWIG_From_float((float)(result));
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_float, 0 |  0 );
   return resultobj;
 fail:
   return NULL;
@@ -4658,6 +4650,7 @@ SWIGINTERN PyObject *_wrap_new_JsClient(PyObject *SWIGUNUSEDPARM(self), PyObject
   char *arg1 = (char *) 0 ;
   char *arg2 = (char *) 0 ;
   jack_options_t arg3 ;
+  unsigned int arg4 ;
   int res1 ;
   char *buf1 = 0 ;
   int alloc1 = 0 ;
@@ -4666,12 +4659,15 @@ SWIGINTERN PyObject *_wrap_new_JsClient(PyObject *SWIGUNUSEDPARM(self), PyObject
   int alloc2 = 0 ;
   int val3 ;
   int ecode3 = 0 ;
+  unsigned int val4 ;
+  int ecode4 = 0 ;
   PyObject * obj0 = 0 ;
   PyObject * obj1 = 0 ;
   PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
   JsClient *result = 0 ;
   
-  if (!PyArg_ParseTuple(args,(char *)"OOO:new_JsClient",&obj0,&obj1,&obj2)) SWIG_fail;
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:new_JsClient",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
   res1 = SWIG_AsCharPtrAndSize(obj0, &buf1, NULL, &alloc1);
   if (!SWIG_IsOK(res1)) {
     SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "new_JsClient" "', argument " "1"" of type '" "char const *""'");
@@ -4687,10 +4683,15 @@ SWIGINTERN PyObject *_wrap_new_JsClient(PyObject *SWIGUNUSEDPARM(self), PyObject
     SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "new_JsClient" "', argument " "3"" of type '" "jack_options_t""'");
   } 
   arg3 = (jack_options_t)(val3);
+  ecode4 = SWIG_AsVal_unsigned_SS_int(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "new_JsClient" "', argument " "4"" of type '" "unsigned int""'");
+  } 
+  arg4 = (unsigned int)(val4);
   {
     char *err;
     clear_exception();
-    result = (JsClient *)new_JsClient((char const *)arg1,(char const *)arg2,arg3);
+    result = (JsClient *)new_JsClient((char const *)arg1,(char const *)arg2,arg3,arg4);
     if ((err = check_exception())) {
       PyErr_SetString(PyExc_RuntimeError, err);
       return NULL;

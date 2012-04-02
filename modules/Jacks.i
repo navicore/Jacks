@@ -26,9 +26,9 @@
 #include <stdbool.h>
 #include <string.h>
 #include <string.h>
-#include "JacksClient.h"
+#include "JacksRbClient.h"
 #include "JacksEvent.h"
-#include "JacksPort.h"
+#include "JacksRbPort.h"
 #include "Jacks.h"
 %}
 
@@ -62,30 +62,28 @@
 
 typedef struct {
     %extend {
-        //ejs todo: wrap ringbuffer
         ~JsPortBuffer() {
             free($self);
         }
 
-        float getf(unsigned int i) {
-            jack_default_audio_sample_t *b = JacksPort_get_buffer($self->portimpl);
-            return (float) b[i];
+        const float* getf(unsigned int i) {
+            return (float*) $self->framebuf[i];
         }
 
         void setf(unsigned int i, float val) {
 
-            jack_default_audio_sample_t *b = JacksPort_get_buffer($self->portimpl);
-            b[i] = (jack_default_audio_sample_t) val;
+            throw_exception("unsupported opperation");
+            return;
         }
 
         unsigned int length() {
-            return JacksClient_get_nframes($self->clientimpl);
+            return $self->len;
         }
 
         //for debug only!  dangerously presumes float is of len long
         //using this to compair test scripts written in different swig langs
         char* toHexString(unsigned int start, unsigned int len, char sep) {
-            float* b = (float*) JacksPort_get_buffer($self->portimpl);
+            float* b = (float*) $self->framebuf;
             int dlen = 12;
             char *hex_text = malloc(dlen * len + 1);
             for (int i = 0; i < len ; i++) {
@@ -106,23 +104,22 @@ typedef struct {
 typedef struct {
     %extend {
         ~JsPort() {
-            JacksPort_free(&$self->impl);
-            //ejs todo: return instanciate JsPortBuffer
+            JacksRbPort_free(&$self->impl);
             free($self);
         }
 
         JsPortBuffer* getBuffer() {
-            //ejs todo: return JsPortBuffer from $self
             JsPortBuffer *holder;
             holder = malloc(sizeof(JsPortBuffer));
-            holder->portimpl = $self->impl;
-            holder->clientimpl = $self->clientimpl;
+            int len = 0;
+            holder->framebuf = JacksRbPort_read_from_ringbuffer($self->impl, &len);
+            holder->len = len;
             return holder;
         }
 
         int connect(JsPort *_that_) {
 
-            return JacksPort_connect($self->impl, _that_->impl);
+            return JacksRbPort_connect($self->impl, _that_->impl);
         }
     }
 } JsPort;
@@ -209,9 +206,11 @@ typedef struct {
 
 typedef struct {
     %extend {
-        JsClient(const char *name, const char *option_str, jack_options_t option) {
+        JsClient(const char *name, const char *option_str, 
+                 jack_options_t option, unsigned int rb_size) {
 
-            JacksClient j = JacksClient_new(name, option_str, option);
+            JacksRbClient j = JacksRbClient_new(name, option_str, option, 
+                                                (jack_nframes_t) rb_size);
 
             JsClient *holder;
             holder = malloc(sizeof(JsClient));
@@ -220,7 +219,7 @@ typedef struct {
             return holder;
         }
         ~JsClient() {
-            JacksClient_free(&$self->impl);
+            JacksRbClient_free(&$self->impl);
             free($self);
         }
 
@@ -228,7 +227,7 @@ typedef struct {
         JsPort *getPortByType(const char *namepattern, 
                               const char *typepattern, unsigned long options, int pos) {
 
-            jack_client_t *client = JacksClient_get_client($self->impl);
+            jack_client_t *client = JacksRbClient_get_client($self->impl);
 
             const char **jports = jack_get_ports(client, namepattern, typepattern, options);
             if (jports == NULL) {
@@ -237,7 +236,8 @@ typedef struct {
             jack_port_t *jport = jack_port_by_name(client, jports[pos]);
             if (jport == NULL) return NULL;
 
-            JacksPort p = JacksPort_new(jport, $self->impl);
+            jack_nframes_t rb_size = JacksRbClient_get_rb_size($self->impl);
+            JacksRbPort p = JacksRbPort_new(jport, $self->impl, rb_size);
             JsPort *holder;
             holder = malloc(sizeof(JsPort));
             holder->impl = p;
@@ -248,10 +248,11 @@ typedef struct {
         //untested
         JsPort *getPortByName(char *name) {
 
-            jack_port_t *jport = jack_port_by_name(JacksClient_get_client($self->impl), name);
+            jack_port_t *jport = jack_port_by_name(JacksRbClient_get_client($self->impl), name);
             if (jport == NULL) return NULL;
 
-            JacksPort p = JacksPort_new(jport, $self->impl);
+            jack_nframes_t rb_size = JacksRbClient_get_rb_size($self->impl);
+            JacksRbPort p = JacksRbPort_new(jport, $self->impl, rb_size);
             JsPort *holder;
             holder = malloc(sizeof(JsPort));
             holder->impl = p;
@@ -260,7 +261,8 @@ typedef struct {
 
         JsPort *registerPort(char *name, unsigned long options) {
 
-            JacksPort p = JacksPort_new_port(name, options, $self->impl);
+            jack_nframes_t rb_size = JacksRbClient_get_rb_size($self->impl);
+            JacksRbPort p = JacksRbPort_new_port(name, options, $self->impl, rb_size);
             JsPort *holder;
             holder = malloc(sizeof(JsPort));
             holder->impl = p;
@@ -270,7 +272,7 @@ typedef struct {
         }
 
         JsEvent *getEvent(long timeout) {
-            JacksEvent e = JacksClient_get_event($self->impl, timeout);
+            JacksEvent e = JacksRbClient_get_event($self->impl, timeout);
             JsEvent *holder;
             holder = malloc(sizeof(JsEvent));
             holder->impl = e;
@@ -279,21 +281,21 @@ typedef struct {
 
         //jack_nframes_t getSampleRate() {
         unsigned int getSampleRate() {
-            return JacksClient_get_sample_rate($self->impl);
+            return JacksRbClient_get_sample_rate($self->impl);
         }
 
         int activate() {
-            return JacksClient_activate($self->impl, $self->process_audio);
+            return JacksRbClient_activate($self->impl, $self->process_audio);
         }
 
         char *getName() {
-            return JacksClient_get_name($self->impl);
+            return JacksRbClient_get_name($self->impl);
         }
 
         jack_transport_state_t getTransportState() {
             jack_position_t position; //todo: do something with this!
             jack_transport_state_t t = jack_transport_query(
-                JacksClient_get_client($self->impl), &position);
+                JacksRbClient_get_client($self->impl), &position);
             return t;
         }
 

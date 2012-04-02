@@ -7,17 +7,12 @@ oe_cflags = -I$(top_srcdir)/corelib @OE_LIB_CFLAGS@ @OE_TESTER_CFLAGS@
 
 include_HEADERS = 
 
-check_PROGRAMS = test_jackclient test_events
+check_PROGRAMS = test_jackclient
 
 test_jackclient_SOURCES = test_jackclient.c
 test_jackclient_LDADD = ${oe_ldadd}
 test_jackclient_CFLAGS = ${oe_cflags}
 test_jackclient_LDFLAGS = @OE_TESTER_LDFLAGS@
-
-test_events_SOURCES = test_events.c
-test_events_LDADD = ${oe_ldadd}
-test_events_CFLAGS = ${oe_cflags}
-test_events_LDFLAGS = @OE_TESTER_LDFLAGS@
 
 bin_PROGRAMS = floatsize
 
@@ -26,7 +21,7 @@ floatsize_LDADD = ${oe_ldadd}
 floatsize_CFLAGS = ${oe_cflags}
 floatsize_LDFLAGS = @OE_TESTER_LDFLAGS@
 
-TESTS = test_jackclient test_events
+TESTS = test_jackclient
 
 all-local:
 	mkdir -p data

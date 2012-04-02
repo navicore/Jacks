@@ -35,9 +35,9 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-check_PROGRAMS = test_jackclient$(EXEEXT) test_events$(EXEEXT)
+check_PROGRAMS = test_jackclient$(EXEEXT)
 bin_PROGRAMS = floatsize$(EXEEXT)
-TESTS = test_jackclient$(EXEEXT) test_events$(EXEEXT)
+TESTS = test_jackclient$(EXEEXT)
 subdir = corelib/test
 DIST_COMMON = $(include_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
@@ -69,12 +69,6 @@ floatsize_DEPENDENCIES = $(am__DEPENDENCIES_1)
 floatsize_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(floatsize_CFLAGS) \
 	$(CFLAGS) $(floatsize_LDFLAGS) $(LDFLAGS) -o $@
-am_test_events_OBJECTS = test_events-test_events.$(OBJEXT)
-test_events_OBJECTS = $(am_test_events_OBJECTS)
-test_events_DEPENDENCIES = $(am__DEPENDENCIES_1)
-test_events_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
-	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(test_events_CFLAGS) \
-	$(CFLAGS) $(test_events_LDFLAGS) $(LDFLAGS) -o $@
 am_test_jackclient_OBJECTS =  \
 	test_jackclient-test_jackclient.$(OBJEXT)
 test_jackclient_OBJECTS = $(am_test_jackclient_OBJECTS)
@@ -95,10 +89,8 @@ CCLD = $(CC)
 LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	--mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-SOURCES = $(floatsize_SOURCES) $(test_events_SOURCES) \
-	$(test_jackclient_SOURCES)
-DIST_SOURCES = $(floatsize_SOURCES) $(test_events_SOURCES) \
-	$(test_jackclient_SOURCES)
+SOURCES = $(floatsize_SOURCES) $(test_jackclient_SOURCES)
+DIST_SOURCES = $(floatsize_SOURCES) $(test_jackclient_SOURCES)
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
 	html-recursive info-recursive install-data-recursive \
 	install-dvi-recursive install-exec-recursive \
@@ -316,10 +308,6 @@ test_jackclient_SOURCES = test_jackclient.c
 test_jackclient_LDADD = ${oe_ldadd}
 test_jackclient_CFLAGS = ${oe_cflags}
 test_jackclient_LDFLAGS = @OE_TESTER_LDFLAGS@
-test_events_SOURCES = test_events.c
-test_events_LDADD = ${oe_ldadd}
-test_events_CFLAGS = ${oe_cflags}
-test_events_LDFLAGS = @OE_TESTER_LDFLAGS@
 floatsize_SOURCES = floatsize.c
 floatsize_LDADD = ${oe_ldadd}
 floatsize_CFLAGS = ${oe_cflags}
@@ -413,9 +401,6 @@ clean-checkPROGRAMS:
 floatsize$(EXEEXT): $(floatsize_OBJECTS) $(floatsize_DEPENDENCIES) 
 	@rm -f floatsize$(EXEEXT)
 	$(floatsize_LINK) $(floatsize_OBJECTS) $(floatsize_LDADD) $(LIBS)
-test_events$(EXEEXT): $(test_events_OBJECTS) $(test_events_DEPENDENCIES) 
-	@rm -f test_events$(EXEEXT)
-	$(test_events_LINK) $(test_events_OBJECTS) $(test_events_LDADD) $(LIBS)
 test_jackclient$(EXEEXT): $(test_jackclient_OBJECTS) $(test_jackclient_DEPENDENCIES) 
 	@rm -f test_jackclient$(EXEEXT)
 	$(test_jackclient_LINK) $(test_jackclient_OBJECTS) $(test_jackclient_LDADD) $(LIBS)
@@ -427,7 +412,6 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/floatsize-floatsize.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_events-test_events.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/test_jackclient-test_jackclient.Po@am__quote@
 
 .c.o:
@@ -464,20 +448,6 @@ floatsize-floatsize.obj: floatsize.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='floatsize.c' object='floatsize-floatsize.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(floatsize_CFLAGS) $(CFLAGS) -c -o floatsize-floatsize.obj `if test -f 'floatsize.c'; then $(CYGPATH_W) 'floatsize.c'; else $(CYGPATH_W) '$(srcdir)/floatsize.c'; fi`
-
-test_events-test_events.o: test_events.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_events_CFLAGS) $(CFLAGS) -MT test_events-test_events.o -MD -MP -MF $(DEPDIR)/test_events-test_events.Tpo -c -o test_events-test_events.o `test -f 'test_events.c' || echo '$(srcdir)/'`test_events.c
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/test_events-test_events.Tpo $(DEPDIR)/test_events-test_events.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test_events.c' object='test_events-test_events.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_events_CFLAGS) $(CFLAGS) -c -o test_events-test_events.o `test -f 'test_events.c' || echo '$(srcdir)/'`test_events.c
-
-test_events-test_events.obj: test_events.c
-@am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_events_CFLAGS) $(CFLAGS) -MT test_events-test_events.obj -MD -MP -MF $(DEPDIR)/test_events-test_events.Tpo -c -o test_events-test_events.obj `if test -f 'test_events.c'; then $(CYGPATH_W) 'test_events.c'; else $(CYGPATH_W) '$(srcdir)/test_events.c'; fi`
-@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/test_events-test_events.Tpo $(DEPDIR)/test_events-test_events.Po
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='test_events.c' object='test_events-test_events.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_events_CFLAGS) $(CFLAGS) -c -o test_events-test_events.obj `if test -f 'test_events.c'; then $(CYGPATH_W) 'test_events.c'; else $(CYGPATH_W) '$(srcdir)/test_events.c'; fi`
 
 test_jackclient-test_jackclient.o: test_jackclient.c
 @am__fastdepCC_TRUE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(test_jackclient_CFLAGS) $(CFLAGS) -MT test_jackclient-test_jackclient.o -MD -MP -MF $(DEPDIR)/test_jackclient-test_jackclient.Tpo -c -o test_jackclient-test_jackclient.o `test -f 'test_jackclient.c' || echo '$(srcdir)/'`test_jackclient.c

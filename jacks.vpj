@@ -131,20 +131,14 @@
             Name="Source Files"
             Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d">
             <F N="corelib/test/floatsize.c"/>
-            <F N="corelib/JacksClient.c"/>
             <F N="corelib/JacksEvent.c"/>
             <F N="corelib/JacksEventQueue.c"/>
             <F N="corelib/JacksHelper.c"/>
             <F N="corelib/JacksLatch.c"/>
-            <F N="corelib/JacksPort.c"/>
             <F N="corelib/JacksRbClient.c"/>
             <F N="corelib/JacksRbPort.c"/>
             <F N="modules/perl/example-clients/metro.pl"/>
             <F N="modules/perl/example-clients/playc.pl"/>
-            <F N="corelib/queue_delete.c"/>
-            <F N="corelib/queue_new.c"/>
-            <F N="corelib/queue_query.c"/>
-            <F N="corelib/queue_queue.c"/>
             <F N="modules/perl/example-clients/simple_client.pl"/>
             <F N="modules/python2/example-clients/simple_client.py"/>
             <F N="modules/python3/example-clients/simple_client.py"/>
@@ -160,16 +154,11 @@
             <F N="autogen.sh"/>
             <F N="modules/jack_headers.h"/>
             <F N="corelib/Jacks.h"/>
-            <F N="corelib/JacksClient.h"/>
             <F N="corelib/JacksEvent.h"/>
             <F N="corelib/JacksEventQueue.h"/>
             <F N="corelib/JacksLatch.h"/>
-            <F N="corelib/JacksPort.h"/>
             <F N="corelib/JacksRbClient.h"/>
             <F N="corelib/JacksRbPort.h"/>
-            <F N="corelib/liblfds.h"/>
-            <F N="corelib/liblfds_internal.h"/>
-            <F N="corelib/queue_internal.h"/>
         </Folder>
         <Folder
             Name="Resource Files"

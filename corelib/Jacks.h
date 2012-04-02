@@ -19,22 +19,22 @@
 #ifndef JACKPLHELPER_H
 #define JACKPLHELPER_H
 
-#include "JacksPort.h"
+#include "JacksRbPort.h"
 #include "JacksEvent.h"
-#include "JacksClient.h"
+#include "JacksRbClient.h"
 
 static char* CROAK = "exception: %s\n";
 
 struct JsPortBuffer;
 typedef struct {
-    JacksPort portimpl;
-    JacksClient clientimpl;
+    char *framebuf;
+    int len;
 } JsPortBuffer;
 
 struct JsPort;
 typedef struct {
-    JacksPort impl;
-    JacksClient clientimpl;
+    JacksRbPort impl;
+    JacksRbClient clientimpl;
 } JsPort;
 
 struct JsEvent;
@@ -44,8 +44,9 @@ typedef struct {
 
 struct JsClient;
 typedef struct {
-    JacksClient impl;
+    JacksRbClient impl;
     int process_audio;
+    int fb_size;
 } JsClient;
 
 //
