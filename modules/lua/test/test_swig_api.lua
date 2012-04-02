@@ -1,6 +1,7 @@
 #!/usr/bin/lua
 
 require "jacks"
+require "sndfile"
 
 jc = jacks.JsClient("lua_unit_test", nil, jacks.JackNullOption, 0)
 assert(jc ~= nil)

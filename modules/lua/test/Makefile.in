@@ -547,9 +547,11 @@ uninstall-am: uninstall-includeHEADERS
 
 all-local:
 	ln -f -s ../.libs/libjacks_lua.so ./jacks.so
+	ln -f -s ../.libs/libjackssndfile_lua.so ./sndfile.so
 
 clean-local:
-	rm -f ./jackscrip.so
+	rm -f ./jacks.so
+	rm -f ./sndfile.so
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.

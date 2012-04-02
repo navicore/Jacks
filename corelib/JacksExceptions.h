@@ -16,33 +16,17 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
-#ifndef JACK_SWIG_EXCEPTIONS_H
-#define JACK_SWIG_EXCEPTIONS_H
+#ifndef JACKSEXCEPTIONS_H
+#define JACKSEXCEPTIONS_H
 
-%exception {
-    char *err;
-    clear_exception();
-    $action
-    if ((err = check_exception())) {
-#if defined (SWIGPERL)
-        croak(CROAK, err);
-        return;
-#elif defined (SWIGPYTHON)
-        PyErr_SetString(PyExc_RuntimeError, err);
-        return NULL;
-#elif defined (SWIGRUBY)
-        void *runerror = rb_define_class("JacksRuntimeError", rb_eStandardError);
-        rb_raise(runerror, err);
-        return;
-#elif defined (SWIGLUA)
-        luaL_error(L, err);
-        return -1; 
-#else
-        assert(false);
-        return;
-#endif
-    }
-}
+//
+//exceptions
+//
+void throw_exception(char *);
+
+void clear_exception();
+
+char *check_exception();
 
 #endif
 

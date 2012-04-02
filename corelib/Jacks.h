@@ -19,6 +19,7 @@
 #ifndef JACKPLHELPER_H
 #define JACKPLHELPER_H
 
+#include "JacksExceptions.h"
 #include "JacksRbPort.h"
 #include "JacksEvent.h"
 #include "JacksRbClient.h"
@@ -48,15 +49,6 @@ typedef struct {
     int process_audio;
     int fb_size;
 } JsClient;
-
-//
-//exceptions
-//
-void throw_exception(char *);
-
-void clear_exception();
-
-char *check_exception();
 
 #endif
 

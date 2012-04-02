@@ -20,18 +20,12 @@
 
 %{
 #include "config.h"
+#include "JacksSndFile.h"
 #include <sndfile.h>
+#include <jack/jack.h>
 %}
 
 %include "jack_exceptions.h"
-
-const size_t sample_size = sizeof(jack_default_audio_sample_t);
-typedef struct _sndfile {
-    SNDFILE *sf;
-    unsigned int channels;
-    int bitdepth;
-    char *path;
-} SndFile;
 
 typedef struct {
     %extend {
@@ -70,10 +64,11 @@ typedef struct {
         }
 
 
-        void writeFloat(char *frambuf, int cnt) {
+        void writeFloat(char *framebuf, int cnt) {
 
-            static jack_nframes_t total_captured = 0;
+            //static jack_nframes_t total_captured = 0;
             jack_nframes_t samples_per_frame = $self->channels;
+            const size_t sample_size = sizeof(jack_default_audio_sample_t);
             size_t bytes_per_frame = samples_per_frame * sample_size;
 
 			if (sf_writef_float ($self->sf, framebuf, cnt) != 1) {
