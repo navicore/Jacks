@@ -2,10 +2,10 @@
 use jacks;
 use strict;
 use warnings;
-use Test::More tests => 204;
+use Test::More tests => 3;
 my $iter = 100;
 
-my $jc = jacks::JsClient->new($client_name, undef, $jacks::JackNullOption, 0);
+my $jc = jacks::JsClient->new("myclient", undef, $jacks::JackNullOption, 0);
 ok($jc, "no client");
 
 for (my $i=0; $i< $iter; $i++) {
