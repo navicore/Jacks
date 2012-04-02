@@ -32,31 +32,8 @@
 #include "Jacks.h"
 %}
 
-%exception {
-    char *err;
-    clear_exception();
-    $action
-    if ((err = check_exception())) {
-#if defined (SWIGPERL)
-        croak(CROAK, err);
-        return;
-#elif defined (SWIGPYTHON)
-        PyErr_SetString(PyExc_RuntimeError, err);
-        return NULL;
-#elif defined (SWIGRUBY)
-        void *runerror = rb_define_class("JacksRuntimeError", rb_eStandardError);
-        rb_raise(runerror, err);
-        return;
-#elif defined (SWIGLUA)
-        luaL_error(L, err);
-        return -1; 
-#else
-        assert(false);
-        return;
-#endif
-    }
-}
 
+%include "jack_exceptions.h"
 %include "jack_headers.h"
 #define VERSION VERSION
 

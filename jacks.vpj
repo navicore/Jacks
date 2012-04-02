@@ -132,17 +132,13 @@
             Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d">
             <F N="corelib/test/floatsize.c"/>
             <F N="corelib/JacksEvent.c"/>
-            <F N="corelib/JacksEventQueue.c"/>
             <F N="corelib/JacksHelper.c"/>
             <F N="corelib/JacksLatch.c"/>
             <F N="corelib/JacksRbClient.c"/>
             <F N="corelib/JacksRbPort.c"/>
-            <F N="modules/perl/example-clients/metro.pl"/>
-            <F N="modules/perl/example-clients/playc.pl"/>
             <F N="modules/perl/example-clients/simple_client.pl"/>
             <F N="modules/python2/example-clients/simple_client.py"/>
             <F N="modules/python3/example-clients/simple_client.py"/>
-            <F N="corelib/test/test_events.c"/>
             <F N="corelib/test/test_jackclient.c"/>
             <F N="modules/perl/example-clients/test_swig_api.pl"/>
             <F N="modules/python2/test/test_swig_api.py"/>
@@ -152,10 +148,10 @@
             Name="Header Files"
             Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if">
             <F N="autogen.sh"/>
+            <F N="modules/jack_exceptions.h"/>
             <F N="modules/jack_headers.h"/>
             <F N="corelib/Jacks.h"/>
             <F N="corelib/JacksEvent.h"/>
-            <F N="corelib/JacksEventQueue.h"/>
             <F N="corelib/JacksLatch.h"/>
             <F N="corelib/JacksRbClient.h"/>
             <F N="corelib/JacksRbPort.h"/>
@@ -240,6 +236,7 @@
             <F N="modules/python3/setup.py.in"/>
             <F N="modules/lua/example-clients/simple_client.lua"/>
             <F N="modules/ruby/example-clients/simple_client.rb"/>
+            <F N="modules/SndFile.i"/>
             <F N="modules/lua/test/test_swig_api.lua"/>
             <F N="modules/ruby/test/test_swig_api.rb"/>
             <F N="modules/perl/t/test_swig_api.t"/>
