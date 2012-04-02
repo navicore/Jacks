@@ -63,6 +63,9 @@ typedef struct {
             free($self);
         }
 
+        //void setSampleRate(int sample_rate) {
+        //todo
+        //}
 
         void writeFloat(char *framebuf, int cnt) {
 
