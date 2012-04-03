@@ -1,0 +1,6 @@
+Copy the jack-audio-connection-kit example-clients/*.c files here
+if you want to use them to help test.
+
+I use metro a lot in my testing / debugging.
+
+
