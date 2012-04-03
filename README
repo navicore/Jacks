@@ -16,7 +16,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ---
 
-Jacks is a set of libraries that enable the Jack Audio 
+Jacks is a set of libraries that enable some of the Jack Audio 
 Connection Kit APIs to be used from high-level languages like 
 Perl, Python, Ruby, and Lua.
 
@@ -32,19 +32,23 @@ presumptious name, we  are not part of the jack audio project).
 Status:
               **************************************************
               **************************************************
+              ***                                            ***
               *** PRE ALPHA QUALITY!                         ***
-              *** The messy build system is the biggest prob ***
-              *** right now, but the session and sample-ing  ***
-              *** works for me, all the unit tests pass      ***
+              ***                                            ***
+              *** reworking the process callback to be       ***
+              *** non-blocking for capture applications.     ***
+              ***                                            ***
+              *** session events seem to work, looking for   ***
+              *** feedback                                   ***
+              ***                                            ***
               **************************************************
               **************************************************
 
 Design:
 
-1 - Jacks code should run in lock-step with jack callbacks.
+1 - Synchronous-style client programming.
 
-2 - No async buffering nor buffer copying should be introduced by
-    Jacks.
+2 - No blocking on process callback.
 
 3 - Support lots of languages.
 
