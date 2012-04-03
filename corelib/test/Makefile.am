@@ -14,7 +14,7 @@ test_jackclient_LDADD = ${oe_ldadd}
 test_jackclient_CFLAGS = ${oe_cflags}
 test_jackclient_LDFLAGS = @OE_TESTER_LDFLAGS@
 
-bin_PROGRAMS = floatsize
+bin_PROGRAMS = floatsize 
 
 floatsize_SOURCES = floatsize.c
 floatsize_LDADD = ${oe_ldadd}

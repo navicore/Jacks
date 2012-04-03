@@ -130,12 +130,15 @@
         <Folder
             Name="Source Files"
             Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d">
+            <F N="corelib/test/jack-example-clients/capture_client.c"/>
             <F N="corelib/test/floatsize.c"/>
             <F N="corelib/JacksEvent.c"/>
             <F N="corelib/JacksHelper.c"/>
             <F N="corelib/JacksLatch.c"/>
             <F N="corelib/JacksRbClient.c"/>
             <F N="corelib/JacksRbPort.c"/>
+            <F N="corelib/test/jack-example-clients/metro.c"/>
+            <F N="corelib/test/jack-example-clients/simple_client.c"/>
             <F N="modules/perl/example-clients/simple_client.pl"/>
             <F N="modules/python2/example-clients/simple_client.py"/>
             <F N="modules/python3/example-clients/simple_client.py"/>
@@ -169,6 +172,8 @@
             <F N="m4/ax_oe_jack.m4"/>
             <F N="m4/ax_perl_ext_flags.m4"/>
             <F N="modules/perl/Build.PL.in"/>
+            <F N="corelib/test/jack-example-clients/capture_client"/>
+            <F N="corelib/test/jack-example-clients/capture_client-capture_client.o"/>
             <F N="config.h.in"/>
             <F N="configure.ac"/>
             <F N="modules/Jacks.i"/>
