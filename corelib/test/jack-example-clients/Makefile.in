@@ -39,7 +39,7 @@ bin_PROGRAMS = capture_client$(EXEEXT) metro$(EXEEXT) \
 	simple_client$(EXEEXT)
 TESTS =
 subdir = corelib/test/jack-example-clients
-DIST_COMMON = $(include_HEADERS) $(srcdir)/Makefile.am \
+DIST_COMMON = README $(include_HEADERS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/ax_compare_version.m4 \

@@ -104,6 +104,7 @@ int JacksRbPort_write_to_ringbuffer(T _this_, jack_nframes_t nframes) {
     size_t write_size = jacks_sample_size * nframes;
 
     if (jack_ringbuffer_write (_this_->rb, buff, write_size) < write_size) {
+        fprintf (stderr, "overrunning... need bigger ringbuffer\n");
          _this_->overruns++;
          rc = -1;
     }

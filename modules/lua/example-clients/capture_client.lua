@@ -22,7 +22,7 @@ while true do
         for i=0, nframes do
 
           s = inbuffer:getf(i)
-          --print("got something:", i)
+          print("got something:", i)
 
         end
 
