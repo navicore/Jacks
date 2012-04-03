@@ -97,12 +97,17 @@ int JacksRbPort_connect(T _this_, T _that_) {
 
 int JacksRbPort_write_to_ringbuffer(T _this_, jack_nframes_t nframes) {
 
+    int rc = 0;
+
     void *buff = jack_port_get_buffer(_this_->jport, nframes);
 
     size_t write_size = jacks_sample_size * nframes;
 
-    if (jack_ringbuffer_write (_this_->rb, buff, write_size) < write_size)
+    if (jack_ringbuffer_write (_this_->rb, buff, write_size) < write_size) {
          _this_->overruns++;
+         rc = -1;
+    }
+    return rc;
 }
 
 sample_t* JacksRbPort_read_from_ringbuffer(T _this_, int *len) {

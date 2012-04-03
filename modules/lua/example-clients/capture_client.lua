@@ -2,11 +2,10 @@
 
 require "jacks"
 
-jc = jacks.JsClient("lua_simple_client", nil, jacks.JackNullOption)
+jc = jacks.JsClient("lua_capture_client", nil, jacks.JackNullOption, 0)
 assert(jc ~= nil)
 
 in_port = jc:registerPort("input", jacks.JackPortIsInput)
-out_port = jc:registerPort("output", jacks.JackPortIsOutput)
 
 jc:activate()
 
@@ -18,15 +17,12 @@ while true do
 
         inbuffer = in_port:getBuffer()
 
-        outbuffer = out_port:getBuffer()
-
-        nframes = outbuffer:length()
+        nframes = inbuffer:length()
 
         for i=0, nframes do
 
           s = inbuffer:getf(i)
-
-          outbuffer:setf(i, s)
+          --print("got something:", i)
 
         end
 

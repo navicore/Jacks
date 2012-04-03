@@ -1680,8 +1680,9 @@ SWIGINTERN JsPort *JsClient_getPortByName(JsClient *self,char *name){
         }
 SWIGINTERN JsPort *JsClient_registerPort(JsClient *self,char *name,unsigned long options){
 
-            jack_nframes_t rb_size = JacksRbClient_get_rb_size(self->impl);
-            JacksRbPort p = JacksRbPort_new_port(name, options, self->impl, rb_size);
+            //jack_nframes_t rb_size = JacksRbClient_get_rb_size(self->impl);
+            //JacksRbPort p = JacksRbPort_new_port(name, options, self->impl, rb_size);
+            JacksRbPort p = JacksRbClient_registerPort(self->impl, name, options);
             JsPort *holder;
             holder = malloc(sizeof(JsPort));
             holder->impl = p;
