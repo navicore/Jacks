@@ -2095,11 +2095,11 @@ SWIGINTERN void delete_JsClient(JsClient *self){
             JacksRbClient_free(&self->impl);
             free(self);
         }
-SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepattern){
+SWIGINTERN StringList *JsClient_getPortNamesByType(JsClient *self,char const *namepattern,char const *typepattern,enum JackPortFlags flags){
 
             jack_client_t *client = JacksRbClient_get_client(self->impl);
 
-            const char **jports = jack_get_ports(client, namepattern, NULL, 0);
+            const char **jports = jack_get_ports(client, namepattern, typepattern, flags);
             if (jports == NULL) {
                 return NULL;
             }
@@ -2109,6 +2109,9 @@ SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepatt
             holder->impl = jports;
             holder->len = 0;
             return holder;
+        }
+SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepattern){
+            return JsClient_getPortNamesByType(self, namepattern, NULL, 0);
         }
 SWIGINTERN JsPort *JsClient_getPort(JsClient *self,char *name){
 
@@ -4174,6 +4177,88 @@ XS(_wrap_delete_JsClient) {
 }
 
 
+XS(_wrap_JsClient_getPortNamesByType) {
+  {
+    JsClient *arg1 = (JsClient *) 0 ;
+    char *arg2 = (char *) 0 ;
+    char *arg3 = (char *) 0 ;
+    enum JackPortFlags arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int res2 ;
+    char *buf2 = 0 ;
+    int alloc2 = 0 ;
+    int res3 ;
+    char *buf3 = 0 ;
+    int alloc3 = 0 ;
+    int val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    StringList *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: JsClient_getPortNamesByType(self,namepattern,typepattern,flags);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsClient, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsClient_getPortNamesByType" "', argument " "1"" of type '" "JsClient *""'"); 
+    }
+    arg1 = (JsClient *)(argp1);
+    res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
+    if (!SWIG_IsOK(res2)) {
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "JsClient_getPortNamesByType" "', argument " "2"" of type '" "char const *""'");
+    }
+    arg2 = (char *)(buf2);
+    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
+    if (!SWIG_IsOK(res3)) {
+      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "JsClient_getPortNamesByType" "', argument " "3"" of type '" "char const *""'");
+    }
+    arg3 = (char *)(buf3);
+    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "JsClient_getPortNamesByType" "', argument " "4"" of type '" "enum JackPortFlags""'");
+    } 
+    arg4 = (enum JackPortFlags)(val4);
+    {
+      char *err;
+      clear_exception();
+      result = (StringList *)JsClient_getPortNamesByType(arg1,(char const *)arg2,(char const *)arg3,arg4);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_StringList, 0 | SWIG_SHADOW); argvi++ ;
+    
+    if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
+    if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
+    
+    XSRETURN(argvi);
+  fail:
+    
+    if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
+    if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_JsClient_getPortNames) {
   {
     JsClient *arg1 = (JsClient *) 0 ;
@@ -4793,6 +4878,7 @@ static swig_command_info swig_commands[] = {
 {"jacksc::new_JsEvent", _wrap_new_JsEvent},
 {"jacksc::new_JsClient", _wrap_new_JsClient},
 {"jacksc::delete_JsClient", _wrap_delete_JsClient},
+{"jacksc::JsClient_getPortNamesByType", _wrap_JsClient_getPortNamesByType},
 {"jacksc::JsClient_getPortNames", _wrap_JsClient_getPortNames},
 {"jacksc::JsClient_getPort", _wrap_JsClient_getPort},
 {"jacksc::JsClient_registerPort", _wrap_JsClient_registerPort},

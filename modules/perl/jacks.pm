@@ -284,6 +284,7 @@ sub DESTROY {
     }
 }
 
+*getPortNamesByType = *jacksc::JsClient_getPortNamesByType;
 *getPortNames = *jacksc::JsClient_getPortNames;
 *getPort = *jacksc::JsClient_getPort;
 *registerPort = *jacksc::JsClient_registerPort;

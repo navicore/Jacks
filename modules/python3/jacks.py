@@ -207,6 +207,7 @@ class JsClient(_object):
         except: self.this = this
     __swig_destroy__ = _jacks.delete_JsClient
     __del__ = lambda self : None;
+    def getPortNamesByType(self, *args): return _jacks.JsClient_getPortNamesByType(self, *args)
     def getPortNames(self, *args): return _jacks.JsClient_getPortNames(self, *args)
     def getPort(self, *args): return _jacks.JsClient_getPort(self, *args)
     def registerPort(self, *args): return _jacks.JsClient_registerPort(self, *args)

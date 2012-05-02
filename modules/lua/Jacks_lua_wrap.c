@@ -1699,11 +1699,11 @@ SWIGINTERN void delete_JsClient(JsClient *self){
             JacksRbClient_free(&self->impl);
             free(self);
         }
-SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepattern){
+SWIGINTERN StringList *JsClient_getPortNamesByType(JsClient *self,char const *namepattern,char const *typepattern,enum JackPortFlags flags){
 
             jack_client_t *client = JacksRbClient_get_client(self->impl);
 
-            const char **jports = jack_get_ports(client, namepattern, NULL, 0);
+            const char **jports = jack_get_ports(client, namepattern, typepattern, flags);
             if (jports == NULL) {
                 return NULL;
             }
@@ -1713,6 +1713,9 @@ SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepatt
             holder->impl = jports;
             holder->len = 0;
             return holder;
+        }
+SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepattern){
+            return JsClient_getPortNamesByType(self, namepattern, NULL, 0);
         }
 SWIGINTERN JsPort *JsClient_getPort(JsClient *self,char *name){
 
@@ -3001,6 +3004,51 @@ fail:
 }
 
 
+static int _wrap_JsClient_getPortNamesByType(lua_State* L) {
+  int SWIG_arg = 0;
+  JsClient *arg1 = (JsClient *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  enum JackPortFlags arg4 ;
+  StringList *result = 0 ;
+  
+  SWIG_check_num_args("JsClient::getPortNamesByType",4,4)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsClient::getPortNamesByType",1,"JsClient *");
+  if(!SWIG_lua_isnilstring(L,2)) SWIG_fail_arg("JsClient::getPortNamesByType",2,"char const *");
+  if(!SWIG_lua_isnilstring(L,3)) SWIG_fail_arg("JsClient::getPortNamesByType",3,"char const *");
+  if(!lua_isnumber(L,4)) SWIG_fail_arg("JsClient::getPortNamesByType",4,"enum JackPortFlags");
+  
+  if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsClient,0))){
+    SWIG_fail_ptr("JsClient_getPortNamesByType",1,SWIGTYPE_p_JsClient);
+  }
+  
+  arg2 = (char *)lua_tostring(L, 2);
+  arg3 = (char *)lua_tostring(L, 3);
+  arg4 = (enum JackPortFlags)(int)lua_tonumber(L, 4);
+  {
+    char *err;
+    clear_exception();
+    result = (StringList *)JsClient_getPortNamesByType(arg1,(char const *)arg2,(char const *)arg3,arg4);
+    if ((err = check_exception())) {
+      luaL_error(L, err);
+      return -1; 
+      
+      
+      
+      
+    }
+  }
+  SWIG_NewPointerObj(L,result,SWIGTYPE_p_StringList,0); SWIG_arg++; 
+  return SWIG_arg;
+  
+  if(0) SWIG_fail;
+  
+fail:
+  lua_error(L);
+  return SWIG_arg;
+}
+
+
 static int _wrap_JsClient_getPortNames(lua_State* L) {
   int SWIG_arg = 0;
   JsClient *arg1 = (JsClient *) 0 ;
@@ -3345,6 +3393,7 @@ JsClient *arg1 = (JsClient *) obj;
 delete_JsClient(arg1);
 }
 static swig_lua_method swig_JsClient_methods[] = {
+    {"getPortNamesByType", _wrap_JsClient_getPortNamesByType}, 
     {"getPortNames", _wrap_JsClient_getPortNames}, 
     {"getPort", _wrap_JsClient_getPort}, 
     {"registerPort", _wrap_JsClient_registerPort}, 

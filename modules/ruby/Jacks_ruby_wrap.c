@@ -2294,11 +2294,11 @@ SWIGINTERN JsClient *new_JsClient(char const *name,char const *option_str,jack_o
             holder->process_audio = NO;
             return holder;
         }
-SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepattern){
+SWIGINTERN StringList *JsClient_getPortNamesByType(JsClient *self,char const *namepattern,char const *typepattern,enum JackPortFlags flags){
 
             jack_client_t *client = JacksRbClient_get_client(self->impl);
 
-            const char **jports = jack_get_ports(client, namepattern, NULL, 0);
+            const char **jports = jack_get_ports(client, namepattern, typepattern, flags);
             if (jports == NULL) {
                 return NULL;
             }
@@ -2308,6 +2308,9 @@ SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepatt
             holder->impl = jports;
             holder->len = 0;
             return holder;
+        }
+SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepattern){
+            return JsClient_getPortNamesByType(self, namepattern, NULL, 0);
         }
 SWIGINTERN JsPort *JsClient_getPort(JsClient *self,char *name){
 
@@ -3869,6 +3872,76 @@ free_JsClient(JsClient *arg1) {
 }
 
 SWIGINTERN VALUE
+_wrap_JsClient_getPortNamesByType(int argc, VALUE *argv, VALUE self) {
+  JsClient *arg1 = (JsClient *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  enum JackPortFlags arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  StringList *result = 0 ;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 3) || (argc > 3)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 3)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_JsClient, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "JsClient *","getPortNamesByType", 1, self )); 
+  }
+  arg1 = (JsClient *)(argp1);
+  res2 = SWIG_AsCharPtrAndSize(argv[0], &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "char const *","getPortNamesByType", 2, argv[0] ));
+  }
+  arg2 = (char *)(buf2);
+  res3 = SWIG_AsCharPtrAndSize(argv[1], &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), Ruby_Format_TypeError( "", "char const *","getPortNamesByType", 3, argv[1] ));
+  }
+  arg3 = (char *)(buf3);
+  ecode4 = SWIG_AsVal_int(argv[2], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "enum JackPortFlags","getPortNamesByType", 4, argv[2] ));
+  } 
+  arg4 = (enum JackPortFlags)(val4);
+  {
+    char *err;
+    clear_exception();
+    result = (StringList *)JsClient_getPortNamesByType(arg1,(char const *)arg2,(char const *)arg3,arg4);
+    if ((err = check_exception())) {
+      void *runerror = rb_define_class("JacksRuntimeError", rb_eStandardError);
+      rb_raise(runerror, err);
+      return;
+      
+      
+      
+      
+      
+      
+      
+    }
+  }
+  vresult = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_StringList, 0 |  0 );
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
+  if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
+  return vresult;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
+  if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
 _wrap_JsClient_getPortNames(int argc, VALUE *argv, VALUE self) {
   JsClient *arg1 = (JsClient *) 0 ;
   char *arg2 = (char *) 0 ;
@@ -4697,6 +4770,7 @@ SWIGEXPORT void Init_jacks(void) {
   SWIG_TypeClientData(SWIGTYPE_p_JsClient, (void *) &SwigClassJsClient);
   rb_define_alloc_func(SwigClassJsClient.klass, _wrap_JsClient_allocate);
   rb_define_method(SwigClassJsClient.klass, "initialize", _wrap_new_JsClient, -1);
+  rb_define_method(SwigClassJsClient.klass, "getPortNamesByType", _wrap_JsClient_getPortNamesByType, -1);
   rb_define_method(SwigClassJsClient.klass, "getPortNames", _wrap_JsClient_getPortNames, -1);
   rb_define_method(SwigClassJsClient.klass, "getPort", _wrap_JsClient_getPort, -1);
   rb_define_method(SwigClassJsClient.klass, "registerPort", _wrap_JsClient_registerPort, -1);

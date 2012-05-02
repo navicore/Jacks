@@ -164,6 +164,12 @@ typedef struct {
             jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port($self->impl),
                                                     mode, &range);
         }
+        /*
+        bool hasFlag(enum JackPortFlags flag) {
+            jack_port_t *p = (jack_port_t*) JacksRbPort_get_port($self->impl);
+            return (p)->shared->flags & flag;
+        }
+        */
     }
 } JsPort;
 
@@ -266,11 +272,13 @@ typedef struct {
             free($self);
         }
 
-        StringList *getPortNames(const char *namepattern) {
+        StringList *getPortNamesByType(const char *namepattern, 
+                                       const char *typepattern, 
+                                       enum JackPortFlags flags) {
 
             jack_client_t *client = JacksRbClient_get_client($self->impl);
 
-            const char **jports = jack_get_ports(client, namepattern, NULL, 0);
+            const char **jports = jack_get_ports(client, namepattern, typepattern, flags);
             if (jports == NULL) {
                 return NULL;
             }
@@ -282,7 +290,10 @@ typedef struct {
             return holder;
         }
 
-        //untested
+        StringList *getPortNames(const char *namepattern) {
+            return JsClient_getPortNamesByType($self, namepattern, NULL, 0);
+        }
+
         JsPort *getPort(char *name) {
 
             if (name == NULL) return NULL;

@@ -3560,11 +3560,11 @@ SWIGINTERN void delete_JsClient(JsClient *self){
             JacksRbClient_free(&self->impl);
             free(self);
         }
-SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepattern){
+SWIGINTERN StringList *JsClient_getPortNamesByType(JsClient *self,char const *namepattern,char const *typepattern,enum JackPortFlags flags){
 
             jack_client_t *client = JacksRbClient_get_client(self->impl);
 
-            const char **jports = jack_get_ports(client, namepattern, NULL, 0);
+            const char **jports = jack_get_ports(client, namepattern, typepattern, flags);
             if (jports == NULL) {
                 return NULL;
             }
@@ -3574,6 +3574,9 @@ SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepatt
             holder->impl = jports;
             holder->len = 0;
             return holder;
+        }
+SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepattern){
+            return JsClient_getPortNamesByType(self, namepattern, NULL, 0);
         }
 SWIGINTERN JsPort *JsClient_getPort(JsClient *self,char *name){
 
@@ -5311,6 +5314,80 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_JsClient_getPortNamesByType(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  JsClient *arg1 = (JsClient *) 0 ;
+  char *arg2 = (char *) 0 ;
+  char *arg3 = (char *) 0 ;
+  enum JackPortFlags arg4 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int res2 ;
+  char *buf2 = 0 ;
+  int alloc2 = 0 ;
+  int res3 ;
+  char *buf3 = 0 ;
+  int alloc3 = 0 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  PyObject * obj0 = 0 ;
+  PyObject * obj1 = 0 ;
+  PyObject * obj2 = 0 ;
+  PyObject * obj3 = 0 ;
+  StringList *result = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"OOOO:JsClient_getPortNamesByType",&obj0,&obj1,&obj2,&obj3)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_JsClient, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsClient_getPortNamesByType" "', argument " "1"" of type '" "JsClient *""'"); 
+  }
+  arg1 = (JsClient *)(argp1);
+  res2 = SWIG_AsCharPtrAndSize(obj1, &buf2, NULL, &alloc2);
+  if (!SWIG_IsOK(res2)) {
+    SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "JsClient_getPortNamesByType" "', argument " "2"" of type '" "char const *""'");
+  }
+  arg2 = (char *)(buf2);
+  res3 = SWIG_AsCharPtrAndSize(obj2, &buf3, NULL, &alloc3);
+  if (!SWIG_IsOK(res3)) {
+    SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "JsClient_getPortNamesByType" "', argument " "3"" of type '" "char const *""'");
+  }
+  arg3 = (char *)(buf3);
+  ecode4 = SWIG_AsVal_int(obj3, &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "JsClient_getPortNamesByType" "', argument " "4"" of type '" "enum JackPortFlags""'");
+  } 
+  arg4 = (enum JackPortFlags)(val4);
+  {
+    char *err;
+    clear_exception();
+    result = (StringList *)JsClient_getPortNamesByType(arg1,(char const *)arg2,(char const *)arg3,arg4);
+    if ((err = check_exception())) {
+      PyErr_SetString(PyExc_RuntimeError, err);
+      return NULL;
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    }
+  }
+  resultobj = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_StringList, 0 |  0 );
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
+  if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
+  return resultobj;
+fail:
+  if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
+  if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_JsClient_getPortNames(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   JsClient *arg1 = (JsClient *) 0 ;
@@ -5784,6 +5861,7 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"JsEvent_swigregister", JsEvent_swigregister, METH_VARARGS, NULL},
 	 { (char *)"new_JsClient", _wrap_new_JsClient, METH_VARARGS, NULL},
 	 { (char *)"delete_JsClient", _wrap_delete_JsClient, METH_VARARGS, NULL},
+	 { (char *)"JsClient_getPortNamesByType", _wrap_JsClient_getPortNamesByType, METH_VARARGS, NULL},
 	 { (char *)"JsClient_getPortNames", _wrap_JsClient_getPortNames, METH_VARARGS, NULL},
 	 { (char *)"JsClient_getPort", _wrap_JsClient_getPort, METH_VARARGS, NULL},
 	 { (char *)"JsClient_registerPort", _wrap_JsClient_registerPort, METH_VARARGS, NULL},
