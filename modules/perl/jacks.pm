@@ -285,7 +285,7 @@ sub DESTROY {
 }
 
 *getPortNames = *jacksc::JsClient_getPortNames;
-*getPortByName = *jacksc::JsClient_getPortByName;
+*getPort = *jacksc::JsClient_getPort;
 *registerPort = *jacksc::JsClient_registerPort;
 *getEvent = *jacksc::JsClient_getEvent;
 *getSampleRate = *jacksc::JsClient_getSampleRate;

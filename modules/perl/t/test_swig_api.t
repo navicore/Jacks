@@ -13,7 +13,7 @@ ok($capture_port);
 
 my $plist =  $jc->getPortNames("sys");
 ok($plist);
-my $port1 = $jc->getPortByName($plist->get(0));
+my $port1 = $jc->getPort($plist->get(0));
 ok($port1);
 my $r = $port1->getLatencyRange($jacks::JackCaptureLatency);
 ok($r);

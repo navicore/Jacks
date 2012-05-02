@@ -2110,7 +2110,7 @@ SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepatt
             holder->len = 0;
             return holder;
         }
-SWIGINTERN JsPort *JsClient_getPortByName(JsClient *self,char *name){
+SWIGINTERN JsPort *JsClient_getPort(JsClient *self,char *name){
 
             if (name == NULL) return NULL;
 
@@ -4235,7 +4235,7 @@ XS(_wrap_JsClient_getPortNames) {
 }
 
 
-XS(_wrap_JsClient_getPortByName) {
+XS(_wrap_JsClient_getPort) {
   {
     JsClient *arg1 = (JsClient *) 0 ;
     char *arg2 = (char *) 0 ;
@@ -4249,22 +4249,22 @@ XS(_wrap_JsClient_getPortByName) {
     dXSARGS;
     
     if ((items < 2) || (items > 2)) {
-      SWIG_croak("Usage: JsClient_getPortByName(self,name);");
+      SWIG_croak("Usage: JsClient_getPort(self,name);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsClient, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsClient_getPortByName" "', argument " "1"" of type '" "JsClient *""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsClient_getPort" "', argument " "1"" of type '" "JsClient *""'"); 
     }
     arg1 = (JsClient *)(argp1);
     res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "JsClient_getPortByName" "', argument " "2"" of type '" "char *""'");
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "JsClient_getPort" "', argument " "2"" of type '" "char *""'");
     }
     arg2 = (char *)(buf2);
     {
       char *err;
       clear_exception();
-      result = (JsPort *)JsClient_getPortByName(arg1,arg2);
+      result = (JsPort *)JsClient_getPort(arg1,arg2);
       if ((err = check_exception())) {
         croak(CROAK, err);
         return;
@@ -4794,7 +4794,7 @@ static swig_command_info swig_commands[] = {
 {"jacksc::new_JsClient", _wrap_new_JsClient},
 {"jacksc::delete_JsClient", _wrap_delete_JsClient},
 {"jacksc::JsClient_getPortNames", _wrap_JsClient_getPortNames},
-{"jacksc::JsClient_getPortByName", _wrap_JsClient_getPortByName},
+{"jacksc::JsClient_getPort", _wrap_JsClient_getPort},
 {"jacksc::JsClient_registerPort", _wrap_JsClient_registerPort},
 {"jacksc::JsClient_getEvent", _wrap_JsClient_getEvent},
 {"jacksc::JsClient_getSampleRate", _wrap_JsClient_getSampleRate},

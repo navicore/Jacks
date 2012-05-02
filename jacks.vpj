@@ -156,6 +156,7 @@
             <F N="corelib/JacksLatch.c"/>
             <F N="corelib/JacksRbClient.c"/>
             <F N="corelib/JacksRbPort.c"/>
+            <F N="modules/perl/example-clients/latency_api.pl"/>
             <F N="corelib/lfds/queue_delete.c"/>
             <F N="corelib/lfds/queue_new.c"/>
             <F N="corelib/lfds/queue_query.c"/>

@@ -283,7 +283,7 @@ typedef struct {
         }
 
         //untested
-        JsPort *getPortByName(char *name) {
+        JsPort *getPort(char *name) {
 
             if (name == NULL) return NULL;
 

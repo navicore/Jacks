@@ -208,7 +208,7 @@ class JsClient(_object):
     __swig_destroy__ = _jacks.delete_JsClient
     __del__ = lambda self : None;
     def getPortNames(self, *args): return _jacks.JsClient_getPortNames(self, *args)
-    def getPortByName(self, *args): return _jacks.JsClient_getPortByName(self, *args)
+    def getPort(self, *args): return _jacks.JsClient_getPort(self, *args)
     def registerPort(self, *args): return _jacks.JsClient_registerPort(self, *args)
     def getEvent(self, *args): return _jacks.JsClient_getEvent(self, *args)
     def getSampleRate(self): return _jacks.JsClient_getSampleRate(self)

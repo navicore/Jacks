@@ -1714,7 +1714,7 @@ SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepatt
             holder->len = 0;
             return holder;
         }
-SWIGINTERN JsPort *JsClient_getPortByName(JsClient *self,char *name){
+SWIGINTERN JsPort *JsClient_getPort(JsClient *self,char *name){
 
             if (name == NULL) return NULL;
 
@@ -3040,25 +3040,25 @@ fail:
 }
 
 
-static int _wrap_JsClient_getPortByName(lua_State* L) {
+static int _wrap_JsClient_getPort(lua_State* L) {
   int SWIG_arg = 0;
   JsClient *arg1 = (JsClient *) 0 ;
   char *arg2 = (char *) 0 ;
   JsPort *result = 0 ;
   
-  SWIG_check_num_args("JsClient::getPortByName",2,2)
-  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsClient::getPortByName",1,"JsClient *");
-  if(!SWIG_lua_isnilstring(L,2)) SWIG_fail_arg("JsClient::getPortByName",2,"char *");
+  SWIG_check_num_args("JsClient::getPort",2,2)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsClient::getPort",1,"JsClient *");
+  if(!SWIG_lua_isnilstring(L,2)) SWIG_fail_arg("JsClient::getPort",2,"char *");
   
   if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsClient,0))){
-    SWIG_fail_ptr("JsClient_getPortByName",1,SWIGTYPE_p_JsClient);
+    SWIG_fail_ptr("JsClient_getPort",1,SWIGTYPE_p_JsClient);
   }
   
   arg2 = (char *)lua_tostring(L, 2);
   {
     char *err;
     clear_exception();
-    result = (JsPort *)JsClient_getPortByName(arg1,arg2);
+    result = (JsPort *)JsClient_getPort(arg1,arg2);
     if ((err = check_exception())) {
       luaL_error(L, err);
       return -1; 
@@ -3346,7 +3346,7 @@ delete_JsClient(arg1);
 }
 static swig_lua_method swig_JsClient_methods[] = {
     {"getPortNames", _wrap_JsClient_getPortNames}, 
-    {"getPortByName", _wrap_JsClient_getPortByName}, 
+    {"getPort", _wrap_JsClient_getPort}, 
     {"registerPort", _wrap_JsClient_registerPort}, 
     {"getEvent", _wrap_JsClient_getEvent}, 
     {"getSampleRate", _wrap_JsClient_getSampleRate}, 

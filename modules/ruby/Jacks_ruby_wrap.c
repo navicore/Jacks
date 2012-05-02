@@ -2309,7 +2309,7 @@ SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepatt
             holder->len = 0;
             return holder;
         }
-SWIGINTERN JsPort *JsClient_getPortByName(JsClient *self,char *name){
+SWIGINTERN JsPort *JsClient_getPort(JsClient *self,char *name){
 
             if (name == NULL) return NULL;
 
@@ -3920,7 +3920,7 @@ fail:
 
 
 SWIGINTERN VALUE
-_wrap_JsClient_getPortByName(int argc, VALUE *argv, VALUE self) {
+_wrap_JsClient_getPort(int argc, VALUE *argv, VALUE self) {
   JsClient *arg1 = (JsClient *) 0 ;
   char *arg2 = (char *) 0 ;
   void *argp1 = 0 ;
@@ -3936,18 +3936,18 @@ _wrap_JsClient_getPortByName(int argc, VALUE *argv, VALUE self) {
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_JsClient, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "JsClient *","getPortByName", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "JsClient *","getPort", 1, self )); 
   }
   arg1 = (JsClient *)(argp1);
   res2 = SWIG_AsCharPtrAndSize(argv[0], &buf2, NULL, &alloc2);
   if (!SWIG_IsOK(res2)) {
-    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "char *","getPortByName", 2, argv[0] ));
+    SWIG_exception_fail(SWIG_ArgError(res2), Ruby_Format_TypeError( "", "char *","getPort", 2, argv[0] ));
   }
   arg2 = (char *)(buf2);
   {
     char *err;
     clear_exception();
-    result = (JsPort *)JsClient_getPortByName(arg1,arg2);
+    result = (JsPort *)JsClient_getPort(arg1,arg2);
     if ((err = check_exception())) {
       void *runerror = rb_define_class("JacksRuntimeError", rb_eStandardError);
       rb_raise(runerror, err);
@@ -4698,7 +4698,7 @@ SWIGEXPORT void Init_jacks(void) {
   rb_define_alloc_func(SwigClassJsClient.klass, _wrap_JsClient_allocate);
   rb_define_method(SwigClassJsClient.klass, "initialize", _wrap_new_JsClient, -1);
   rb_define_method(SwigClassJsClient.klass, "getPortNames", _wrap_JsClient_getPortNames, -1);
-  rb_define_method(SwigClassJsClient.klass, "getPortByName", _wrap_JsClient_getPortByName, -1);
+  rb_define_method(SwigClassJsClient.klass, "getPort", _wrap_JsClient_getPort, -1);
   rb_define_method(SwigClassJsClient.klass, "registerPort", _wrap_JsClient_registerPort, -1);
   rb_define_method(SwigClassJsClient.klass, "getEvent", _wrap_JsClient_getEvent, -1);
   rb_define_method(SwigClassJsClient.klass, "getSampleRate", _wrap_JsClient_getSampleRate, -1);
