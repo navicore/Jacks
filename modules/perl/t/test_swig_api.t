@@ -8,7 +8,7 @@ my $iter = 100;
 my $jc = jacks::JsClient->new("myclient", undef, $jacks::JackNullOption, 0);
 ok($jc, "no client");
 
-my $capture_port = $jc->getPortByName("system:capture_1");
+my $capture_port = $jc->getPort("system:capture_1");
 ok($capture_port);
 
 my $plist =  $jc->getPortNames("sys");

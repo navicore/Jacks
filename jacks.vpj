@@ -164,7 +164,6 @@
             <F N="modules/python2/setup.py"/>
             <F N="modules/python3/setup.py"/>
             <F N="corelib/test/test_jackclient.c"/>
-            <F N="modules/perl/example-clients/test_swig_api.pl"/>
             <F N="modules/python2/test/test_swig_api.py"/>
             <F N="modules/python3/test/test_swig_api.py"/>
         </Folder>
