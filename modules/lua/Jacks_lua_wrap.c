@@ -1487,14 +1487,16 @@ SWIG_Lua_dostring(lua_State *L, const char* str) {
 #define SWIGTYPE_p_JackSessionFlags swig_types[2]
 #define SWIGTYPE_p_JsClient swig_types[3]
 #define SWIGTYPE_p_JsEvent swig_types[4]
-#define SWIGTYPE_p_JsPort swig_types[5]
-#define SWIGTYPE_p_JsPortBuffer swig_types[6]
-#define SWIGTYPE_p_float swig_types[7]
-#define SWIGTYPE_p_jack_transport_state_t swig_types[8]
-#define SWIGTYPE_p_uint32_t swig_types[9]
-#define SWIGTYPE_p_void swig_types[10]
-static swig_type_info *swig_types[12];
-static swig_module_info swig_module = {swig_types, 11, 0, 0, 0, 0};
+#define SWIGTYPE_p_JsLatencyRange swig_types[5]
+#define SWIGTYPE_p_JsPort swig_types[6]
+#define SWIGTYPE_p_JsPortBuffer swig_types[7]
+#define SWIGTYPE_p_StringList swig_types[8]
+#define SWIGTYPE_p_float swig_types[9]
+#define SWIGTYPE_p_jack_transport_state_t swig_types[10]
+#define SWIGTYPE_p_uint32_t swig_types[11]
+#define SWIGTYPE_p_void swig_types[12]
+static swig_type_info *swig_types[14];
+static swig_module_info swig_module = {swig_types, 13, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -1518,12 +1520,12 @@ static swig_module_info swig_module = {swig_types, 11, 0, 0, 0, 0};
 #include "JacksEvent.h"
 #include "JacksRbPort.h"
 #include "Jacks.h"
-
+    
 SWIGINTERN void delete_JsPortBuffer(JsPortBuffer *self){
             free(self);
         }
 SWIGINTERN float const *JsPortBuffer_getf(JsPortBuffer *self,unsigned int i){
-            return (float*) self->framebuf[i];
+            return(float*) self->framebuf[i];
         }
 SWIGINTERN void JsPortBuffer_setf(JsPortBuffer *self,unsigned int i,float val){
 
@@ -1557,6 +1559,33 @@ SWIGINTERN char *JsPortBuffer_toHexString(JsPortBuffer *self,unsigned int start,
             }
             return hex_text;
         }
+SWIGINTERN void delete_JsLatencyRange(JsLatencyRange *self){
+            free(self);
+        }
+SWIGINTERN int JsLatencyRange_min(JsLatencyRange *self){
+            return self->rmin;
+        }
+SWIGINTERN int JsLatencyRange_max(JsLatencyRange *self){
+            return self->rmax;
+        }
+SWIGINTERN void delete_StringList(StringList *self){
+            free(self->impl);
+            free(self);
+        }
+SWIGINTERN char const *StringList_get(StringList *self,int pos){
+            return self->impl[pos];
+        }
+SWIGINTERN size_t StringList_length(StringList *self){
+            if (!self->len) {
+                for (int i = 0;;i++) {
+                    if (self->impl[i] == NULL) {
+                        self->len = i;
+                        break;
+                    }
+                }
+            }
+            return self->len;
+        }
 SWIGINTERN void delete_JsPort(JsPort *self){
             JacksRbPort_free(&self->impl);
             free(self);
@@ -1569,9 +1598,32 @@ SWIGINTERN JsPortBuffer *JsPort_getBuffer(JsPort *self){
             holder->len = len;
             return holder;
         }
+SWIGINTERN char *JsPort_name(JsPort *self){
+            return jack_port_name((jack_port_t *)JacksRbPort_get_port(self->impl));
+        }
 SWIGINTERN int JsPort_connect(JsPort *self,JsPort *_that_){
 
             return JacksRbPort_connect(self->impl, _that_->impl);
+        }
+SWIGINTERN JsLatencyRange *JsPort_getLatencyRange(JsPort *self,enum JackLatencyCallbackMode mode){
+
+            jack_latency_range_t range;
+            jack_port_get_latency_range((jack_port_t *) JacksRbPort_get_port(self->impl),
+                                        mode, &range);
+
+            JsLatencyRange *holder;
+            holder = malloc(sizeof(JsLatencyRange));
+            holder->rmin = (int) range.min; //todo: float?
+            holder->rmax = (int) range.max;
+            return holder;
+        }
+SWIGINTERN void JsPort_setLatencyRange(JsPort *self,enum JackLatencyCallbackMode mode,int rmin,int rmax){ //todo: float
+
+            jack_latency_range_t range;
+            range.min = rmin;
+            range.max = rmax;
+            jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port(self->impl),
+                                                    mode, &range);
         }
 SWIGINTERN void delete_JsEvent(JsEvent *self){
             JacksEvent_free(&self->impl);
@@ -1647,26 +1699,24 @@ SWIGINTERN void delete_JsClient(JsClient *self){
             JacksRbClient_free(&self->impl);
             free(self);
         }
-SWIGINTERN JsPort *JsClient_getPortByType(JsClient *self,char const *namepattern,char const *typepattern,unsigned long options,int pos){
+SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepattern){
 
             jack_client_t *client = JacksRbClient_get_client(self->impl);
 
-            const char **jports = jack_get_ports(client, namepattern, typepattern, options);
+            const char **jports = jack_get_ports(client, namepattern, NULL, 0);
             if (jports == NULL) {
-                 return NULL;
+                return NULL;
             }
-            jack_port_t *jport = jack_port_by_name(client, jports[pos]);
-            if (jport == NULL) return NULL;
 
-            jack_nframes_t rb_size = JacksRbClient_get_rb_size(self->impl);
-            JacksRbPort p = JacksRbPort_new(jport, self->impl, rb_size);
-            JsPort *holder;
-            holder = malloc(sizeof(JsPort));
-            holder->impl = p;
-            free(jports);
+            StringList *holder;
+            holder = malloc(sizeof(StringList));
+            holder->impl = jports;
+            holder->len = 0;
             return holder;
         }
 SWIGINTERN JsPort *JsClient_getPortByName(JsClient *self,char *name){
+
+            if (name == NULL) return NULL;
 
             jack_port_t *jport = jack_port_by_name(JacksRbClient_get_client(self->impl), name);
             if (jport == NULL) return NULL;
@@ -1680,8 +1730,6 @@ SWIGINTERN JsPort *JsClient_getPortByName(JsClient *self,char *name){
         }
 SWIGINTERN JsPort *JsClient_registerPort(JsClient *self,char *name,unsigned long options){
 
-            //jack_nframes_t rb_size = JacksRbClient_get_rb_size(self->impl);
-            //JacksRbPort p = JacksRbPort_new_port(name, options, self->impl, rb_size);
             JacksRbPort p = JacksRbClient_registerPort(self->impl, name, options);
             JsPort *holder;
             holder = malloc(sizeof(JsPort));
@@ -1709,8 +1757,15 @@ SWIGINTERN char *JsClient_getName(JsClient *self){
 SWIGINTERN jack_transport_state_t JsClient_getTransportState(JsClient *self){
             jack_position_t position; //todo: do something with this!
             jack_transport_state_t t = jack_transport_query(
-                JacksRbClient_get_client(self->impl), &position);
+                                                           JacksRbClient_get_client(self->impl), &position);
             return t;
+        }
+SWIGINTERN void JsClient_recomputeLatencies(JsClient *self){
+
+            int rc = jack_recompute_total_latencies(JacksRbClient_get_client(self->impl));
+            if (rc) throw_exception("can not recompute total latency");
+
+            return;
         }
 #ifdef __cplusplus
 extern "C" {
@@ -1927,6 +1982,243 @@ static swig_lua_class *swig_JsPortBuffer_bases[] = {0};
 static const char *swig_JsPortBuffer_base_names[] = {0};
 static swig_lua_class _wrap_class_JsPortBuffer = { "JsPortBuffer", &SWIGTYPE_p_JsPortBuffer,_wrap_new_JsPortBuffer, swig_delete_JsPortBuffer, swig_JsPortBuffer_methods, swig_JsPortBuffer_attributes, swig_JsPortBuffer_bases, swig_JsPortBuffer_base_names };
 
+static int _wrap_JsLatencyRange_min(lua_State* L) {
+  int SWIG_arg = 0;
+  JsLatencyRange *arg1 = (JsLatencyRange *) 0 ;
+  int result;
+  
+  SWIG_check_num_args("JsLatencyRange::min",1,1)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsLatencyRange::min",1,"JsLatencyRange *");
+  
+  if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsLatencyRange,0))){
+    SWIG_fail_ptr("JsLatencyRange_min",1,SWIGTYPE_p_JsLatencyRange);
+  }
+  
+  {
+    char *err;
+    clear_exception();
+    result = (int)JsLatencyRange_min(arg1);
+    if ((err = check_exception())) {
+      luaL_error(L, err);
+      return -1; 
+      
+      
+      
+      
+    }
+  }
+  lua_pushnumber(L, (lua_Number) result); SWIG_arg++;
+  return SWIG_arg;
+  
+  if(0) SWIG_fail;
+  
+fail:
+  lua_error(L);
+  return SWIG_arg;
+}
+
+
+static int _wrap_JsLatencyRange_max(lua_State* L) {
+  int SWIG_arg = 0;
+  JsLatencyRange *arg1 = (JsLatencyRange *) 0 ;
+  int result;
+  
+  SWIG_check_num_args("JsLatencyRange::max",1,1)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsLatencyRange::max",1,"JsLatencyRange *");
+  
+  if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsLatencyRange,0))){
+    SWIG_fail_ptr("JsLatencyRange_max",1,SWIGTYPE_p_JsLatencyRange);
+  }
+  
+  {
+    char *err;
+    clear_exception();
+    result = (int)JsLatencyRange_max(arg1);
+    if ((err = check_exception())) {
+      luaL_error(L, err);
+      return -1; 
+      
+      
+      
+      
+    }
+  }
+  lua_pushnumber(L, (lua_Number) result); SWIG_arg++;
+  return SWIG_arg;
+  
+  if(0) SWIG_fail;
+  
+fail:
+  lua_error(L);
+  return SWIG_arg;
+}
+
+
+static int _wrap_new_JsLatencyRange(lua_State* L) {
+  int SWIG_arg = 0;
+  JsLatencyRange *result = 0 ;
+  
+  SWIG_check_num_args("JsLatencyRange::JsLatencyRange",0,0)
+  {
+    char *err;
+    clear_exception();
+    result = (JsLatencyRange *)calloc(1, sizeof(JsLatencyRange));
+    if ((err = check_exception())) {
+      luaL_error(L, err);
+      return -1; 
+      
+      
+      
+      
+    }
+  }
+  SWIG_NewPointerObj(L,result,SWIGTYPE_p_JsLatencyRange,1); SWIG_arg++; 
+  return SWIG_arg;
+  
+  if(0) SWIG_fail;
+  
+fail:
+  lua_error(L);
+  return SWIG_arg;
+}
+
+
+static void swig_delete_JsLatencyRange(void *obj) {
+JsLatencyRange *arg1 = (JsLatencyRange *) obj;
+delete_JsLatencyRange(arg1);
+}
+static swig_lua_method swig_JsLatencyRange_methods[] = {
+    {"min", _wrap_JsLatencyRange_min}, 
+    {"max", _wrap_JsLatencyRange_max}, 
+    {0,0}
+};
+static swig_lua_attribute swig_JsLatencyRange_attributes[] = {
+    {0,0,0}
+};
+static swig_lua_class *swig_JsLatencyRange_bases[] = {0};
+static const char *swig_JsLatencyRange_base_names[] = {0};
+static swig_lua_class _wrap_class_JsLatencyRange = { "JsLatencyRange", &SWIGTYPE_p_JsLatencyRange,_wrap_new_JsLatencyRange, swig_delete_JsLatencyRange, swig_JsLatencyRange_methods, swig_JsLatencyRange_attributes, swig_JsLatencyRange_bases, swig_JsLatencyRange_base_names };
+
+static int _wrap_StringList_get(lua_State* L) {
+  int SWIG_arg = 0;
+  StringList *arg1 = (StringList *) 0 ;
+  int arg2 ;
+  char *result = 0 ;
+  
+  SWIG_check_num_args("StringList::get",2,2)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("StringList::get",1,"StringList *");
+  if(!lua_isnumber(L,2)) SWIG_fail_arg("StringList::get",2,"int");
+  
+  if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_StringList,0))){
+    SWIG_fail_ptr("StringList_get",1,SWIGTYPE_p_StringList);
+  }
+  
+  arg2 = (int)lua_tonumber(L, 2);
+  {
+    char *err;
+    clear_exception();
+    result = (char *)StringList_get(arg1,arg2);
+    if ((err = check_exception())) {
+      luaL_error(L, err);
+      return -1; 
+      
+      
+      
+      
+    }
+  }
+  lua_pushstring(L,(const char *)result); SWIG_arg++;
+  return SWIG_arg;
+  
+  if(0) SWIG_fail;
+  
+fail:
+  lua_error(L);
+  return SWIG_arg;
+}
+
+
+static int _wrap_StringList_length(lua_State* L) {
+  int SWIG_arg = 0;
+  StringList *arg1 = (StringList *) 0 ;
+  size_t result;
+  
+  SWIG_check_num_args("StringList::length",1,1)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("StringList::length",1,"StringList *");
+  
+  if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_StringList,0))){
+    SWIG_fail_ptr("StringList_length",1,SWIGTYPE_p_StringList);
+  }
+  
+  {
+    char *err;
+    clear_exception();
+    result = StringList_length(arg1);
+    if ((err = check_exception())) {
+      luaL_error(L, err);
+      return -1; 
+      
+      
+      
+      
+    }
+  }
+  lua_pushnumber(L, (lua_Number) result); SWIG_arg++;
+  return SWIG_arg;
+  
+  if(0) SWIG_fail;
+  
+fail:
+  lua_error(L);
+  return SWIG_arg;
+}
+
+
+static int _wrap_new_StringList(lua_State* L) {
+  int SWIG_arg = 0;
+  StringList *result = 0 ;
+  
+  SWIG_check_num_args("StringList::StringList",0,0)
+  {
+    char *err;
+    clear_exception();
+    result = (StringList *)calloc(1, sizeof(StringList));
+    if ((err = check_exception())) {
+      luaL_error(L, err);
+      return -1; 
+      
+      
+      
+      
+    }
+  }
+  SWIG_NewPointerObj(L,result,SWIGTYPE_p_StringList,1); SWIG_arg++; 
+  return SWIG_arg;
+  
+  if(0) SWIG_fail;
+  
+fail:
+  lua_error(L);
+  return SWIG_arg;
+}
+
+
+static void swig_delete_StringList(void *obj) {
+StringList *arg1 = (StringList *) obj;
+delete_StringList(arg1);
+}
+static swig_lua_method swig_StringList_methods[] = {
+    {"get", _wrap_StringList_get}, 
+    {"length", _wrap_StringList_length}, 
+    {0,0}
+};
+static swig_lua_attribute swig_StringList_attributes[] = {
+    {0,0,0}
+};
+static swig_lua_class *swig_StringList_bases[] = {0};
+static const char *swig_StringList_base_names[] = {0};
+static swig_lua_class _wrap_class_StringList = { "StringList", &SWIGTYPE_p_StringList,_wrap_new_StringList, swig_delete_StringList, swig_StringList_methods, swig_StringList_attributes, swig_StringList_bases, swig_StringList_base_names };
+
 static int _wrap_JsPort_getBuffer(lua_State* L) {
   int SWIG_arg = 0;
   JsPort *arg1 = (JsPort *) 0 ;
@@ -1953,6 +2245,42 @@ static int _wrap_JsPort_getBuffer(lua_State* L) {
     }
   }
   SWIG_NewPointerObj(L,result,SWIGTYPE_p_JsPortBuffer,0); SWIG_arg++; 
+  return SWIG_arg;
+  
+  if(0) SWIG_fail;
+  
+fail:
+  lua_error(L);
+  return SWIG_arg;
+}
+
+
+static int _wrap_JsPort_name(lua_State* L) {
+  int SWIG_arg = 0;
+  JsPort *arg1 = (JsPort *) 0 ;
+  char *result = 0 ;
+  
+  SWIG_check_num_args("JsPort::name",1,1)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsPort::name",1,"JsPort *");
+  
+  if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsPort,0))){
+    SWIG_fail_ptr("JsPort_name",1,SWIGTYPE_p_JsPort);
+  }
+  
+  {
+    char *err;
+    clear_exception();
+    result = (char *)JsPort_name(arg1);
+    if ((err = check_exception())) {
+      luaL_error(L, err);
+      return -1; 
+      
+      
+      
+      
+    }
+  }
+  lua_pushstring(L,(const char *)result); SWIG_arg++;
   return SWIG_arg;
   
   if(0) SWIG_fail;
@@ -2006,6 +2334,89 @@ fail:
 }
 
 
+static int _wrap_JsPort_getLatencyRange(lua_State* L) {
+  int SWIG_arg = 0;
+  JsPort *arg1 = (JsPort *) 0 ;
+  enum JackLatencyCallbackMode arg2 ;
+  JsLatencyRange *result = 0 ;
+  
+  SWIG_check_num_args("JsPort::getLatencyRange",2,2)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsPort::getLatencyRange",1,"JsPort *");
+  if(!lua_isnumber(L,2)) SWIG_fail_arg("JsPort::getLatencyRange",2,"enum JackLatencyCallbackMode");
+  
+  if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsPort,0))){
+    SWIG_fail_ptr("JsPort_getLatencyRange",1,SWIGTYPE_p_JsPort);
+  }
+  
+  arg2 = (enum JackLatencyCallbackMode)(int)lua_tonumber(L, 2);
+  {
+    char *err;
+    clear_exception();
+    result = (JsLatencyRange *)JsPort_getLatencyRange(arg1,arg2);
+    if ((err = check_exception())) {
+      luaL_error(L, err);
+      return -1; 
+      
+      
+      
+      
+    }
+  }
+  SWIG_NewPointerObj(L,result,SWIGTYPE_p_JsLatencyRange,0); SWIG_arg++; 
+  return SWIG_arg;
+  
+  if(0) SWIG_fail;
+  
+fail:
+  lua_error(L);
+  return SWIG_arg;
+}
+
+
+static int _wrap_JsPort_setLatencyRange(lua_State* L) {
+  int SWIG_arg = 0;
+  JsPort *arg1 = (JsPort *) 0 ;
+  enum JackLatencyCallbackMode arg2 ;
+  int arg3 ;
+  int arg4 ;
+  
+  SWIG_check_num_args("JsPort::setLatencyRange",4,4)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsPort::setLatencyRange",1,"JsPort *");
+  if(!lua_isnumber(L,2)) SWIG_fail_arg("JsPort::setLatencyRange",2,"enum JackLatencyCallbackMode");
+  if(!lua_isnumber(L,3)) SWIG_fail_arg("JsPort::setLatencyRange",3,"int");
+  if(!lua_isnumber(L,4)) SWIG_fail_arg("JsPort::setLatencyRange",4,"int");
+  
+  if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsPort,0))){
+    SWIG_fail_ptr("JsPort_setLatencyRange",1,SWIGTYPE_p_JsPort);
+  }
+  
+  arg2 = (enum JackLatencyCallbackMode)(int)lua_tonumber(L, 2);
+  arg3 = (int)lua_tonumber(L, 3);
+  arg4 = (int)lua_tonumber(L, 4);
+  {
+    char *err;
+    clear_exception();
+    JsPort_setLatencyRange(arg1,arg2,arg3,arg4);
+    if ((err = check_exception())) {
+      luaL_error(L, err);
+      return -1; 
+      
+      
+      
+      
+    }
+  }
+  
+  return SWIG_arg;
+  
+  if(0) SWIG_fail;
+  
+fail:
+  lua_error(L);
+  return SWIG_arg;
+}
+
+
 static int _wrap_new_JsPort(lua_State* L) {
   int SWIG_arg = 0;
   JsPort *result = 0 ;
@@ -2041,7 +2452,10 @@ delete_JsPort(arg1);
 }
 static swig_lua_method swig_JsPort_methods[] = {
     {"getBuffer", _wrap_JsPort_getBuffer}, 
+    {"name", _wrap_JsPort_name}, 
     {"connect", _wrap_JsPort_connect}, 
+    {"getLatencyRange", _wrap_JsPort_getLatencyRange}, 
+    {"setLatencyRange", _wrap_JsPort_setLatencyRange}, 
     {0,0}
 };
 static swig_lua_attribute swig_JsPort_attributes[] = {
@@ -2587,35 +3001,25 @@ fail:
 }
 
 
-static int _wrap_JsClient_getPortByType(lua_State* L) {
+static int _wrap_JsClient_getPortNames(lua_State* L) {
   int SWIG_arg = 0;
   JsClient *arg1 = (JsClient *) 0 ;
   char *arg2 = (char *) 0 ;
-  char *arg3 = (char *) 0 ;
-  unsigned long arg4 ;
-  int arg5 ;
-  JsPort *result = 0 ;
+  StringList *result = 0 ;
   
-  SWIG_check_num_args("JsClient::getPortByType",5,5)
-  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsClient::getPortByType",1,"JsClient *");
-  if(!SWIG_lua_isnilstring(L,2)) SWIG_fail_arg("JsClient::getPortByType",2,"char const *");
-  if(!SWIG_lua_isnilstring(L,3)) SWIG_fail_arg("JsClient::getPortByType",3,"char const *");
-  if(!lua_isnumber(L,4)) SWIG_fail_arg("JsClient::getPortByType",4,"unsigned long");
-  if(!lua_isnumber(L,5)) SWIG_fail_arg("JsClient::getPortByType",5,"int");
+  SWIG_check_num_args("JsClient::getPortNames",2,2)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsClient::getPortNames",1,"JsClient *");
+  if(!SWIG_lua_isnilstring(L,2)) SWIG_fail_arg("JsClient::getPortNames",2,"char const *");
   
   if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsClient,0))){
-    SWIG_fail_ptr("JsClient_getPortByType",1,SWIGTYPE_p_JsClient);
+    SWIG_fail_ptr("JsClient_getPortNames",1,SWIGTYPE_p_JsClient);
   }
   
   arg2 = (char *)lua_tostring(L, 2);
-  arg3 = (char *)lua_tostring(L, 3);
-  SWIG_contract_assert((lua_tonumber(L,4)>=0),"number must not be negative")
-  arg4 = (unsigned long)lua_tonumber(L, 4);
-  arg5 = (int)lua_tonumber(L, 5);
   {
     char *err;
     clear_exception();
-    result = (JsPort *)JsClient_getPortByType(arg1,(char const *)arg2,(char const *)arg3,arg4,arg5);
+    result = (StringList *)JsClient_getPortNames(arg1,(char const *)arg2);
     if ((err = check_exception())) {
       luaL_error(L, err);
       return -1; 
@@ -2625,7 +3029,7 @@ static int _wrap_JsClient_getPortByType(lua_State* L) {
       
     }
   }
-  SWIG_NewPointerObj(L,result,SWIGTYPE_p_JsPort,0); SWIG_arg++; 
+  SWIG_NewPointerObj(L,result,SWIGTYPE_p_StringList,0); SWIG_arg++; 
   return SWIG_arg;
   
   if(0) SWIG_fail;
@@ -2901,12 +3305,47 @@ fail:
 }
 
 
+static int _wrap_JsClient_recomputeLatencies(lua_State* L) {
+  int SWIG_arg = 0;
+  JsClient *arg1 = (JsClient *) 0 ;
+  
+  SWIG_check_num_args("JsClient::recomputeLatencies",1,1)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsClient::recomputeLatencies",1,"JsClient *");
+  
+  if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsClient,0))){
+    SWIG_fail_ptr("JsClient_recomputeLatencies",1,SWIGTYPE_p_JsClient);
+  }
+  
+  {
+    char *err;
+    clear_exception();
+    JsClient_recomputeLatencies(arg1);
+    if ((err = check_exception())) {
+      luaL_error(L, err);
+      return -1; 
+      
+      
+      
+      
+    }
+  }
+  
+  return SWIG_arg;
+  
+  if(0) SWIG_fail;
+  
+fail:
+  lua_error(L);
+  return SWIG_arg;
+}
+
+
 static void swig_delete_JsClient(void *obj) {
 JsClient *arg1 = (JsClient *) obj;
 delete_JsClient(arg1);
 }
 static swig_lua_method swig_JsClient_methods[] = {
-    {"getPortByType", _wrap_JsClient_getPortByType}, 
+    {"getPortNames", _wrap_JsClient_getPortNames}, 
     {"getPortByName", _wrap_JsClient_getPortByName}, 
     {"registerPort", _wrap_JsClient_registerPort}, 
     {"getEvent", _wrap_JsClient_getEvent}, 
@@ -2914,6 +3353,7 @@ static swig_lua_method swig_JsClient_methods[] = {
     {"activate", _wrap_JsClient_activate}, 
     {"getName", _wrap_JsClient_getName}, 
     {"getTransportState", _wrap_JsClient_getTransportState}, 
+    {"recomputeLatencies", _wrap_JsClient_recomputeLatencies}, 
     {0,0}
 };
 static swig_lua_attribute swig_JsClient_attributes[] = {
@@ -2962,6 +3402,8 @@ static swig_lua_const_info swig_constants[] = {
 { SWIG_LUA_INT,     (char *)"JackSessionSaveTemplate", (long) JackSessionSaveTemplate, 0, 0, 0},
 { SWIG_LUA_INT,     (char *)"JackSessionSaveError", (long) JackSessionSaveError, 0, 0, 0},
 { SWIG_LUA_INT,     (char *)"JackSessionNeedTerminal", (long) JackSessionNeedTerminal, 0, 0, 0},
+{ SWIG_LUA_INT,     (char *)"JackCaptureLatency", (long) JackCaptureLatency, 0, 0, 0},
+{ SWIG_LUA_INT,     (char *)"JackPlaybackLatency", (long) JackPlaybackLatency, 0, 0, 0},
     {0,0,0,0,0,0}
 };
 
@@ -2972,8 +3414,10 @@ static swig_type_info _swigt__p_JackSessionEventType = {"_p_JackSessionEventType
 static swig_type_info _swigt__p_JackSessionFlags = {"_p_JackSessionFlags", "jack_session_flags_t *|enum JackSessionFlags *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_JsClient = {"_p_JsClient", "JsClient *", 0, 0, (void*)&_wrap_class_JsClient, 0};
 static swig_type_info _swigt__p_JsEvent = {"_p_JsEvent", "JsEvent *", 0, 0, (void*)&_wrap_class_JsEvent, 0};
+static swig_type_info _swigt__p_JsLatencyRange = {"_p_JsLatencyRange", "JsLatencyRange *", 0, 0, (void*)&_wrap_class_JsLatencyRange, 0};
 static swig_type_info _swigt__p_JsPort = {"_p_JsPort", "JsPort *", 0, 0, (void*)&_wrap_class_JsPort, 0};
 static swig_type_info _swigt__p_JsPortBuffer = {"_p_JsPortBuffer", "JsPortBuffer *", 0, 0, (void*)&_wrap_class_JsPortBuffer, 0};
+static swig_type_info _swigt__p_StringList = {"_p_StringList", "StringList *", 0, 0, (void*)&_wrap_class_StringList, 0};
 static swig_type_info _swigt__p_float = {"_p_float", "float *|jack_default_audio_sample_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_jack_transport_state_t = {"_p_jack_transport_state_t", "enum jack_transport_state_t *|jack_transport_state_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_uint32_t = {"_p_uint32_t", "uint32_t *|jack_nframes_t *", 0, 0, (void*)0, 0};
@@ -2985,8 +3429,10 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_JackSessionFlags,
   &_swigt__p_JsClient,
   &_swigt__p_JsEvent,
+  &_swigt__p_JsLatencyRange,
   &_swigt__p_JsPort,
   &_swigt__p_JsPortBuffer,
+  &_swigt__p_StringList,
   &_swigt__p_float,
   &_swigt__p_jack_transport_state_t,
   &_swigt__p_uint32_t,
@@ -2998,8 +3444,10 @@ static swig_cast_info _swigc__p_JackSessionEventType[] = {  {&_swigt__p_JackSess
 static swig_cast_info _swigc__p_JackSessionFlags[] = {  {&_swigt__p_JackSessionFlags, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_JsClient[] = {  {&_swigt__p_JsClient, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_JsEvent[] = {  {&_swigt__p_JsEvent, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_JsLatencyRange[] = {  {&_swigt__p_JsLatencyRange, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_JsPort[] = {  {&_swigt__p_JsPort, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_JsPortBuffer[] = {  {&_swigt__p_JsPortBuffer, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_StringList[] = {  {&_swigt__p_StringList, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_float[] = {  {&_swigt__p_float, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_jack_transport_state_t[] = {  {&_swigt__p_jack_transport_state_t, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_uint32_t[] = {  {&_swigt__p_uint32_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -3011,8 +3459,10 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_JackSessionFlags,
   _swigc__p_JsClient,
   _swigc__p_JsEvent,
+  _swigc__p_JsLatencyRange,
   _swigc__p_JsPort,
   _swigc__p_JsPortBuffer,
+  _swigc__p_StringList,
   _swigc__p_float,
   _swigc__p_jack_transport_state_t,
   _swigc__p_uint32_t,

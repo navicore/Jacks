@@ -93,6 +93,8 @@ JackSessionSaveAndQuit = _jacks.JackSessionSaveAndQuit
 JackSessionSaveTemplate = _jacks.JackSessionSaveTemplate
 JackSessionSaveError = _jacks.JackSessionSaveError
 JackSessionNeedTerminal = _jacks.JackSessionNeedTerminal
+JackCaptureLatency = _jacks.JackCaptureLatency
+JackPlaybackLatency = _jacks.JackPlaybackLatency
 class JsPortBuffer(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, JsPortBuffer, name, value)
@@ -112,6 +114,40 @@ class JsPortBuffer(_object):
 JsPortBuffer_swigregister = _jacks.JsPortBuffer_swigregister
 JsPortBuffer_swigregister(JsPortBuffer)
 
+class JsLatencyRange(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, JsLatencyRange, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, JsLatencyRange, name)
+    __repr__ = _swig_repr
+    __swig_destroy__ = _jacks.delete_JsLatencyRange
+    __del__ = lambda self : None;
+    def min(self): return _jacks.JsLatencyRange_min(self)
+    def max(self): return _jacks.JsLatencyRange_max(self)
+    def __init__(self): 
+        this = _jacks.new_JsLatencyRange()
+        try: self.this.append(this)
+        except: self.this = this
+JsLatencyRange_swigregister = _jacks.JsLatencyRange_swigregister
+JsLatencyRange_swigregister(JsLatencyRange)
+
+class StringList(_object):
+    __swig_setmethods__ = {}
+    __setattr__ = lambda self, name, value: _swig_setattr(self, StringList, name, value)
+    __swig_getmethods__ = {}
+    __getattr__ = lambda self, name: _swig_getattr(self, StringList, name)
+    __repr__ = _swig_repr
+    __swig_destroy__ = _jacks.delete_StringList
+    __del__ = lambda self : None;
+    def get(self, *args): return _jacks.StringList_get(self, *args)
+    def length(self): return _jacks.StringList_length(self)
+    def __init__(self): 
+        this = _jacks.new_StringList()
+        try: self.this.append(this)
+        except: self.this = this
+StringList_swigregister = _jacks.StringList_swigregister
+StringList_swigregister(StringList)
+
 class JsPort(_object):
     __swig_setmethods__ = {}
     __setattr__ = lambda self, name, value: _swig_setattr(self, JsPort, name, value)
@@ -121,7 +157,10 @@ class JsPort(_object):
     __swig_destroy__ = _jacks.delete_JsPort
     __del__ = lambda self : None;
     def getBuffer(self): return _jacks.JsPort_getBuffer(self)
+    def name(self): return _jacks.JsPort_name(self)
     def connect(self, *args): return _jacks.JsPort_connect(self, *args)
+    def getLatencyRange(self, *args): return _jacks.JsPort_getLatencyRange(self, *args)
+    def setLatencyRange(self, *args): return _jacks.JsPort_setLatencyRange(self, *args)
     def __init__(self): 
         this = _jacks.new_JsPort()
         try: self.this.append(this)
@@ -168,7 +207,7 @@ class JsClient(_object):
         except: self.this = this
     __swig_destroy__ = _jacks.delete_JsClient
     __del__ = lambda self : None;
-    def getPortByType(self, *args): return _jacks.JsClient_getPortByType(self, *args)
+    def getPortNames(self, *args): return _jacks.JsClient_getPortNames(self, *args)
     def getPortByName(self, *args): return _jacks.JsClient_getPortByName(self, *args)
     def registerPort(self, *args): return _jacks.JsClient_registerPort(self, *args)
     def getEvent(self, *args): return _jacks.JsClient_getEvent(self, *args)
@@ -176,6 +215,7 @@ class JsClient(_object):
     def activate(self): return _jacks.JsClient_activate(self)
     def getName(self): return _jacks.JsClient_getName(self)
     def getTransportState(self): return _jacks.JsClient_getTransportState(self)
+    def recomputeLatencies(self): return _jacks.JsClient_recomputeLatencies(self)
 JsClient_swigregister = _jacks.JsClient_swigregister
 JsClient_swigregister(JsClient)
 

@@ -7,5 +7,6 @@ int main(void) {
   JacksRbClient cl = JacksRbClient_new("myclient", NULL, JackNullOption, NULL);
   assert(cl);
   JacksRbClient_activate(cl, 1);
+
   JacksRbClient_free(&cl);
 }

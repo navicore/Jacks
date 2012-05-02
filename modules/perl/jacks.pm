@@ -91,6 +91,84 @@ sub ACQUIRE {
 }
 
 
+############# Class : jacks::JsLatencyRange ##############
+
+package jacks::JsLatencyRange;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( jacks );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        jacksc::delete_JsLatencyRange($self);
+        delete $OWNER{$self};
+    }
+}
+
+*min = *jacksc::JsLatencyRange_min;
+*max = *jacksc::JsLatencyRange_max;
+sub new {
+    my $pkg = shift;
+    my $self = jacksc::new_JsLatencyRange(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
+############# Class : jacks::StringList ##############
+
+package jacks::StringList;
+use vars qw(@ISA %OWNER %ITERATORS %BLESSEDMEMBERS);
+@ISA = qw( jacks );
+%OWNER = ();
+%ITERATORS = ();
+sub DESTROY {
+    return unless $_[0]->isa('HASH');
+    my $self = tied(%{$_[0]});
+    return unless defined $self;
+    delete $ITERATORS{$self};
+    if (exists $OWNER{$self}) {
+        jacksc::delete_StringList($self);
+        delete $OWNER{$self};
+    }
+}
+
+*get = *jacksc::StringList_get;
+*length = *jacksc::StringList_length;
+sub new {
+    my $pkg = shift;
+    my $self = jacksc::new_StringList(@_);
+    bless $self, $pkg if defined($self);
+}
+
+sub DISOWN {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    delete $OWNER{$ptr};
+}
+
+sub ACQUIRE {
+    my $self = shift;
+    my $ptr = tied(%$self);
+    $OWNER{$ptr} = 1;
+}
+
+
 ############# Class : jacks::JsPort ##############
 
 package jacks::JsPort;
@@ -110,7 +188,10 @@ sub DESTROY {
 }
 
 *getBuffer = *jacksc::JsPort_getBuffer;
+*name = *jacksc::JsPort_name;
 *connect = *jacksc::JsPort_connect;
+*getLatencyRange = *jacksc::JsPort_getLatencyRange;
+*setLatencyRange = *jacksc::JsPort_setLatencyRange;
 sub new {
     my $pkg = shift;
     my $self = jacksc::new_JsPort(@_);
@@ -203,7 +284,7 @@ sub DESTROY {
     }
 }
 
-*getPortByType = *jacksc::JsClient_getPortByType;
+*getPortNames = *jacksc::JsClient_getPortNames;
 *getPortByName = *jacksc::JsClient_getPortByName;
 *registerPort = *jacksc::JsClient_registerPort;
 *getEvent = *jacksc::JsClient_getEvent;
@@ -211,6 +292,7 @@ sub DESTROY {
 *activate = *jacksc::JsClient_activate;
 *getName = *jacksc::JsClient_getName;
 *getTransportState = *jacksc::JsClient_getTransportState;
+*recomputeLatencies = *jacksc::JsClient_recomputeLatencies;
 sub DISOWN {
     my $self = shift;
     my $ptr = tied(%$self);
@@ -254,4 +336,6 @@ package jacks;
 *JackSessionSaveTemplate = *jacksc::JackSessionSaveTemplate;
 *JackSessionSaveError = *jacksc::JackSessionSaveError;
 *JackSessionNeedTerminal = *jacksc::JackSessionNeedTerminal;
+*JackCaptureLatency = *jacksc::JackCaptureLatency;
+*JackPlaybackLatency = *jacksc::JackPlaybackLatency;
 1;

@@ -40,6 +40,8 @@ extern int          JacksRbPort_write_to_ringbuffer(T, jack_nframes_t);
 
 extern sample_t*    JacksRbPort_read_from_ringbuffer(T, int*);
 
+extern void*        JacksRbPort_get_port(T);
+
 #undef T
 #endif
 

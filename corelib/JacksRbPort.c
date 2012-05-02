@@ -125,6 +125,10 @@ sample_t* JacksRbPort_read_from_ringbuffer(T _this_, int *len) {
     return _this_->framebuf;
 }
 
+void* JacksRbPort_get_port(T _this_) {
+    return _this_->jport;
+}
+
 
 #undef T
 

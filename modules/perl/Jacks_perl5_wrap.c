@@ -1505,15 +1505,17 @@ SWIG_Perl_SetModule(swig_module_info *module) {
 #define SWIGTYPE_p_JackSessionFlags swig_types[2]
 #define SWIGTYPE_p_JsClient swig_types[3]
 #define SWIGTYPE_p_JsEvent swig_types[4]
-#define SWIGTYPE_p_JsPort swig_types[5]
-#define SWIGTYPE_p_JsPortBuffer swig_types[6]
-#define SWIGTYPE_p_char swig_types[7]
-#define SWIGTYPE_p_float swig_types[8]
-#define SWIGTYPE_p_jack_transport_state_t swig_types[9]
-#define SWIGTYPE_p_uint32_t swig_types[10]
-#define SWIGTYPE_p_void swig_types[11]
-static swig_type_info *swig_types[13];
-static swig_module_info swig_module = {swig_types, 12, 0, 0, 0, 0};
+#define SWIGTYPE_p_JsLatencyRange swig_types[5]
+#define SWIGTYPE_p_JsPort swig_types[6]
+#define SWIGTYPE_p_JsPortBuffer swig_types[7]
+#define SWIGTYPE_p_StringList swig_types[8]
+#define SWIGTYPE_p_char swig_types[9]
+#define SWIGTYPE_p_float swig_types[10]
+#define SWIGTYPE_p_jack_transport_state_t swig_types[11]
+#define SWIGTYPE_p_uint32_t swig_types[12]
+#define SWIGTYPE_p_void swig_types[13]
+static swig_type_info *swig_types[15];
+static swig_module_info swig_module = {swig_types, 14, 0, 0, 0, 0};
 #define SWIG_TypeQuery(name) SWIG_TypeQueryModule(&swig_module, &swig_module, name)
 #define SWIG_MangledTypeQuery(name) SWIG_MangledTypeQueryModule(&swig_module, &swig_module, name)
 
@@ -1557,7 +1559,7 @@ SWIGEXPORT void SWIG_init (CV *cv, CPerlObj *);
 #include "JacksEvent.h"
 #include "JacksRbPort.h"
 #include "Jacks.h"
-
+    
 
 SWIGINTERNINLINE SV *
 SWIG_From_long  SWIG_PERL_DECL_ARGS_1(long value)
@@ -1716,7 +1718,7 @@ SWIG_AsVal_unsigned_SS_int SWIG_PERL_DECL_ARGS_2(SV * obj, unsigned int *val)
 }
 
 SWIGINTERN float const *JsPortBuffer_getf(JsPortBuffer *self,unsigned int i){
-            return (float*) self->framebuf[i];
+            return(float*) self->framebuf[i];
         }
 
 SWIGINTERN int
@@ -1927,6 +1929,56 @@ SWIG_FromCharPtr(const char *cptr)
   return SWIG_FromCharPtrAndSize(cptr, (cptr ? strlen(cptr) : 0));
 }
 
+SWIGINTERN void delete_JsLatencyRange(JsLatencyRange *self){
+            free(self);
+        }
+SWIGINTERN int JsLatencyRange_min(JsLatencyRange *self){
+            return self->rmin;
+        }
+SWIGINTERN int JsLatencyRange_max(JsLatencyRange *self){
+            return self->rmax;
+        }
+SWIGINTERN void delete_StringList(StringList *self){
+            free(self->impl);
+            free(self);
+        }
+
+SWIGINTERN int
+SWIG_AsVal_int SWIG_PERL_DECL_ARGS_2(SV * obj, int *val)
+{
+  long v;
+  int res = SWIG_AsVal_long SWIG_PERL_CALL_ARGS_2(obj, &v);
+  if (SWIG_IsOK(res)) {
+    if ((v < INT_MIN || v > INT_MAX)) {
+      return SWIG_OverflowError;
+    } else {
+      if (val) *val = (int)(v);
+    }
+  }  
+  return res;
+}
+
+SWIGINTERN char const *StringList_get(StringList *self,int pos){
+            return self->impl[pos];
+        }
+SWIGINTERN size_t StringList_length(StringList *self){
+            if (!self->len) {
+                for (int i = 0;;i++) {
+                    if (self->impl[i] == NULL) {
+                        self->len = i;
+                        break;
+                    }
+                }
+            }
+            return self->len;
+        }
+
+SWIGINTERNINLINE SV *
+SWIG_From_size_t  SWIG_PERL_DECL_ARGS_1(size_t value)
+{    
+  return SWIG_From_unsigned_SS_long  SWIG_PERL_CALL_ARGS_1((unsigned long)(value));
+}
+
 SWIGINTERN void delete_JsPort(JsPort *self){
             JacksRbPort_free(&self->impl);
             free(self);
@@ -1939,9 +1991,32 @@ SWIGINTERN JsPortBuffer *JsPort_getBuffer(JsPort *self){
             holder->len = len;
             return holder;
         }
+SWIGINTERN char *JsPort_name(JsPort *self){
+            return jack_port_name((jack_port_t *)JacksRbPort_get_port(self->impl));
+        }
 SWIGINTERN int JsPort_connect(JsPort *self,JsPort *_that_){
 
             return JacksRbPort_connect(self->impl, _that_->impl);
+        }
+SWIGINTERN JsLatencyRange *JsPort_getLatencyRange(JsPort *self,enum JackLatencyCallbackMode mode){
+
+            jack_latency_range_t range;
+            jack_port_get_latency_range((jack_port_t *) JacksRbPort_get_port(self->impl),
+                                        mode, &range);
+
+            JsLatencyRange *holder;
+            holder = malloc(sizeof(JsLatencyRange));
+            holder->rmin = (int) range.min; //todo: float?
+            holder->rmax = (int) range.max;
+            return holder;
+        }
+SWIGINTERN void JsPort_setLatencyRange(JsPort *self,enum JackLatencyCallbackMode mode,int rmin,int rmax){ //todo: float
+
+            jack_latency_range_t range;
+            range.min = rmin;
+            range.max = rmax;
+            jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port(self->impl),
+                                                    mode, &range);
         }
 SWIGINTERN void delete_JsEvent(JsEvent *self){
             JacksEvent_free(&self->impl);
@@ -2000,22 +2075,6 @@ SWIGINTERN jack_session_flags_t JsEvent_getSessionEventFlags(JsEvent *self){
             if (se == NULL) throw_exception("not a session event");
             return se->flags;
         }
-
-SWIGINTERN int
-SWIG_AsVal_int SWIG_PERL_DECL_ARGS_2(SV * obj, int *val)
-{
-  long v;
-  int res = SWIG_AsVal_long SWIG_PERL_CALL_ARGS_2(obj, &v);
-  if (SWIG_IsOK(res)) {
-    if ((v < INT_MIN || v > INT_MAX)) {
-      return SWIG_OverflowError;
-    } else {
-      if (val) *val = (int)(v);
-    }
-  }  
-  return res;
-}
-
 SWIGINTERN void JsEvent_setSessionEventFlags(JsEvent *self,jack_session_flags_t flags){
             jack_session_event_t *se = JacksEvent_get_data((JacksEvent) self->impl);
             if (se == NULL) throw_exception("not a session event");
@@ -2036,26 +2095,24 @@ SWIGINTERN void delete_JsClient(JsClient *self){
             JacksRbClient_free(&self->impl);
             free(self);
         }
-SWIGINTERN JsPort *JsClient_getPortByType(JsClient *self,char const *namepattern,char const *typepattern,unsigned long options,int pos){
+SWIGINTERN StringList *JsClient_getPortNames(JsClient *self,char const *namepattern){
 
             jack_client_t *client = JacksRbClient_get_client(self->impl);
 
-            const char **jports = jack_get_ports(client, namepattern, typepattern, options);
+            const char **jports = jack_get_ports(client, namepattern, NULL, 0);
             if (jports == NULL) {
-                 return NULL;
+                return NULL;
             }
-            jack_port_t *jport = jack_port_by_name(client, jports[pos]);
-            if (jport == NULL) return NULL;
 
-            jack_nframes_t rb_size = JacksRbClient_get_rb_size(self->impl);
-            JacksRbPort p = JacksRbPort_new(jport, self->impl, rb_size);
-            JsPort *holder;
-            holder = malloc(sizeof(JsPort));
-            holder->impl = p;
-            free(jports);
+            StringList *holder;
+            holder = malloc(sizeof(StringList));
+            holder->impl = jports;
+            holder->len = 0;
             return holder;
         }
 SWIGINTERN JsPort *JsClient_getPortByName(JsClient *self,char *name){
+
+            if (name == NULL) return NULL;
 
             jack_port_t *jport = jack_port_by_name(JacksRbClient_get_client(self->impl), name);
             if (jport == NULL) return NULL;
@@ -2069,8 +2126,6 @@ SWIGINTERN JsPort *JsClient_getPortByName(JsClient *self,char *name){
         }
 SWIGINTERN JsPort *JsClient_registerPort(JsClient *self,char *name,unsigned long options){
 
-            //jack_nframes_t rb_size = JacksRbClient_get_rb_size(self->impl);
-            //JacksRbPort p = JacksRbPort_new_port(name, options, self->impl, rb_size);
             JacksRbPort p = JacksRbClient_registerPort(self->impl, name, options);
             JsPort *holder;
             holder = malloc(sizeof(JsPort));
@@ -2098,8 +2153,15 @@ SWIGINTERN char *JsClient_getName(JsClient *self){
 SWIGINTERN jack_transport_state_t JsClient_getTransportState(JsClient *self){
             jack_position_t position; //todo: do something with this!
             jack_transport_state_t t = jack_transport_query(
-                JacksRbClient_get_client(self->impl), &position);
+                                                           JacksRbClient_get_client(self->impl), &position);
             return t;
+        }
+SWIGINTERN void JsClient_recomputeLatencies(JsClient *self){
+
+            int rc = jack_recompute_total_latencies(JacksRbClient_get_client(self->impl));
+            if (rc) throw_exception("can not recompute total latency");
+
+            return;
         }
 #ifdef __cplusplus
 extern "C" {
@@ -2478,6 +2540,394 @@ XS(_wrap_new_JsPortBuffer) {
 }
 
 
+XS(_wrap_delete_JsLatencyRange) {
+  {
+    JsLatencyRange *arg1 = (JsLatencyRange *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: delete_JsLatencyRange(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsLatencyRange, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_JsLatencyRange" "', argument " "1"" of type '" "JsLatencyRange *""'"); 
+    }
+    arg1 = (JsLatencyRange *)(argp1);
+    {
+      char *err;
+      clear_exception();
+      delete_JsLatencyRange(arg1);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_JsLatencyRange_min) {
+  {
+    JsLatencyRange *arg1 = (JsLatencyRange *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: JsLatencyRange_min(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsLatencyRange, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsLatencyRange_min" "', argument " "1"" of type '" "JsLatencyRange *""'"); 
+    }
+    arg1 = (JsLatencyRange *)(argp1);
+    {
+      char *err;
+      clear_exception();
+      result = (int)JsLatencyRange_min(arg1);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_JsLatencyRange_max) {
+  {
+    JsLatencyRange *arg1 = (JsLatencyRange *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: JsLatencyRange_max(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsLatencyRange, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsLatencyRange_max" "', argument " "1"" of type '" "JsLatencyRange *""'"); 
+    }
+    arg1 = (JsLatencyRange *)(argp1);
+    {
+      char *err;
+      clear_exception();
+      result = (int)JsLatencyRange_max(arg1);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_new_JsLatencyRange) {
+  {
+    int argvi = 0;
+    JsLatencyRange *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: new_JsLatencyRange();");
+    }
+    {
+      char *err;
+      clear_exception();
+      result = (JsLatencyRange *)calloc(1, sizeof(JsLatencyRange));
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_JsLatencyRange, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_delete_StringList) {
+  {
+    StringList *arg1 = (StringList *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: delete_StringList(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_StringList, SWIG_POINTER_DISOWN |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "delete_StringList" "', argument " "1"" of type '" "StringList *""'"); 
+    }
+    arg1 = (StringList *)(argp1);
+    {
+      char *err;
+      clear_exception();
+      delete_StringList(arg1);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_StringList_get) {
+  {
+    StringList *arg1 = (StringList *) 0 ;
+    int arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: StringList_get(self,pos);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_StringList, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StringList_get" "', argument " "1"" of type '" "StringList *""'"); 
+    }
+    arg1 = (StringList *)(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "StringList_get" "', argument " "2"" of type '" "int""'");
+    } 
+    arg2 = (int)(val2);
+    {
+      char *err;
+      clear_exception();
+      result = (char *)StringList_get(arg1,arg2);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_StringList_length) {
+  {
+    StringList *arg1 = (StringList *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    size_t result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: StringList_length(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_StringList, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "StringList_length" "', argument " "1"" of type '" "StringList *""'"); 
+    }
+    arg1 = (StringList *)(argp1);
+    {
+      char *err;
+      clear_exception();
+      result = StringList_length(arg1);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = SWIG_From_size_t  SWIG_PERL_CALL_ARGS_1((size_t)(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_new_StringList) {
+  {
+    int argvi = 0;
+    StringList *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 0) || (items > 0)) {
+      SWIG_croak("Usage: new_StringList();");
+    }
+    {
+      char *err;
+      clear_exception();
+      result = (StringList *)calloc(1, sizeof(StringList));
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_StringList, SWIG_OWNER | SWIG_SHADOW); argvi++ ;
+    XSRETURN(argvi);
+  fail:
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_delete_JsPort) {
   {
     JsPort *arg1 = (JsPort *) 0 ;
@@ -2577,6 +3027,56 @@ XS(_wrap_JsPort_getBuffer) {
 }
 
 
+XS(_wrap_JsPort_name) {
+  {
+    JsPort *arg1 = (JsPort *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    char *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: JsPort_name(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_name" "', argument " "1"" of type '" "JsPort *""'"); 
+    }
+    arg1 = (JsPort *)(argp1);
+    {
+      char *err;
+      clear_exception();
+      result = (char *)JsPort_name(arg1);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = SWIG_FromCharPtr((const char *)result); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_JsPort_connect) {
   {
     JsPort *arg1 = (JsPort *) 0 ;
@@ -2630,6 +3130,145 @@ XS(_wrap_JsPort_connect) {
     
     XSRETURN(argvi);
   fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_JsPort_getLatencyRange) {
+  {
+    JsPort *arg1 = (JsPort *) 0 ;
+    enum JackLatencyCallbackMode arg2 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int argvi = 0;
+    JsLatencyRange *result = 0 ;
+    dXSARGS;
+    
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: JsPort_getLatencyRange(self,mode);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_getLatencyRange" "', argument " "1"" of type '" "JsPort *""'"); 
+    }
+    arg1 = (JsPort *)(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "JsPort_getLatencyRange" "', argument " "2"" of type '" "enum JackLatencyCallbackMode""'");
+    } 
+    arg2 = (enum JackLatencyCallbackMode)(val2);
+    {
+      char *err;
+      clear_exception();
+      result = (JsLatencyRange *)JsPort_getLatencyRange(arg1,arg2);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_JsLatencyRange, 0 | SWIG_SHADOW); argvi++ ;
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_JsPort_setLatencyRange) {
+  {
+    JsPort *arg1 = (JsPort *) 0 ;
+    enum JackLatencyCallbackMode arg2 ;
+    int arg3 ;
+    int arg4 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int val2 ;
+    int ecode2 = 0 ;
+    int val3 ;
+    int ecode3 = 0 ;
+    int val4 ;
+    int ecode4 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 4) || (items > 4)) {
+      SWIG_croak("Usage: JsPort_setLatencyRange(self,mode,rmin,rmax);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_setLatencyRange" "', argument " "1"" of type '" "JsPort *""'"); 
+    }
+    arg1 = (JsPort *)(argp1);
+    ecode2 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(1), &val2);
+    if (!SWIG_IsOK(ecode2)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode2), "in method '" "JsPort_setLatencyRange" "', argument " "2"" of type '" "enum JackLatencyCallbackMode""'");
+    } 
+    arg2 = (enum JackLatencyCallbackMode)(val2);
+    ecode3 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(2), &val3);
+    if (!SWIG_IsOK(ecode3)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode3), "in method '" "JsPort_setLatencyRange" "', argument " "3"" of type '" "int""'");
+    } 
+    arg3 = (int)(val3);
+    ecode4 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
+    if (!SWIG_IsOK(ecode4)) {
+      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "JsPort_setLatencyRange" "', argument " "4"" of type '" "int""'");
+    } 
+    arg4 = (int)(val4);
+    {
+      char *err;
+      clear_exception();
+      JsPort_setLatencyRange(arg1,arg2,arg3,arg4);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = sv_newmortal();
+    
+    
+    
+    
+    XSRETURN(argvi);
+  fail:
+    
+    
     
     
     SWIG_croak_null();
@@ -3535,61 +4174,36 @@ XS(_wrap_delete_JsClient) {
 }
 
 
-XS(_wrap_JsClient_getPortByType) {
+XS(_wrap_JsClient_getPortNames) {
   {
     JsClient *arg1 = (JsClient *) 0 ;
     char *arg2 = (char *) 0 ;
-    char *arg3 = (char *) 0 ;
-    unsigned long arg4 ;
-    int arg5 ;
     void *argp1 = 0 ;
     int res1 = 0 ;
     int res2 ;
     char *buf2 = 0 ;
     int alloc2 = 0 ;
-    int res3 ;
-    char *buf3 = 0 ;
-    int alloc3 = 0 ;
-    unsigned long val4 ;
-    int ecode4 = 0 ;
-    int val5 ;
-    int ecode5 = 0 ;
     int argvi = 0;
-    JsPort *result = 0 ;
+    StringList *result = 0 ;
     dXSARGS;
     
-    if ((items < 5) || (items > 5)) {
-      SWIG_croak("Usage: JsClient_getPortByType(self,namepattern,typepattern,options,pos);");
+    if ((items < 2) || (items > 2)) {
+      SWIG_croak("Usage: JsClient_getPortNames(self,namepattern);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsClient, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsClient_getPortByType" "', argument " "1"" of type '" "JsClient *""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsClient_getPortNames" "', argument " "1"" of type '" "JsClient *""'"); 
     }
     arg1 = (JsClient *)(argp1);
     res2 = SWIG_AsCharPtrAndSize(ST(1), &buf2, NULL, &alloc2);
     if (!SWIG_IsOK(res2)) {
-      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "JsClient_getPortByType" "', argument " "2"" of type '" "char const *""'");
+      SWIG_exception_fail(SWIG_ArgError(res2), "in method '" "JsClient_getPortNames" "', argument " "2"" of type '" "char const *""'");
     }
     arg2 = (char *)(buf2);
-    res3 = SWIG_AsCharPtrAndSize(ST(2), &buf3, NULL, &alloc3);
-    if (!SWIG_IsOK(res3)) {
-      SWIG_exception_fail(SWIG_ArgError(res3), "in method '" "JsClient_getPortByType" "', argument " "3"" of type '" "char const *""'");
-    }
-    arg3 = (char *)(buf3);
-    ecode4 = SWIG_AsVal_unsigned_SS_long SWIG_PERL_CALL_ARGS_2(ST(3), &val4);
-    if (!SWIG_IsOK(ecode4)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode4), "in method '" "JsClient_getPortByType" "', argument " "4"" of type '" "unsigned long""'");
-    } 
-    arg4 = (unsigned long)(val4);
-    ecode5 = SWIG_AsVal_int SWIG_PERL_CALL_ARGS_2(ST(4), &val5);
-    if (!SWIG_IsOK(ecode5)) {
-      SWIG_exception_fail(SWIG_ArgError(ecode5), "in method '" "JsClient_getPortByType" "', argument " "5"" of type '" "int""'");
-    } 
-    arg5 = (int)(val5);
     {
       char *err;
       clear_exception();
-      result = (JsPort *)JsClient_getPortByType(arg1,(char const *)arg2,(char const *)arg3,arg4,arg5);
+      result = (StringList *)JsClient_getPortNames(arg1,(char const *)arg2);
       if ((err = check_exception())) {
         croak(CROAK, err);
         return;
@@ -3609,19 +4223,13 @@ XS(_wrap_JsClient_getPortByType) {
         
       }
     }
-    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_JsPort, 0 | SWIG_SHADOW); argvi++ ;
+    ST(argvi) = SWIG_NewPointerObj(SWIG_as_voidptr(result), SWIGTYPE_p_StringList, 0 | SWIG_SHADOW); argvi++ ;
     
     if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
-    if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
-    
-    
     XSRETURN(argvi);
   fail:
     
     if (alloc2 == SWIG_NEWOBJ) free((char*)buf2);
-    if (alloc3 == SWIG_NEWOBJ) free((char*)buf3);
-    
-    
     SWIG_croak_null();
   }
 }
@@ -4019,6 +4627,55 @@ XS(_wrap_JsClient_getTransportState) {
 }
 
 
+XS(_wrap_JsClient_recomputeLatencies) {
+  {
+    JsClient *arg1 = (JsClient *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: JsClient_recomputeLatencies(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsClient, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsClient_recomputeLatencies" "', argument " "1"" of type '" "JsClient *""'"); 
+    }
+    arg1 = (JsClient *)(argp1);
+    {
+      char *err;
+      clear_exception();
+      JsClient_recomputeLatencies(arg1);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 
 /* -------- TYPE CONVERSION AND EQUIVALENCE RULES (BEGIN) -------- */
 
@@ -4027,8 +4684,10 @@ static swig_type_info _swigt__p_JackSessionEventType = {"_p_JackSessionEventType
 static swig_type_info _swigt__p_JackSessionFlags = {"_p_JackSessionFlags", "jack_session_flags_t *|enum JackSessionFlags *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_JsClient = {"_p_JsClient", "JsClient *", 0, 0, (void*)"jacks::JsClient", 0};
 static swig_type_info _swigt__p_JsEvent = {"_p_JsEvent", "JsEvent *", 0, 0, (void*)"jacks::JsEvent", 0};
+static swig_type_info _swigt__p_JsLatencyRange = {"_p_JsLatencyRange", "JsLatencyRange *", 0, 0, (void*)"jacks::JsLatencyRange", 0};
 static swig_type_info _swigt__p_JsPort = {"_p_JsPort", "JsPort *", 0, 0, (void*)"jacks::JsPort", 0};
 static swig_type_info _swigt__p_JsPortBuffer = {"_p_JsPortBuffer", "JsPortBuffer *", 0, 0, (void*)"jacks::JsPortBuffer", 0};
+static swig_type_info _swigt__p_StringList = {"_p_StringList", "StringList *", 0, 0, (void*)"jacks::StringList", 0};
 static swig_type_info _swigt__p_char = {"_p_char", "char *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_float = {"_p_float", "float *|jack_default_audio_sample_t *", 0, 0, (void*)0, 0};
 static swig_type_info _swigt__p_jack_transport_state_t = {"_p_jack_transport_state_t", "enum jack_transport_state_t *|jack_transport_state_t *", 0, 0, (void*)0, 0};
@@ -4041,8 +4700,10 @@ static swig_type_info *swig_type_initial[] = {
   &_swigt__p_JackSessionFlags,
   &_swigt__p_JsClient,
   &_swigt__p_JsEvent,
+  &_swigt__p_JsLatencyRange,
   &_swigt__p_JsPort,
   &_swigt__p_JsPortBuffer,
+  &_swigt__p_StringList,
   &_swigt__p_char,
   &_swigt__p_float,
   &_swigt__p_jack_transport_state_t,
@@ -4055,8 +4716,10 @@ static swig_cast_info _swigc__p_JackSessionEventType[] = {  {&_swigt__p_JackSess
 static swig_cast_info _swigc__p_JackSessionFlags[] = {  {&_swigt__p_JackSessionFlags, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_JsClient[] = {  {&_swigt__p_JsClient, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_JsEvent[] = {  {&_swigt__p_JsEvent, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_JsLatencyRange[] = {  {&_swigt__p_JsLatencyRange, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_JsPort[] = {  {&_swigt__p_JsPort, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_JsPortBuffer[] = {  {&_swigt__p_JsPortBuffer, 0, 0, 0},{0, 0, 0, 0}};
+static swig_cast_info _swigc__p_StringList[] = {  {&_swigt__p_StringList, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_char[] = {  {&_swigt__p_char, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_float[] = {  {&_swigt__p_float, 0, 0, 0},{0, 0, 0, 0}};
 static swig_cast_info _swigc__p_jack_transport_state_t[] = {  {&_swigt__p_jack_transport_state_t, 0, 0, 0},{0, 0, 0, 0}};
@@ -4069,8 +4732,10 @@ static swig_cast_info *swig_cast_initial[] = {
   _swigc__p_JackSessionFlags,
   _swigc__p_JsClient,
   _swigc__p_JsEvent,
+  _swigc__p_JsLatencyRange,
   _swigc__p_JsPort,
   _swigc__p_JsPortBuffer,
+  _swigc__p_StringList,
   _swigc__p_char,
   _swigc__p_float,
   _swigc__p_jack_transport_state_t,
@@ -4097,9 +4762,20 @@ static swig_command_info swig_commands[] = {
 {"jacksc::JsPortBuffer_length", _wrap_JsPortBuffer_length},
 {"jacksc::JsPortBuffer_toHexString", _wrap_JsPortBuffer_toHexString},
 {"jacksc::new_JsPortBuffer", _wrap_new_JsPortBuffer},
+{"jacksc::delete_JsLatencyRange", _wrap_delete_JsLatencyRange},
+{"jacksc::JsLatencyRange_min", _wrap_JsLatencyRange_min},
+{"jacksc::JsLatencyRange_max", _wrap_JsLatencyRange_max},
+{"jacksc::new_JsLatencyRange", _wrap_new_JsLatencyRange},
+{"jacksc::delete_StringList", _wrap_delete_StringList},
+{"jacksc::StringList_get", _wrap_StringList_get},
+{"jacksc::StringList_length", _wrap_StringList_length},
+{"jacksc::new_StringList", _wrap_new_StringList},
 {"jacksc::delete_JsPort", _wrap_delete_JsPort},
 {"jacksc::JsPort_getBuffer", _wrap_JsPort_getBuffer},
+{"jacksc::JsPort_name", _wrap_JsPort_name},
 {"jacksc::JsPort_connect", _wrap_JsPort_connect},
+{"jacksc::JsPort_getLatencyRange", _wrap_JsPort_getLatencyRange},
+{"jacksc::JsPort_setLatencyRange", _wrap_JsPort_setLatencyRange},
 {"jacksc::new_JsPort", _wrap_new_JsPort},
 {"jacksc::delete_JsEvent", _wrap_delete_JsEvent},
 {"jacksc::JsEvent_getType", _wrap_JsEvent_getType},
@@ -4117,7 +4793,7 @@ static swig_command_info swig_commands[] = {
 {"jacksc::new_JsEvent", _wrap_new_JsEvent},
 {"jacksc::new_JsClient", _wrap_new_JsClient},
 {"jacksc::delete_JsClient", _wrap_delete_JsClient},
-{"jacksc::JsClient_getPortByType", _wrap_JsClient_getPortByType},
+{"jacksc::JsClient_getPortNames", _wrap_JsClient_getPortNames},
 {"jacksc::JsClient_getPortByName", _wrap_JsClient_getPortByName},
 {"jacksc::JsClient_registerPort", _wrap_JsClient_registerPort},
 {"jacksc::JsClient_getEvent", _wrap_JsClient_getEvent},
@@ -4125,6 +4801,7 @@ static swig_command_info swig_commands[] = {
 {"jacksc::JsClient_activate", _wrap_JsClient_activate},
 {"jacksc::JsClient_getName", _wrap_JsClient_getName},
 {"jacksc::JsClient_getTransportState", _wrap_JsClient_getTransportState},
+{"jacksc::JsClient_recomputeLatencies", _wrap_JsClient_recomputeLatencies},
 {0,0}
 };
 /* -----------------------------------------------------------------------------
@@ -4549,7 +5226,19 @@ XS(SWIG_init) {
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackSessionNeedTerminal)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "JackCaptureLatency", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackCaptureLatency)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
+  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+    SV *sv = get_sv((char*) SWIG_prefix "JackPlaybackLatency", TRUE | 0x2 | GV_ADDMULTI);
+    sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackPlaybackLatency)));
+    SvREADONLY_on(sv);
+  } while(0) /*@SWIG@*/;
   SWIG_TypeClientData(SWIGTYPE_p_JsPortBuffer, (void*) "jacks::JsPortBuffer");
+  SWIG_TypeClientData(SWIGTYPE_p_JsLatencyRange, (void*) "jacks::JsLatencyRange");
+  SWIG_TypeClientData(SWIGTYPE_p_StringList, (void*) "jacks::StringList");
   SWIG_TypeClientData(SWIGTYPE_p_JsPort, (void*) "jacks::JsPort");
   SWIG_TypeClientData(SWIGTYPE_p_JsEvent, (void*) "jacks::JsEvent");
   SWIG_TypeClientData(SWIGTYPE_p_JsClient, (void*) "jacks::JsClient");

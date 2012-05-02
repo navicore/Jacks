@@ -30,7 +30,7 @@
 #include "JacksEvent.h"
 #include "JacksRbPort.h"
 #include "Jacks.h"
-%}
+    %}
 
 
 %include "jack_exceptions.h"
@@ -44,7 +44,7 @@ typedef struct {
         }
 
         const float* getf(unsigned int i) {
-            return (float*) $self->framebuf[i];
+            return(float*) $self->framebuf[i];
         }
 
         void setf(unsigned int i, float val) {
@@ -80,6 +80,47 @@ typedef struct {
 
 typedef struct {
     %extend {
+        ~JsLatencyRange() {
+            free($self);
+        }
+
+        int min() {
+            return $self->rmin;
+        }
+
+        int max() {
+            return $self->rmax;
+        }
+    }
+} JsLatencyRange;
+
+typedef struct {
+    %extend {
+        ~StringList() {
+            free($self->impl);
+            free($self);
+        }
+
+        const char* get(int pos) {
+            return $self->impl[pos];
+        }
+
+        size_t length() {
+            if (!$self->len) {
+                for (int i = 0;;i++) {
+                    if ($self->impl[i] == NULL) {
+                        $self->len = i;
+                        break;
+                    }
+                }
+            }
+            return $self->len;
+        }
+    }
+} StringList;
+
+typedef struct {
+    %extend {
         ~JsPort() {
             JacksRbPort_free(&$self->impl);
             free($self);
@@ -94,9 +135,34 @@ typedef struct {
             return holder;
         }
 
+        char* name() {
+            return jack_port_name((jack_port_t *)JacksRbPort_get_port($self->impl));
+        }
+
         int connect(JsPort *_that_) {
 
             return JacksRbPort_connect($self->impl, _that_->impl);
+        }
+
+        JsLatencyRange *getLatencyRange(enum JackLatencyCallbackMode mode) {
+
+            jack_latency_range_t range;
+            jack_port_get_latency_range((jack_port_t *) JacksRbPort_get_port($self->impl),
+                                        mode, &range);
+
+            JsLatencyRange *holder;
+            holder = malloc(sizeof(JsLatencyRange));
+            holder->rmin = (int) range.min; //todo: float?
+            holder->rmax = (int) range.max;
+            return holder;
+        }
+        void setLatencyRange(enum JackLatencyCallbackMode mode, int rmin, int rmax) { //todo: float
+
+            jack_latency_range_t range;
+            range.min = rmin;
+            range.max = rmax;
+            jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port($self->impl),
+                                                    mode, &range);
         }
     }
 } JsPort;
@@ -200,30 +266,26 @@ typedef struct {
             free($self);
         }
 
-        //untested
-        JsPort *getPortByType(const char *namepattern, 
-                              const char *typepattern, unsigned long options, int pos) {
+        StringList *getPortNames(const char *namepattern) {
 
             jack_client_t *client = JacksRbClient_get_client($self->impl);
 
-            const char **jports = jack_get_ports(client, namepattern, typepattern, options);
+            const char **jports = jack_get_ports(client, namepattern, NULL, 0);
             if (jports == NULL) {
-                 return NULL;
+                return NULL;
             }
-            jack_port_t *jport = jack_port_by_name(client, jports[pos]);
-            if (jport == NULL) return NULL;
 
-            jack_nframes_t rb_size = JacksRbClient_get_rb_size($self->impl);
-            JacksRbPort p = JacksRbPort_new(jport, $self->impl, rb_size);
-            JsPort *holder;
-            holder = malloc(sizeof(JsPort));
-            holder->impl = p;
-            free(jports);
+            StringList *holder;
+            holder = malloc(sizeof(StringList));
+            holder->impl = jports;
+            holder->len = 0;
             return holder;
         }
 
         //untested
         JsPort *getPortByName(char *name) {
+
+            if (name == NULL) return NULL;
 
             jack_port_t *jport = jack_port_by_name(JacksRbClient_get_client($self->impl), name);
             if (jport == NULL) return NULL;
@@ -238,8 +300,6 @@ typedef struct {
 
         JsPort *registerPort(char *name, unsigned long options) {
 
-            //jack_nframes_t rb_size = JacksRbClient_get_rb_size($self->impl);
-            //JacksRbPort p = JacksRbPort_new_port(name, options, $self->impl, rb_size);
             JacksRbPort p = JacksRbClient_registerPort($self->impl, name, options);
             JsPort *holder;
             holder = malloc(sizeof(JsPort));
@@ -273,10 +333,18 @@ typedef struct {
         jack_transport_state_t getTransportState() {
             jack_position_t position; //todo: do something with this!
             jack_transport_state_t t = jack_transport_query(
-                JacksRbClient_get_client($self->impl), &position);
+                                                           JacksRbClient_get_client($self->impl), &position);
             return t;
         }
 
+
+        void recomputeLatencies() {
+
+            int rc = jack_recompute_total_latencies(JacksRbClient_get_client($self->impl));
+            if (rc) throw_exception("can not recompute total latency");
+
+            return;
+        }
     }
 } JsClient;
 

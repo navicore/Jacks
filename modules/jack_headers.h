@@ -64,3 +64,9 @@ typedef enum JackSessionFlags jack_session_flags_t;
 
 typedef uint32_t	     jack_nframes_t;
 
+enum JackLatencyCallbackMode {
+
+     JackCaptureLatency,
+     JackPlaybackLatency
+};
+

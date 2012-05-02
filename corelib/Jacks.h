@@ -26,6 +26,12 @@
 
 static char* CROAK = "exception: %s\n";
 
+struct StringList;
+typedef struct {
+    const char **impl;
+    int len;
+} StringList;
+
 struct JsPortBuffer;
 typedef struct {
     char *framebuf;
@@ -34,6 +40,7 @@ typedef struct {
 
 struct JsPort;
 typedef struct {
+    char *name;
     JacksRbPort impl;
     JacksRbClient clientimpl;
 } JsPort;
@@ -49,6 +56,12 @@ typedef struct {
     int process_audio;
     int fb_size;
 } JsClient;
+
+struct JsLatencyRange;
+typedef struct {
+    int rmin;
+    int rmax;
+} JsLatencyRange;
 
 #endif
 
