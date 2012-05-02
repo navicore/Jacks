@@ -25,3 +25,13 @@ for (my $i = 0; $i < $plist->length(); $i++) {
     print("\t\tCapture Latency [ $cmin $cmax ]\n");
 }
 
+#
+# also
+#
+# set latencies example:
+# $port->setLatencyRange($jacks::JackCaptureLatency, 64, 128);
+#
+# recompute latencies:
+# $jc->recomputeLatencies();
+#
+
