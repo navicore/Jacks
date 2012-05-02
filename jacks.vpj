@@ -130,16 +130,41 @@
         <Folder
             Name="Source Files"
             Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d">
+            <F N="corelib/lfds/abstraction_aligned_free.c"/>
+            <F N="corelib/lfds/abstraction_aligned_malloc.c"/>
+            <F N="corelib/lfds/abstraction_cas.c"/>
+            <F N="corelib/lfds/abstraction_dcas.c"/>
+            <F N="corelib/lfds/abstraction_increment.c"/>
             <F N="corelib/test/jack-example-clients/capture_client.c"/>
+            <F N="modules/perl/example-clients/capture_client.pl"/>
             <F N="corelib/test/floatsize.c"/>
+            <F N="corelib/lfds/freelist_delete.c"/>
+            <F N="corelib/lfds/freelist_get_and_set.c"/>
+            <F N="corelib/lfds/freelist_new.c"/>
+            <F N="corelib/lfds/freelist_pop_push.c"/>
+            <F N="corelib/lfds/freelist_query.c"/>
+            <F N="modules/python2/jacks.py"/>
+            <F N="modules/python2/example-clients/jacks.py"/>
+            <F N="modules/python2/test/jacks.py"/>
+            <F N="modules/python3/jacks.py"/>
+            <F N="modules/lua/Jacks_lua_wrap.c"/>
+            <F N="modules/perl/Jacks_perl5_wrap.c"/>
+            <F N="modules/python3/Jacks_python3_wrap.c"/>
+            <F N="modules/python2/Jacks_python_wrap.c"/>
+            <F N="modules/ruby/Jacks_ruby_wrap.c"/>
             <F N="corelib/JacksEvent.c"/>
             <F N="corelib/JacksHelper.c"/>
             <F N="corelib/JacksLatch.c"/>
             <F N="corelib/JacksRbClient.c"/>
             <F N="corelib/JacksRbPort.c"/>
             <F N="corelib/test/jack-example-clients/metro.c"/>
+            <F N="corelib/lfds/queue_delete.c"/>
+            <F N="corelib/lfds/queue_new.c"/>
+            <F N="corelib/lfds/queue_query.c"/>
+            <F N="corelib/lfds/queue_queue.c"/>
+            <F N="modules/python2/setup.py"/>
+            <F N="modules/python3/setup.py"/>
             <F N="corelib/test/jack-example-clients/simple_client.c"/>
-            <F N="modules/perl/example-clients/simple_client.pl"/>
             <F N="modules/python2/example-clients/simple_client.py"/>
             <F N="modules/python3/example-clients/simple_client.py"/>
             <F N="corelib/test/test_jackclient.c"/>
@@ -150,14 +175,22 @@
         <Folder
             Name="Header Files"
             Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if">
+            <F N="corelib/lfds/abstraction_internal.h"/>
             <F N="autogen.sh"/>
+            <F N="config.h"/>
+            <F N="corelib/lfds/freelist_internal.h"/>
             <F N="modules/jack_exceptions.h"/>
             <F N="modules/jack_headers.h"/>
             <F N="corelib/Jacks.h"/>
             <F N="corelib/JacksEvent.h"/>
+            <F N="corelib/JacksExceptions.h"/>
             <F N="corelib/JacksLatch.h"/>
             <F N="corelib/JacksRbClient.h"/>
             <F N="corelib/JacksRbPort.h"/>
+            <F N="corelib/JacksSndFile.h"/>
+            <F N="corelib/lfds/liblfds.h"/>
+            <F N="corelib/lfds/liblfds_internal.h"/>
+            <F N="corelib/lfds/queue_internal.h"/>
         </Folder>
         <Folder
             Name="Resource Files"
@@ -174,9 +207,13 @@
             <F N="modules/perl/Build.PL.in"/>
             <F N="corelib/test/jack-example-clients/capture_client"/>
             <F N="corelib/test/jack-example-clients/capture_client-capture_client.o"/>
+            <F N="modules/lua/example-clients/capture_client.lua"/>
             <F N="config.h.in"/>
             <F N="configure.ac"/>
             <F N="modules/Jacks.i"/>
+            <F N="modules/perl/jacks.pm"/>
+            <F N="modules/perl/lib/jacks.pm"/>
+            <F N="modules/perl/jacks.pod.in"/>
             <F
                 N="Makefile.am"
                 Type="Makefile"/>
@@ -184,7 +221,13 @@
                 N="corelib/Makefile.am"
                 Type="Makefile"/>
             <F
+                N="corelib/lfds/Makefile.am"
+                Type="Makefile"/>
+            <F
                 N="corelib/test/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="corelib/test/jack-example-clients/Makefile.am"
                 Type="Makefile"/>
             <F
                 N="modules/Makefile.am"
@@ -234,6 +277,69 @@
             <F
                 N="modules/ruby/test/Makefile.am"
                 Type="Makefile"/>
+            <F
+                N="Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="corelib/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="corelib/lfds/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="corelib/test/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="corelib/test/jack-example-clients/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/lua/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/lua/example-clients/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/lua/test/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/perl/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/perl/example-clients/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/perl/t/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/python2/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/python2/example-clients/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/python2/test/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/python3/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/python3/example-clients/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/python3/test/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/ruby/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/ruby/example-clients/Makefile.in"
+                Type="Makefile"/>
+            <F
+                N="modules/ruby/test/Makefile.in"
+                Type="Makefile"/>
             <F N="modules/perl/t/manifest.t"/>
             <F N="modules/perl/OeLinkBin.PL.in"/>
             <F N="modules/perl/t/pod.t"/>
@@ -241,7 +347,6 @@
             <F N="modules/python3/setup.py.in"/>
             <F N="modules/lua/example-clients/simple_client.lua"/>
             <F N="modules/ruby/example-clients/simple_client.rb"/>
-            <F N="modules/SndFile.i"/>
             <F N="modules/lua/test/test_swig_api.lua"/>
             <F N="modules/ruby/test/test_swig_api.rb"/>
             <F N="modules/perl/t/test_swig_api.t"/>

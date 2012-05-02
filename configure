@@ -13057,6 +13057,19 @@ fi
 
 
 if test x$_with_perl = xyes ; then
+
+#AX_PERL_EXT_FLAGS([PERLXS_CFLAGS], [PERLXS_LDFLAGS])
+#AC_SUBST([PERLXS_CFLAGS])
+#AX_PERL_EXT_LDFLAGS([PERLXS_LDFLAGS], [PERLXS_LDFLAGS])
+##AC_SUBST([PERLXS_CFLAGS])
+#AC_SUBST([PERLXS_LDFLAGS])
+#AX_PERL_EXT()
+#if test x"$PERL" = x; then
+#    AC_ERROR(["cannot find Perl"])
+#fi
+#AC_SUBST([PERL_EXT_CPPFLAGS])
+#AC_SUBST([PERL_EXT_LDFLAGS])
+
 # Extract the first word of "perl", so it can be a program name with args.
 set dummy perl; ac_word=$2
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
@@ -13117,6 +13130,61 @@ $as_echo_n "checking for perl ccopts embed flags... " >&6; }
  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PERLXS_CFLAGS" >&5
 $as_echo "$PERLXS_CFLAGS" >&6; }
 
+
+
+# Extract the first word of "perl", so it can be a program name with args.
+set dummy perl; ac_word=$2
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5
+$as_echo_n "checking for $ac_word... " >&6; }
+if ${ac_cv_prog_PERL+:} false; then :
+  $as_echo_n "(cached) " >&6
+else
+  if test -n "$PERL"; then
+  ac_cv_prog_PERL="$PERL" # Let the user override the test.
+else
+as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+for as_dir in $PATH
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+    for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_test_x "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_prog_PERL="perl"
+    $as_echo "$as_me:${as_lineno-$LINENO}: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+  done
+IFS=$as_save_IFS
+
+fi
+fi
+PERL=$ac_cv_prog_PERL
+if test -n "$PERL"; then
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: $PERL" >&5
+$as_echo "$PERL" >&6; }
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+fi
+
+
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for perl module ExtUtils::Embed" >&5
+$as_echo_n "checking for perl module ExtUtils::Embed... " >&6; }
+ $PERL "-MExtUtils::Embed" -e exit > /dev/null 2>&1
+ if test $? -eq 0; then :
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+$as_echo "yes" >&6; }
+  have_embed=yes
+else
+  { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+$as_echo "no" >&6; }
+  have_embed=no
+fi
+
+ if test $have_embed = no; then :
+  as_fn_error $? "Require ExtUtils::Embed to proceed" "$LINENO" 5
+fi
  { $as_echo "$as_me:${as_lineno-$LINENO}: checking for perl ldopts embed flags" >&5
 $as_echo_n "checking for perl ldopts embed flags... " >&6; }
  ax_c_perlxs_extras=""

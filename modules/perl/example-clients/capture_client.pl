@@ -8,15 +8,13 @@ my $jc;
 
 if (defined($ARGV[0])) {
     print("restarting with uuid $ARGV[0]\n");
-    $jc = jacks::JsClient->new("simpler", $ARGV[0], $jacks::JackSessionID);
+    $jc = jacks::JsClient->new("simpler", $ARGV[0], $jacks::JackSessionID, 0);
 } else {
-    $jc = jacks::JsClient->new("simpler", undef, $jacks::JackNullOption);
+    $jc = jacks::JsClient->new("simpler", undef, $jacks::JackNullOption, 0);
 }
 
 
 my $in = $jc->registerPort("input", $jacks::JackPortIsInput);
-
-my $out = $jc->registerPort("output", $jacks::JackPortIsOutput);
 
 $jc->activate();
 
@@ -29,16 +27,16 @@ until($done) {
 
         my $inbuffer = $in->getBuffer();
 
-        my $outbuffer = $out->getBuffer();
-
-        my $nframes = $outbuffer->length();
+        my $nframes = $inbuffer->length();
 
         for (my $i = 0; $i < $nframes; $i++) { #copy input to putput
 
           my $s = $inbuffer->getf($i);
 
-          $outbuffer->setf($i,$s);
-
+          # do something with $s
+          if (defined($s)) {
+              print("something $s\n");
+          }
         }
 
     } elsif ($jsevent->getType() == $jacks::SAMPLE_RATE_CHANGE) {
