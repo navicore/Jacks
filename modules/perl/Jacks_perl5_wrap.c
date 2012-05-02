@@ -1550,6 +1550,7 @@ SWIGEXPORT void SWIG_init (CV *cv, CPerlObj *);
 
 #include "config.h"
 #include <jack/jack.h>
+//#include <jack/port.h>
 #include <jack/session.h>
 #include <jack/transport.h>
 #include <stdbool.h>

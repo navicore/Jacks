@@ -1511,6 +1511,7 @@ static swig_module_info swig_module = {swig_types, 13, 0, 0, 0, 0};
 
 #include "config.h"
 #include <jack/jack.h>
+//#include <jack/port.h>
 #include <jack/session.h>
 #include <jack/transport.h>
 #include <stdbool.h>

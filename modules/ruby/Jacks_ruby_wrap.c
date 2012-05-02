@@ -1829,6 +1829,7 @@ static VALUE mJacks;
 
 #include "config.h"
 #include <jack/jack.h>
+//#include <jack/port.h>
 #include <jack/session.h>
 #include <jack/transport.h>
 #include <stdbool.h>

@@ -21,6 +21,7 @@
 %{
 #include "config.h"
 #include <jack/jack.h>
+//#include <jack/port.h>
 #include <jack/session.h>
 #include <jack/transport.h>
 #include <stdbool.h>
@@ -167,7 +168,8 @@ typedef struct {
         /*
         bool hasFlag(enum JackPortFlags flag) {
             jack_port_t *p = (jack_port_t*) JacksRbPort_get_port($self->impl);
-            return (p)->shared->flags & flag;
+            jack_port_shared_t *sinfo = p->shared;
+            return sinfo->flags & flag;
         }
         */
     }
