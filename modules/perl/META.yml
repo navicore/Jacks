@@ -12,26 +12,27 @@ license: apache
 meta-spec:
   url: http://module-build.sourceforge.net/META-spec-v1.4.html
   version: 1.4
-name: jackscript
+name: jacks
 provides:
-  jackscript:
-    file: lib/jackscript.pm
+  jacks:
+    file: lib/jacks.pm
     version: 0
-  jackscript::JsClient:
-    file: lib/jackscript.pm
+  jacks::JsClient:
+    file: lib/jacks.pm
     version: 0
-  jackscript::JsEvent:
-    file: lib/jackscript.pm
+  jacks::JsEvent:
+    file: lib/jacks.pm
     version: 0
-  jackscript::JsPort:
-    file: lib/jackscript.pm
+  jacks::JsPort:
+    file: lib/jacks.pm
     version: 0
-  jackscript::JsPortBuffer:
-    file: lib/jackscript.pm
+  jacks::JsPortBuffer:
+    file: lib/jacks.pm
     version: 0
-  jackscriptc:
-    file: lib/jackscript.pm
+  jacksc:
+    file: lib/jacks.pm
     version: 0
 resources:
   license: http://apache.org/licenses/LICENSE-2.0
 version: v0.1.1
+

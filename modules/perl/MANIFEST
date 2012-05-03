@@ -4,8 +4,8 @@ MANIFEST
 Makefile.PL
 README
 OeLinkBin.PL
-blib/arch/jackscript.so
-lib/jackscript.pm
+blib/arch/jacks.so
+lib/jacks.pm
 t/00-load.t
 t/manifest.t
 t/pod.t

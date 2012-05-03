@@ -16,21 +16,25 @@ libjacks_perl_la_LIBADD = ${_libadd}
 libjacks_perl_la_CFLAGS = ${_cflags}
 libjacks_perl_la_LDFLAGS = @OE_LIB_LDFLAGS@ -module
 
-all:
-	mkdir -p lib
-	cat jacks.pod ./jacks.pm > lib/jacks.pm
-	perl ./Build.PL 
-	./Build build
+#all:
+#	mkdir -p lib
+#	cat jacks.pod ./jacks.pm > lib/jacks.pm
+#	perl ./Build.PL 
+#	./Build build
 
+#	mkdir -p lib
+#	cat jacks.pod ./jacks.pm > lib/jacks.pm
+#	perl ./Build.PL 
+#	test ! -e ./Build || ./Build clean
 clean-local:
-	mkdir -p lib
-	cat jacks.pod ./jacks.pm > lib/jacks.pm
-	perl ./Build.PL 
-	test ! -e ./Build || ./Build clean
 	rm -f ./Build
+	rm -rf ./_build
+	rm -rf ./blib
+	rm -rf ./lib
 	rm -f ./lib/*script*.pm
 
 check:
+	mkdir -p lib
 	cat jacks.pod ./jacks.pm > lib/jacks.pm
 	perl ./Build.PL
 	./Build test

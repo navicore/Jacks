@@ -4,4 +4,4 @@
 ^Makefile$
 ^Build.PL.in$
 ^OeLinkBin.PL.in$
-^jackscript.pod.in$
+^jacks.pod.in$
