@@ -157,6 +157,12 @@
             <F N="corelib/JacksLatch.c"/>
             <F N="corelib/JacksRbClient.c"/>
             <F N="corelib/JacksRbPort.c"/>
+            <F N="modules/nodejs/src/JsClient.cc"/>
+            <F N="modules/nodejs/src/JsEvent.cc"/>
+            <F N="modules/nodejs/src/jsjacks.cc"/>
+            <F N="modules/nodejs/src/JsLatencyRange.cc"/>
+            <F N="modules/nodejs/src/JsPort.cc"/>
+            <F N="modules/nodejs/src/JsPortBuffer.cc"/>
             <F N="modules/perl/example-clients/latency_api.pl"/>
             <F N="modules/perl/example-clients/latency_by_type_api.pl"/>
             <F
@@ -189,6 +195,11 @@
             <F N="corelib/JacksRbClient.h"/>
             <F N="corelib/JacksRbPort.h"/>
             <F N="corelib/JacksSndFile.h"/>
+            <F N="modules/nodejs/src/JsClient.h"/>
+            <F N="modules/nodejs/src/JsEvent.h"/>
+            <F N="modules/nodejs/src/JsLatencyRange.h"/>
+            <F N="modules/nodejs/src/JsPort.h"/>
+            <F N="modules/nodejs/src/JsPortBuffer.h"/>
             <F N="corelib/lfds/liblfds.h"/>
             <F N="corelib/lfds/liblfds_internal.h"/>
             <F N="scripts/ltmain.sh"/>

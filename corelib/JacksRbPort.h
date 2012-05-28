@@ -15,6 +15,10 @@
  *  along with this program; if not, write to the Free Software 
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
+#ifdef __cplusplus
+extern "C" {
+#endif 
+
 
 #ifndef _JS_RB_PORT_H_
 #define _JS_RB_PORT_H_
@@ -44,4 +48,8 @@ extern void*        JacksRbPort_get_port(T);
 
 #undef T
 #endif
+
+#ifdef __cplusplus
+}
+#endif 
 

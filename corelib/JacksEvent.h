@@ -16,6 +16,10 @@
  *  Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
  */
 
+#ifdef __cplusplus
+extern "C" {
+#endif 
+
 #ifndef JSEVENT_H
 #define JSEVENT_H
 
@@ -39,4 +43,8 @@ extern void JacksEvent_free(T *);
 
 #undef T
 #endif
+
+#ifdef __cplusplus
+}
+#endif 
 
