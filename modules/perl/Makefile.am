@@ -5,9 +5,7 @@ include_HEADERS =
 EXTRA_DIST = Build.PL.in Changes MANIFEST MANIFEST.SKIP META.yml Makefile.PL OeLinkBin.PL.in README jacks.pm jacks.pod.in 
 
 _cflags = -I$(top_builddir)/corelib @OE_LIB_CFLAGS@ @PERLXS_CFLAGS@ @JACK_CFLAGS@
-#_cflags = -I$(top_builddir)/corelib @OE_LIB_CFLAGS@ @JACK_CFLAGS@ @PERL_EXT_CPPFLAGS@
 _libadd = $(top_builddir)/corelib/libjacks.la @PERLXS_LDFLAGS@ @JACK_LIBS@
-#_libadd = $(top_builddir)/corelib/libjacks.la @JACK_LIBS@ @PERL_EXT_LDFLAGS@
 
 lib_LTLIBRARIES = libjacks_perl.la 
 
@@ -16,16 +14,6 @@ libjacks_perl_la_LIBADD = ${_libadd}
 libjacks_perl_la_CFLAGS = ${_cflags}
 libjacks_perl_la_LDFLAGS = @OE_LIB_LDFLAGS@ -module
 
-#all:
-#	mkdir -p lib
-#	cat jacks.pod ./jacks.pm > lib/jacks.pm
-#	perl ./Build.PL 
-#	./Build build
-
-#	mkdir -p lib
-#	cat jacks.pod ./jacks.pm > lib/jacks.pm
-#	perl ./Build.PL 
-#	test ! -e ./Build || ./Build clean
 clean-local:
 	rm -f ./Build
 	rm -rf ./_build

@@ -1,0 +1,26 @@
+srcdir = '.'
+blddir = 'build'
+srcdir = '.'
+VERSION = '@VERSION@'
+
+def set_options(opt):
+  opt.tool_options('compiler_cxx')
+
+def configure(conf):
+  conf.check_tool('compiler_cxx')
+  conf.check_tool('node_addon')
+
+def build(bld):
+  obj = bld.new_task_gen('cxx', 'shlib', 'node_addon')
+  obj.cxxflags = ["-g3", "-ggdb3", "-O0", "-D_FILE_OFFSET_BITS=64", "-D_LARGEFILE_SOURCE", "-Wall", "-I@TOP_BUILD_DIR@/corelib"]
+  obj.ldflags = ["-L@TOP_BUILD_DIR@/corelib/.libs", "-ljacks", "-ljack", "-lpthread", "-lrt"]
+  obj.target = 'jsjacks'
+  obj.source = [
+               'src/JsPortBuffer.cc',
+               'src/JsPort.cc',
+               'src/JsEvent.cc',
+               'src/JsClient.cc',
+               'src/JsLatencyRange.cc',
+               'src/jsjacks.cc'
+               ]
+

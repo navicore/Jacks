@@ -1,0 +1,16 @@
+
+all: 
+	node-waf configure && npm install
+
+clean:
+	rm -rf build
+
+check: all
+	node test/test_jacks.js
+
+install:
+	npm install -g
+
+uninstall:
+	npm uninstall jacks -g
+
