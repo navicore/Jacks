@@ -1,10 +1,10 @@
 {
-  "name": "oescript",
-  "description": "OeScript Tuple and Map Spaces API",
+  "name": "jacks",
+  "description": "Jacks Scripting API for Jack Audio Connection Kit",
   "version": "@VERSION@",
   "repository": {
     "type": "git",
-    "url": "ssh://code.onextent.com/~git/oescript"
+    "url": "git@github.com:navicore/Jacks.git"
   },
   "dependencies": {
   },
@@ -12,7 +12,7 @@
   "private": true,
   "scripts": {
     "preinstall": "node-waf clean || (exit 0); node-waf configure build",
-    "test": "node test/test_server_parts.js"
+    "test": "node test/test_jacks.js"
   },
   "devDependencies": {},
   "optionalDependencies": {},
@@ -20,5 +20,6 @@
     "node": "*"
   },
   "author": "Ed Sweeney <ed@onextent.com> (http://www.onextent.com)",
-  "homepage": "http://www.oescript.net"
+  "homepage": "https://github.com/navicore/Jacks"
 }
+

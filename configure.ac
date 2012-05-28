@@ -1,8 +1,8 @@
 AC_PREREQ(2.60)
-AC_INIT([Jacks Pre Alpha], [0.1.3], [info@onextent.com])
+AC_INIT([Jacks Pre Alpha], [0.1.4], [info@onextent.com])
 AC_DEFINE([OE_VERSION_MAJ],[0],[major version])
 AC_DEFINE([OE_VERSION_MIN],[1],[minor version])
-AC_DEFINE([OE_VERSION_UPT],[3],[update version])
+AC_DEFINE([OE_VERSION_UPT],[4],[update version])
 AC_CONFIG_AUX_DIR([scripts])
 AC_PROG_LIBTOOL
 AM_INIT_AUTOMAKE( [-Wall] )
@@ -79,7 +79,25 @@ AC_SUBST(OE_LIB_CFLAGS)
 AC_SUBST(OE_APP_CFLAGS)
 AC_SUBST(OE_APP_LDFLAGS)
 
+OE_LIST_OF_SCRIPTING_APIS_TO_BUILD=
 
+#=============================================================================#
+#                                                                             #
+#                                                                             #
+#                    configure scriping APIs for Node.js                      #
+#                                                                             #
+#                                                                             #
+#=============================================================================#
+_with_nodejs=no
+AC_ARG_WITH([nodejs],
+        [  --with-nodejs           build node.js api],
+	[AC_MSG_RESULT([building --with-nodejs.])
+    _with_nodejs=yes]
+    )
+
+if test x$_with_nodejs = xyes ; then
+OE_LIST_OF_SCRIPTING_APIS_TO_BUILD="nodejs $OE_LIST_OF_SCRIPTING_APIS_TO_BUILD"
+fi
 #=============================================================================#
 #                                                                             #
 #                                                                             #
@@ -96,7 +114,6 @@ AC_SUBST([OE_SHSUF])
 
 
 AX_PKG_SWIG(1.3.17, [], [AC_MSG_RESULT([SWIG not found.  This is fine unless you have modified any *.i files.]) ])
-OE_LIST_OF_SCRIPTING_APIS_TO_BUILD=
 
 #=============================================================================#
 #                            configure perl support                           #
@@ -110,18 +127,6 @@ AC_ARG_WITH([perl],
     )
 
 if test x$_with_perl = xyes ; then
-
-#AX_PERL_EXT_FLAGS([PERLXS_CFLAGS], [PERLXS_LDFLAGS])
-#AC_SUBST([PERLXS_CFLAGS])
-#AX_PERL_EXT_LDFLAGS([PERLXS_LDFLAGS], [PERLXS_LDFLAGS])
-##AC_SUBST([PERLXS_CFLAGS])
-#AC_SUBST([PERLXS_LDFLAGS])
-#AX_PERL_EXT()
-#if test x"$PERL" = x; then
-#    AC_ERROR(["cannot find Perl"])
-#fi
-#AC_SUBST([PERL_EXT_CPPFLAGS])
-#AC_SUBST([PERL_EXT_LDFLAGS])
 
 AX_PERL_EXT_CFLAGS([PERLXS_CFLAGS])
 AC_SUBST([PERLXS_CFLAGS])
@@ -170,7 +175,7 @@ fi
 _with_python2=no
 
 AC_ARG_WITH([python2],
-        [  --with-python2           build python api],
+        [  --with-python2          build python api],
 	[AC_MSG_RESULT([building --with-python2.])
     _with_python2=yes]
     )
@@ -242,6 +247,8 @@ AC_SUBST([RUBY_EXTRA_LIBS])
 OE_LIST_OF_SCRIPTING_APIS_TO_BUILD="$OE_LIST_OF_SCRIPTING_APIS_TO_BUILD ruby"
 fi
 
+AC_SUBST(TOP_BUILD_DIR, `pwd`)
+
 AC_SUBST(OE_LIST_OF_SCRIPTING_APIS_TO_BUILD)
 
 #=============================================================================#
@@ -287,6 +294,9 @@ AC_OUTPUT(
         modules/lua/Makefile
         modules/lua/test/Makefile
         modules/lua/example-clients/Makefile
+        modules/nodejs/Makefile
+        modules/nodejs/package.json
+        modules/nodejs/wscript
         modules/perl/Makefile
         modules/perl/t/Makefile
         modules/perl/example-clients/Makefile
