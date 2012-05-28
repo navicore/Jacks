@@ -22,4 +22,5 @@ ok($new_range->max() != $orig_range->max());
 ok($new_range->min() != $orig_range->min());
 ok($newmin = $new_range->min());
 ok($newmax = $new_range->max());
+$jc->recomputeLatencies();
 
