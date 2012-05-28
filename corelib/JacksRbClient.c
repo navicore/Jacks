@@ -34,8 +34,7 @@
 #include <semaphore.h>
 
 #define T JacksRbClient
-
-struct T {
+struct jacks_rb_client_T {
 
     JacksRbPort **ports;
     int nports;

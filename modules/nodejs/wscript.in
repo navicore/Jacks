@@ -16,11 +16,11 @@ def build(bld):
   obj.ldflags = ["-L@TOP_BUILD_DIR@/corelib/.libs", "-ljacks", "-ljack", "-lpthread", "-lrt"]
   obj.target = 'jsjacks'
   obj.source = [
-               'src/JsPortBuffer.cc',
-               'src/JsPort.cc',
-               'src/JsEvent.cc',
-               'src/JsClient.cc',
-               'src/JsLatencyRange.cc',
+               'src/JacksNjPortBuffer.cc',
+               'src/JacksNjPort.cc',
+               'src/JacksNjEvent.cc',
+               'src/JacksNjClient.cc',
+               'src/JacksNjLatencyRange.cc',
                'src/jsjacks.cc'
                ]
 

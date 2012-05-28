@@ -24,8 +24,7 @@
 #include <assert.h>
 
 #define T JacksEvent
-
-struct T {
+struct jacks_event_T {
     int etype;
     void *data;
     JSEVENT_CTOKEN *ctoken;

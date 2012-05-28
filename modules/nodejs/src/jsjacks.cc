@@ -1,19 +1,19 @@
 #define BUILDING_NODE_EXTENSION
 #include <node.h>
-#include "JsClient.h"
-#include "JsPort.h"
-#include "JsEvent.h"
-#include "JsLatencyRange.h"
-#include "JsPortBuffer.h"
+#include "JacksNjClient.h"
+#include "JacksNjPort.h"
+#include "JacksNjEvent.h"
+#include "JacksNjLatencyRange.h"
+#include "JacksNjPortBuffer.h"
 
 using namespace v8;
 
 void InitAll(Handle<Object> target) {
-  JsClient::Init(target);
-  JsPort::Init(target);
-  JsEvent::Init(target);
-  JsLatencyRange::Init(target);
-  JsPortBuffer::Init(target);
+  JacksNjClient::Init(target);
+  //JacksNjPort::Init(target);
+  //JacksNjEvent::Init(target);
+  //JacksNjLatencyRange::Init(target);
+  //JacksNjPortBuffer::Init(target);
 }
 
 NODE_MODULE(jacks, InitAll)

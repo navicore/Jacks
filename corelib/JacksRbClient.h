@@ -30,7 +30,8 @@ extern "C" {
 #include <assert.h>
 
 #define T JacksRbClient
-typedef struct T *T;
+typedef struct jacks_rb_client_T *T;
+
 
 #define MAX_PORTS 999
 
@@ -52,19 +53,12 @@ extern JacksEvent       JacksRbClient_get_event(T, long);
 
 extern jack_nframes_t   JacksRbClient_get_sample_rate(T);
 
-extern sample_t        *JacksRbClient_get_in_buffer(T);
-
-extern void             JacksRbClient_set_out_buffer(T, sample_t *);
-
-extern sample_t        *JacksRbClient_get_out_buffer(T);
-
 extern jack_client_t   *JacksRbClient_get_client(T);
 
 extern int              JacksRbClient_activate(T, int);
 
 extern char            *JacksRbClient_get_name(T);
 
-//extern void             JacksRbClient_set_rb_size(T, jack_nframes_t);
 extern jack_nframes_t   JacksRbClient_get_rb_size(T);
 
 #undef T

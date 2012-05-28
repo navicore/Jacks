@@ -27,7 +27,9 @@ extern "C" {
 #include <assert.h>
 
 #define T JacksEvent
-typedef struct T *T;
+struct jacks_event_T;
+
+typedef struct jacks_event_T *T;
 
 typedef int JSEVENT_CTOKEN (void *);
 

@@ -155,14 +155,14 @@
             <F N="corelib/JacksEvent.c"/>
             <F N="corelib/JacksHelper.c"/>
             <F N="corelib/JacksLatch.c"/>
+            <F N="modules/nodejs/src/JacksNjClient.cc"/>
+            <F N="modules/nodejs/src/JacksNjEvent.cc"/>
+            <F N="modules/nodejs/src/JacksNjLatencyRange.cc"/>
+            <F N="modules/nodejs/src/JacksNjPort.cc"/>
+            <F N="modules/nodejs/src/JacksNjPortbuffer.cc"/>
             <F N="corelib/JacksRbClient.c"/>
             <F N="corelib/JacksRbPort.c"/>
-            <F N="modules/nodejs/src/JsClient.cc"/>
-            <F N="modules/nodejs/src/JsEvent.cc"/>
             <F N="modules/nodejs/src/jsjacks.cc"/>
-            <F N="modules/nodejs/src/JsLatencyRange.cc"/>
-            <F N="modules/nodejs/src/JsPort.cc"/>
-            <F N="modules/nodejs/src/JsPortBuffer.cc"/>
             <F N="modules/perl/example-clients/latency_api.pl"/>
             <F N="modules/perl/example-clients/latency_by_type_api.pl"/>
             <F
@@ -192,14 +192,14 @@
             <F N="corelib/JacksEvent.h"/>
             <F N="corelib/JacksExceptions.h"/>
             <F N="corelib/JacksLatch.h"/>
+            <F N="modules/nodejs/src/JacksNjClient.h"/>
+            <F N="modules/nodejs/src/JacksNjEvent.h"/>
+            <F N="modules/nodejs/src/JacksNjLatencyRange.h"/>
+            <F N="modules/nodejs/src/JacksNjPort.h"/>
+            <F N="modules/nodejs/src/JacksNjPortbuffer.h"/>
             <F N="corelib/JacksRbClient.h"/>
             <F N="corelib/JacksRbPort.h"/>
             <F N="corelib/JacksSndFile.h"/>
-            <F N="modules/nodejs/src/JsClient.h"/>
-            <F N="modules/nodejs/src/JsEvent.h"/>
-            <F N="modules/nodejs/src/JsLatencyRange.h"/>
-            <F N="modules/nodejs/src/JsPort.h"/>
-            <F N="modules/nodejs/src/JsPortBuffer.h"/>
             <F N="corelib/lfds/liblfds.h"/>
             <F N="corelib/lfds/liblfds_internal.h"/>
             <F N="scripts/ltmain.sh"/>
@@ -251,7 +251,6 @@
             <F N="corelib/test/.deps/floatsize-floatsize.Po"/>
             <F N="modules/Jacks.i"/>
             <F N="modules/perl/jacks.pm"/>
-            <F N="modules/perl/lib/jacks.pm"/>
             <F N="modules/perl/jacks.pod"/>
             <F N="modules/perl/jacks.pod.in"/>
             <F N="modules/python2/test/jacks.pyc"/>
