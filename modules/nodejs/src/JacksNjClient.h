@@ -17,7 +17,6 @@ class JacksNjClient : public node::ObjectWrap {
   static v8::Handle<v8::Value> GetEvent         (const v8::Arguments& args);
   static v8::Handle<v8::Value> GetSampleRate    (const v8::Arguments& args);
   static v8::Handle<v8::Value> Activate         (const v8::Arguments& args);
-  static v8::Handle<v8::Value> GetName          (const v8::Arguments& args);
   static v8::Handle<v8::Value> GetRbSize        (const v8::Arguments& args);
 
   JacksRbClient impl_;

@@ -90,7 +90,7 @@ OE_LIST_OF_SCRIPTING_APIS_TO_BUILD=
 #=============================================================================#
 _with_nodejs=no
 AC_ARG_WITH([nodejs],
-        [  --with-nodejs           build node.js api],
+        [  --with-nodejs           build node.js api (NOT YET IMPLEMENTED)],
 	[AC_MSG_RESULT([building --with-nodejs.])
     _with_nodejs=yes]
     )

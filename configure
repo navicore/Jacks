@@ -1442,7 +1442,7 @@ Optional Packages:
   --with-gnu-ld           assume the C compiler uses GNU ld [default=no]
   --with-sysroot=DIR Search for dependent libraries within DIR
                         (or the compiler's sysroot if not specified).
-  --with-nodejs           build node.js api
+  --with-nodejs           build node.js api (NOT YET IMPLEMENTED)
   --with-perl             build perl api
   --with-lua              Only build lua shared lib for luarock
   --with-lua-path=PATH    Path to the Lua 5.1 prefix
