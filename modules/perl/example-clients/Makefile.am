@@ -1,6 +1,6 @@
 check_PROGRAMS = 
 
-EXTRA_DIST = capture_client.pl test_swig_api.pl script_runner
+EXTRA_DIST = capture_client.pl script_runner
 
 include_HEADERS = 
 

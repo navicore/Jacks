@@ -1,6 +1,6 @@
 check_PROGRAMS = 
 
-EXTRA_DIST = simple_client.py
+EXTRA_DIST = 
 
 include_HEADERS = 
 
