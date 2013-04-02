@@ -1662,11 +1662,16 @@ SWIGINTERN int
 SWIG_AsVal_unsigned_SS_long SWIG_PERL_DECL_ARGS_2(SV *obj, unsigned long *val) 
 {
   if (SvUOK(obj)) {
-    if (val) *val = SvUV(obj);
-    return SWIG_OK;
+    UV v = SvUV(obj);
+    if (v >= 0 && v <= ULONG_MAX) {
+      if (val) *val = v;
+      return SWIG_OK;
+    } else {
+      return SWIG_OverflowError;
+    }
   } else  if (SvIOK(obj)) {
-    long v = SvIV(obj);
-    if (v >= 0) {
+    IV v = SvIV(obj);
+    if (v >= 0 && v <= ULONG_MAX) {
       if (val) *val = v;
       return SWIG_OK;
     } else {
@@ -1843,8 +1848,13 @@ SWIGINTERN int
 SWIG_AsVal_long SWIG_PERL_DECL_ARGS_2(SV *obj, long* val)
 {
   if (SvIOK(obj)) {
-    if (val) *val = SvIV(obj);
-    return SWIG_OK;
+    IV v = SvIV(obj);
+    if (v >= LONG_MIN && v <= LONG_MAX) {
+      if (val) *val = v;
+      return SWIG_OK;
+    } else {
+      return SWIG_OverflowError;
+    }
   } else {
     int dispatch = 0;
     const char *nptr = SvPV_nolen(obj);
@@ -1997,7 +2007,8 @@ SWIGINTERN char *JsPort_name(JsPort *self){
         }
 SWIGINTERN int JsPort_connect(JsPort *self,JsPort *_that_){
 
-            return JacksRbPort_connect(self->impl, _that_->impl);
+            int rc = JacksRbPort_connect(self->impl, _that_->impl);
+            if (rc) throw_exception("can not connect ports");
         }
 SWIGINTERN JsLatencyRange *JsPort_getLatencyRange(JsPort *self,enum JackLatencyCallbackMode mode){
 
@@ -2018,6 +2029,15 @@ SWIGINTERN void JsPort_setLatencyRange(JsPort *self,enum JackLatencyCallbackMode
             range.max = rmax;
             jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port(self->impl),
                                                     mode, &range);
+        }
+SWIGINTERN void JsPort_wakeup(JsPort *self){
+            JacksRbPort_wakeup(self->impl);
+        }
+SWIGINTERN int JsPort_initLatencyListener(JsPort *self){
+
+            int fd = JacksRbPort_init_latency_listener(self->impl);
+            if (fd < 0) throw_exception("can not init latency callback");
+            return fd; //note, I doubt this will work... just stubbing it out for now.
         }
 SWIGINTERN void delete_JsEvent(JsEvent *self){
             JacksEvent_free(&self->impl);
@@ -2162,8 +2182,10 @@ SWIGINTERN jack_transport_state_t JsClient_getTransportState(JsClient *self){
         }
 SWIGINTERN void JsClient_recomputeLatencies(JsClient *self){
 
+            fprintf (stderr, "calling recompute total latencies...\n");
             int rc = jack_recompute_total_latencies(JacksRbClient_get_client(self->impl));
             if (rc) throw_exception("can not recompute total latency");
+            fprintf (stderr, "...recompute total latencies called\n");
 
             return;
         }
@@ -3274,6 +3296,105 @@ XS(_wrap_JsPort_setLatencyRange) {
     
     
     
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_JsPort_wakeup) {
+  {
+    JsPort *arg1 = (JsPort *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: JsPort_wakeup(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_wakeup" "', argument " "1"" of type '" "JsPort *""'"); 
+    }
+    arg1 = (JsPort *)(argp1);
+    {
+      char *err;
+      clear_exception();
+      JsPort_wakeup(arg1);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_JsPort_initLatencyListener) {
+  {
+    JsPort *arg1 = (JsPort *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: JsPort_initLatencyListener(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_initLatencyListener" "', argument " "1"" of type '" "JsPort *""'"); 
+    }
+    arg1 = (JsPort *)(argp1);
+    {
+      char *err;
+      clear_exception();
+      result = (int)JsPort_initLatencyListener(arg1);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
     
     SWIG_croak_null();
   }
@@ -4862,6 +4983,8 @@ static swig_command_info swig_commands[] = {
 {"jacksc::JsPort_connect", _wrap_JsPort_connect},
 {"jacksc::JsPort_getLatencyRange", _wrap_JsPort_getLatencyRange},
 {"jacksc::JsPort_setLatencyRange", _wrap_JsPort_setLatencyRange},
+{"jacksc::JsPort_wakeup", _wrap_JsPort_wakeup},
+{"jacksc::JsPort_initLatencyListener", _wrap_JsPort_initLatencyListener},
 {"jacksc::new_JsPort", _wrap_new_JsPort},
 {"jacksc::delete_JsEvent", _wrap_delete_JsEvent},
 {"jacksc::JsEvent_getType", _wrap_JsEvent_getType},
@@ -5183,142 +5306,142 @@ XS(SWIG_init) {
     SvREADONLY_on(sv);
   }
   
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "PROCESS", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(PROCESS)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "SESSION", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(SESSION)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "ERR", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(ERR)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "SAMPLE_RATE_CHANGE", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(SAMPLE_RATE_CHANGE)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "SHUTDOWN", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(SHUTDOWN)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackTransportStopped", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackTransportStopped)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackTransportRolling", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackTransportRolling)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackTransportLooping", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackTransportLooping)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackTransportStarting", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackTransportStarting)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackPortIsInput", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackPortIsInput)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackPortIsOutput", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackPortIsOutput)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackPortIsPhysical", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackPortIsPhysical)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackPortCanMonitor", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackPortCanMonitor)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackPortIsTerminal", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackPortIsTerminal)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackNullOption", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackNullOption)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackNoStartServer", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackNoStartServer)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackUseExactName", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackUseExactName)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackServerName", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackServerName)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackLoadName", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackLoadName)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackLoadInit", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackLoadInit)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackSessionID", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackSessionID)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackSessionSave", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackSessionSave)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackSessionSaveAndQuit", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackSessionSaveAndQuit)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackSessionSaveTemplate", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackSessionSaveTemplate)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackSessionSaveError", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackSessionSaveError)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackSessionNeedTerminal", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackSessionNeedTerminal)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackCaptureLatency", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackCaptureLatency)));
     SvREADONLY_on(sv);
   } while(0) /*@SWIG@*/;
-  /*@SWIG:/usr/share/swig/2.0.4/perl5/perltypemaps.swg,65,%set_constant@*/ do {
+  /*@SWIG:/usr/share/swig2.0/perl5/perltypemaps.swg,65,%set_constant@*/ do {
     SV *sv = get_sv((char*) SWIG_prefix "JackPlaybackLatency", TRUE | 0x2 | GV_ADDMULTI);
     sv_setsv(sv, SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(JackPlaybackLatency)));
     SvREADONLY_on(sv);

@@ -3,3 +3,6 @@
 lua ./test_swig_api.lua
 if [ $? -ne 0 ]; then echo "$0 failed"; exit 1; fi
 
+lua ./test_latency_callback.lua
+if [ $? -ne 0 ]; then echo "$0 failed"; exit 1; fi
+

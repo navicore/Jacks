@@ -192,6 +192,8 @@ sub DESTROY {
 *connect = *jacksc::JsPort_connect;
 *getLatencyRange = *jacksc::JsPort_getLatencyRange;
 *setLatencyRange = *jacksc::JsPort_setLatencyRange;
+*wakeup = *jacksc::JsPort_wakeup;
+*initLatencyListener = *jacksc::JsPort_initLatencyListener;
 sub new {
     my $pkg = shift;
     my $self = jacksc::new_JsPort(@_);

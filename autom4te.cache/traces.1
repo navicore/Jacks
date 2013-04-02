@@ -1,5 +1,11 @@
 m4trace:aclocal.m4:1019: -1- m4_include([m4/ax_compare_version.m4])
 m4trace:aclocal.m4:1020: -1- m4_include([m4/ax_oe_jack.m4])
+m4trace:m4/ax_oe_jack.m4:18: -1- AC_SUBST([JACK_LIBS])
+m4trace:m4/ax_oe_jack.m4:18: -1- AC_SUBST_TRACE([JACK_LIBS])
+m4trace:m4/ax_oe_jack.m4:18: -1- m4_pattern_allow([^JACK_LIBS$])
+m4trace:m4/ax_oe_jack.m4:19: -1- AC_SUBST([JACK_CFLAGS])
+m4trace:m4/ax_oe_jack.m4:19: -1- AC_SUBST_TRACE([JACK_CFLAGS])
+m4trace:m4/ax_oe_jack.m4:19: -1- m4_pattern_allow([^JACK_CFLAGS$])
 m4trace:aclocal.m4:1021: -1- m4_include([m4/ax_perl_ext_flags.m4])
 m4trace:aclocal.m4:1022: -1- m4_include([m4/ax_pkg_swig.m4])
 m4trace:aclocal.m4:1023: -1- m4_include([m4/ax_prog_ruby_version.m4])
@@ -13,7 +19,7 @@ m4trace:aclocal.m4:1030: -1- m4_include([m4/ltsugar.m4])
 m4trace:aclocal.m4:1031: -1- m4_include([m4/ltversion.m4])
 m4trace:aclocal.m4:1032: -1- m4_include([m4/lt~obsolete.m4])
 m4trace:aclocal.m4:1033: -1- m4_include([m4/lua.m4])
-m4trace:configure.ac:2: -1- AC_INIT([Jacks Pre Alpha], [0.1.4], [info@onextent.com])
+m4trace:configure.ac:2: -1- AC_INIT([Jacks Pre Alpha], [0.1.5], [info@onextent.com])
 m4trace:configure.ac:2: -1- m4_pattern_forbid([^_?A[CHUM]_])
 m4trace:configure.ac:2: -1- m4_pattern_forbid([_AC_])
 m4trace:configure.ac:2: -1- m4_pattern_forbid([^LIBOBJS$], [do not use LIBOBJS directly, use AC_LIBOBJ (see section `AC_LIBOBJ vs LIBOBJS'])
@@ -677,12 +683,6 @@ m4trace:configure.ac:62: -1- AH_OUTPUT([HAVE_JACK_JACK_H], [/* Define to 1 if yo
 @%:@undef HAVE_JACK_JACK_H])
 m4trace:configure.ac:62: -1- AC_DEFINE_TRACE_LITERAL([HAVE_JACK_JACK_H])
 m4trace:configure.ac:62: -1- m4_pattern_allow([^HAVE_JACK_JACK_H$])
-m4trace:configure.ac:62: -1- AC_SUBST([JACK_LIBS])
-m4trace:configure.ac:62: -1- AC_SUBST_TRACE([JACK_LIBS])
-m4trace:configure.ac:62: -1- m4_pattern_allow([^JACK_LIBS$])
-m4trace:configure.ac:62: -1- AC_SUBST([JACK_CFLAGS])
-m4trace:configure.ac:62: -1- AC_SUBST_TRACE([JACK_CFLAGS])
-m4trace:configure.ac:62: -1- m4_pattern_allow([^JACK_CFLAGS$])
 m4trace:configure.ac:77: -1- AC_SUBST([OE_LIB_LDFLAGS])
 m4trace:configure.ac:77: -1- AC_SUBST_TRACE([OE_LIB_LDFLAGS])
 m4trace:configure.ac:77: -1- m4_pattern_allow([^OE_LIB_LDFLAGS$])
@@ -918,10 +918,6 @@ m4trace:configure.ac:277: -1- AC_CONFIG_FILES([Makefile
         modules/python2/example-clients/Makefile
         modules/python2/setup.py
         modules/python2/test/Makefile
-        modules/python3/Makefile
-        modules/python3/example-clients/Makefile
-        modules/python3/setup.py
-        modules/python3/test/Makefile
         modules/ruby/Makefile
         modules/ruby/example-clients/Makefile
         modules/ruby/test/Makefile

@@ -2,6 +2,12 @@
 
 export DYLD_LIBRARY_PATH=../.libs:.:$DYLD_LIBRARY_PATH
 
-perl ./latency_api.pl
+#perl ./latency_api.pl
+#if [ $? -ne 0 ]; then echo "$0 failed"; exit 1; fi
+
+perl ./latency_callback.pl
 if [ $? -ne 0 ]; then echo "$0 failed"; exit 1; fi
+
+#perl ./latency_by_type_api.pl
+#if [ $? -ne 0 ]; then echo "$0 failed"; exit 1; fi
 

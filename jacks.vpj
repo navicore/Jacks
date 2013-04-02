@@ -130,13 +130,26 @@
         <Folder
             Name="Source Files"
             Filters="*.c;*.C;*.cc;*.cpp;*.cp;*.cxx;*.c++;*.prg;*.pas;*.dpr;*.asm;*.s;*.bas;*.java;*.cs;*.sc;*.e;*.cob;*.html;*.rc;*.tcl;*.py;*.pl;*.d">
+            <F N="corelib/JacksEvent.c"/>
+            <F N="corelib/JacksHelper.c"/>
+            <F N="corelib/JacksLatch.c"/>
+            <F N="modules/nodejs/src/JacksNjClient.cc"/>
+            <F N="modules/nodejs/src/JacksNjEvent.cc"/>
+            <F N="modules/nodejs/src/JacksNjLatencyRange.cc"/>
+            <F N="modules/nodejs/src/JacksNjPort.cc"/>
+            <F N="modules/nodejs/src/JacksNjPortBuffer.cc"/>
+            <F N="corelib/JacksRbClient.c"/>
+            <F N="corelib/JacksRbPort.c"/>
+            <F N="modules/lua/Jacks_lua_wrap.c"/>
+            <F N="modules/perl/Jacks_perl5_wrap.c"/>
+            <F N="modules/python3/Jacks_python3_wrap.c"/>
+            <F N="modules/python2/Jacks_python_wrap.c"/>
+            <F N="modules/ruby/Jacks_ruby_wrap.c"/>
             <F N="corelib/lfds/abstraction_aligned_free.c"/>
             <F N="corelib/lfds/abstraction_aligned_malloc.c"/>
             <F N="corelib/lfds/abstraction_cas.c"/>
             <F N="corelib/lfds/abstraction_dcas.c"/>
             <F N="corelib/lfds/abstraction_increment.c"/>
-            <F N="modules/perl/Build.PL"/>
-            <F N="modules/perl/example-clients/capture_client.pl"/>
             <F N="corelib/test/floatsize.c"/>
             <F N="corelib/lfds/freelist_delete.c"/>
             <F N="corelib/lfds/freelist_get_and_set.c"/>
@@ -147,28 +160,7 @@
             <F N="modules/python2/example-clients/jacks.py"/>
             <F N="modules/python2/test/jacks.py"/>
             <F N="modules/python3/jacks.py"/>
-            <F N="modules/lua/Jacks_lua_wrap.c"/>
-            <F N="modules/perl/Jacks_perl5_wrap.c"/>
-            <F N="modules/python3/Jacks_python3_wrap.c"/>
-            <F N="modules/python2/Jacks_python_wrap.c"/>
-            <F N="modules/ruby/Jacks_ruby_wrap.c"/>
-            <F N="corelib/JacksEvent.c"/>
-            <F N="corelib/JacksHelper.c"/>
-            <F N="corelib/JacksLatch.c"/>
-            <F N="modules/nodejs/src/JacksNjClient.cc"/>
-            <F N="modules/nodejs/src/JacksNjEvent.cc"/>
-            <F N="modules/nodejs/src/JacksNjLatencyRange.cc"/>
-            <F N="modules/nodejs/src/JacksNjPort.cc"/>
-            <F N="modules/nodejs/src/JacksNjPortbuffer.cc"/>
-            <F N="corelib/JacksRbClient.c"/>
-            <F N="corelib/JacksRbPort.c"/>
             <F N="modules/nodejs/src/jsjacks.cc"/>
-            <F N="modules/perl/example-clients/latency_api.pl"/>
-            <F N="modules/perl/example-clients/latency_by_type_api.pl"/>
-            <F
-                N="modules/perl/Makefile.PL"
-                Type="Makefile"/>
-            <F N="modules/perl/OeLinkBin.PL"/>
             <F N="corelib/lfds/queue_delete.c"/>
             <F N="corelib/lfds/queue_new.c"/>
             <F N="corelib/lfds/queue_query.c"/>
@@ -182,12 +174,6 @@
         <Folder
             Name="Header Files"
             Filters="*.h;*.H;*.hh;*.hpp;*.hxx;*.inc;*.sh;*.cpy;*.if">
-            <F N="corelib/lfds/abstraction_internal.h"/>
-            <F N="autogen.sh"/>
-            <F N="config.h"/>
-            <F N="corelib/lfds/freelist_internal.h"/>
-            <F N="modules/jack_exceptions.h"/>
-            <F N="modules/jack_headers.h"/>
             <F N="corelib/Jacks.h"/>
             <F N="corelib/JacksEvent.h"/>
             <F N="corelib/JacksExceptions.h"/>
@@ -196,14 +182,30 @@
             <F N="modules/nodejs/src/JacksNjEvent.h"/>
             <F N="modules/nodejs/src/JacksNjLatencyRange.h"/>
             <F N="modules/nodejs/src/JacksNjPort.h"/>
-            <F N="modules/nodejs/src/JacksNjPortbuffer.h"/>
+            <F N="modules/nodejs/src/JacksNjPortBuffer.h"/>
             <F N="corelib/JacksRbClient.h"/>
             <F N="corelib/JacksRbPort.h"/>
-            <F N="corelib/JacksSndFile.h"/>
+            <F N="corelib/lfds/abstraction_internal.h"/>
+            <F N="config.h"/>
+            <F N="/usr/include/jack/control.h"/>
+            <F N="corelib/lfds/freelist_internal.h"/>
+            <F N="/usr/include/jack/intclient.h"/>
+            <F N="/usr/include/jack/jack.h"/>
+            <F N="modules/jack_exceptions.h"/>
+            <F N="modules/jack_headers.h"/>
             <F N="corelib/lfds/liblfds.h"/>
             <F N="corelib/lfds/liblfds_internal.h"/>
-            <F N="scripts/ltmain.sh"/>
+            <F N="/usr/include/jack/midiport.h"/>
             <F N="corelib/lfds/queue_internal.h"/>
+            <F N="/usr/include/jack/ringbuffer.h"/>
+            <F N="/usr/include/jack/session.h"/>
+            <F N="/usr/include/jack/statistics.h"/>
+            <F N="/usr/include/jack/thread.h"/>
+            <F N="/usr/include/jack/timestamps.h"/>
+            <F N="/usr/include/jack/transport.h"/>
+            <F N="/usr/include/jack/types.h"/>
+            <F N="/usr/include/jack/weakjack.h"/>
+            <F N="/usr/include/jack/weakmacros.h"/>
         </Folder>
         <Folder
             Name="Resource Files"
@@ -214,119 +216,7 @@
         <Folder
             Name="Other Files"
             Filters="">
-            <F N="modules/perl/t/00-load.t"/>
-            <F N="modules/python2/build/lib/_jacks.so"/>
-            <F N="modules/python2/example-clients/_jacks.so"/>
-            <F N="modules/python2/test/_jacks.so"/>
-            <F N="aclocal.m4"/>
-            <F N=".git/hooks/applypatch-msg.sample"/>
-            <F N="m4/ax_compare_version.m4"/>
-            <F N="m4/ax_oe_go.m4"/>
-            <F N="m4/ax_oe_guile_devel.m4"/>
-            <F N="m4/ax_oe_jack.m4"/>
-            <F N="m4/ax_oe_openssl.m4"/>
-            <F N="m4/ax_oe_php_devel.m4"/>
-            <F N="m4/ax_oe_R.m4"/>
-            <F N="m4/ax_oejava.m4"/>
-            <F N="m4/ax_perl_ext_flags.m4"/>
-            <F N="m4/ax_pkg_swig.m4"/>
-            <F N="m4/ax_prog_ruby_version.m4"/>
-            <F N="m4/ax_python_devel.m4"/>
-            <F N="m4/ax_ruby_devel.m4"/>
-            <F N="m4/ax_with_prog.m4"/>
-            <F N="m4/ax_with_ruby.m4"/>
-            <F N="modules/perl/Build.PL.in"/>
-            <F N="corelib/test/.deps/capture_client-capture_client.Po"/>
-            <F N="modules/lua/example-clients/capture_client.lua"/>
-            <F N="m4/clisp.m4"/>
-            <F N=".git/hooks/commit-msg.sample"/>
-            <F N="scripts/config.guess"/>
-            <F N="config.h.in"/>
-            <F N="config.log"/>
-            <F N="config.status"/>
-            <F N="scripts/config.sub"/>
-            <F N="configure.ac"/>
-            <F N="modules/python2/Documentation.txt"/>
-            <F N="modules/python3/Documentation.txt"/>
-            <F N="corelib/test/.deps/floatsize-floatsize.Po"/>
             <F N="modules/Jacks.i"/>
-            <F N="modules/perl/jacks.pm"/>
-            <F N="modules/perl/jacks.pod"/>
-            <F N="modules/perl/jacks.pod.in"/>
-            <F N="modules/python2/test/jacks.pyc"/>
-            <F N="modules/ruby/example-clients/jacks.so"/>
-            <F N="modules/ruby/test/jacks.so"/>
-            <F N="jacks.vpj"/>
-            <F N="jacks.vpw"/>
-            <F N="jacks.vpwhistu"/>
-            <F N="jacks.vtg"/>
-            <F N="corelib/.deps/libjacks_la-abstraction_aligned_free.Plo"/>
-            <F N="corelib/.deps/libjacks_la-abstraction_aligned_malloc.Plo"/>
-            <F N="corelib/.deps/libjacks_la-abstraction_cas.Plo"/>
-            <F N="corelib/.deps/libjacks_la-abstraction_dcas.Plo"/>
-            <F N="corelib/.deps/libjacks_la-abstraction_increment.Plo"/>
-            <F N="corelib/.deps/libjacks_la-freelist_delete.Plo"/>
-            <F N="corelib/.deps/libjacks_la-freelist_get_and_set.Plo"/>
-            <F N="corelib/.deps/libjacks_la-freelist_new.Plo"/>
-            <F N="corelib/.deps/libjacks_la-freelist_pop_push.Plo"/>
-            <F N="corelib/.deps/libjacks_la-freelist_query.Plo"/>
-            <F N="corelib/.deps/libjacks_la-JacksClient.Plo"/>
-            <F N="corelib/.deps/libjacks_la-JacksEvent.Plo"/>
-            <F N="corelib/.deps/libjacks_la-JacksEventQueue.Plo"/>
-            <F N="corelib/.deps/libjacks_la-JacksHelper.Plo"/>
-            <F N="corelib/.deps/libjacks_la-JacksLatch.Plo"/>
-            <F N="corelib/.deps/libjacks_la-JacksPort.Plo"/>
-            <F N="corelib/.deps/libjacks_la-JacksRbClient.Plo"/>
-            <F N="corelib/.deps/libjacks_la-JacksRbPort.Plo"/>
-            <F N="corelib/.deps/libjacks_la-queue_delete.Plo"/>
-            <F N="corelib/.deps/libjacks_la-queue_new.Plo"/>
-            <F N="corelib/.deps/libjacks_la-queue_query.Plo"/>
-            <F N="corelib/.deps/libjacks_la-queue_queue.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds_la-abstraction_aligned_free.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds_la-abstraction_aligned_malloc.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds_la-abstraction_cas.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds_la-abstraction_dcas.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds_la-abstraction_increment.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds_la-freelist_delete.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds_la-freelist_get_and_set.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds_la-freelist_new.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds_la-freelist_pop_push.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds_la-freelist_query.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds_la-queue_delete.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds_la-queue_new.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds_la-queue_query.Plo"/>
-            <F N="corelib/lfds/.deps/libjacks_lfds_la-queue_queue.Plo"/>
-            <F N="modules/lua/.deps/libjacks_lua_la-Jacks_lua_wrap.Plo"/>
-            <F N="modules/perl/.deps/libjacks_perl_la-Jacks_perl5_wrap.Plo"/>
-            <F N="modules/python2/.libs/libjacks_python-0.0.so"/>
-            <F N="modules/python2/.libs/libjacks_python.a"/>
-            <F N="modules/python2/libjacks_python.la"/>
-            <F N="modules/python2/.libs/libjacks_python.la"/>
-            <F N="modules/python2/.libs/libjacks_python.lai"/>
-            <F N="modules/python2/.libs/libjacks_python.so"/>
-            <F N="modules/python3/.deps/libjacks_python_la-Jacks_python3_wrap.Plo"/>
-            <F N="modules/python2/libjacks_python_la-Jacks_python_wrap.lo"/>
-            <F N="modules/python2/libjacks_python_la-Jacks_python_wrap.o"/>
-            <F N="modules/python2/.libs/libjacks_python_la-Jacks_python_wrap.o"/>
-            <F N="modules/python2/.deps/libjacks_python_la-Jacks_python_wrap.Plo"/>
-            <F N="modules/ruby/.libs/libjacks_ruby-0.0.so"/>
-            <F N="modules/ruby/.libs/libjacks_ruby.a"/>
-            <F N="modules/ruby/libjacks_ruby.la"/>
-            <F N="modules/ruby/.libs/libjacks_ruby.la"/>
-            <F N="modules/ruby/.libs/libjacks_ruby.lai"/>
-            <F N="modules/ruby/.libs/libjacks_ruby.so"/>
-            <F N="modules/ruby/libjacks_ruby_la-Jacks_ruby_wrap.lo"/>
-            <F N="modules/ruby/libjacks_ruby_la-Jacks_ruby_wrap.o"/>
-            <F N="modules/ruby/.libs/libjacks_ruby_la-Jacks_ruby_wrap.o"/>
-            <F N="modules/ruby/.deps/libjacks_ruby_la-Jacks_ruby_wrap.Plo"/>
-            <F N="modules/lua/.deps/libjackssndfile_lua_la-SndFile_lua_wrap.Plo"/>
-            <F N="m4/libtool.m4"/>
-            <F N="m4/ltoptions.m4"/>
-            <F N="m4/ltsugar.m4"/>
-            <F N="m4/ltversion.m4"/>
-            <F N="m4/lt~obsolete.m4"/>
-            <F N="m4/lua.m4"/>
             <F
                 N="Makefile.am"
                 Type="Makefile"/>
@@ -350,6 +240,9 @@
                 Type="Makefile"/>
             <F
                 N="modules/lua/test/Makefile.am"
+                Type="Makefile"/>
+            <F
+                N="modules/nodejs/Makefile.am"
                 Type="Makefile"/>
             <F
                 N="modules/perl/Makefile.am"
@@ -387,90 +280,6 @@
             <F
                 N="modules/ruby/test/Makefile.am"
                 Type="Makefile"/>
-            <F
-                N="Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="corelib/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="corelib/lfds/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="corelib/test/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/lua/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/lua/example-clients/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/lua/test/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/perl/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/perl/example-clients/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/perl/t/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/python2/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/python2/example-clients/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/python2/test/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/python3/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/python3/example-clients/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/python3/test/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/ruby/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/ruby/example-clients/Makefile.in"
-                Type="Makefile"/>
-            <F
-                N="modules/ruby/test/Makefile.in"
-                Type="Makefile"/>
-            <F N="modules/perl/MANIFEST.SKIP"/>
-            <F N="modules/perl/t/manifest.t"/>
-            <F N="modules/perl/META.yml"/>
-            <F N="modules/lua/test/myfile.wav"/>
-            <F N="modules/perl/MYMETA.json"/>
-            <F N="modules/perl/MYMETA.yml"/>
-            <F N="modules/perl/OeLinkBin.PL.in"/>
-            <F N="modules/perl/t/pod.t"/>
-            <F N=".git/hooks/post-commit.sample"/>
-            <F N=".git/hooks/post-receive.sample"/>
-            <F N=".git/hooks/post-update.sample"/>
-            <F N=".git/hooks/pre-applypatch.sample"/>
-            <F N=".git/hooks/pre-commit.sample"/>
-            <F N=".git/hooks/pre-rebase.sample"/>
-            <F N=".git/hooks/prepare-commit-msg.sample"/>
-            <F N="modules/python2/setup.py.in"/>
-            <F N="modules/python3/setup.py.in"/>
-            <F N="corelib/test/test.wav"/>
-            <F N="corelib/test/.deps/test_events-test_events.Po"/>
-            <F N="corelib/test/.deps/test_jackclient-test_jackclient.Po"/>
-            <F N="modules/lua/test/test_swig_api.lua"/>
-            <F N="modules/ruby/test/test_swig_api.rb"/>
-            <F N="modules/perl/t/test_swig_api.t"/>
-            <F N=".git/hooks/update.sample"/>
         </Folder>
     </Files>
 </Project>

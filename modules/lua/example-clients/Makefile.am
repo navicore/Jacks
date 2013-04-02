@@ -1,6 +1,6 @@
 check_PROGRAMS = 
 
-EXTRA_DIST = simple_client.lua
+EXTRA_DIST = 
 
 include_HEADERS = 
 

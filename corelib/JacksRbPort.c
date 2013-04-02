@@ -28,10 +28,13 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <assert.h>
+#include <sys/socket.h>
+#include <signal.h>
 
 #define T JacksRbPort
 
 struct T {
+    int lat_cb_fd[2];
     jack_nframes_t rb_size;
     jack_port_t *jport;
     JacksRbClient jackclient;
@@ -54,6 +57,8 @@ T JacksRbPort_new(jack_port_t *jport, JacksRbClient jackclient, jack_nframes_t r
 
     _this_->rb_size = rb_size;
     _this_->jport = jport;
+    _this_->lat_cb_fd[0] = 0;
+    _this_->lat_cb_fd[1] = 0;
     _this_->jackclient = jackclient;
     _this_->framebuf = malloc(rb_size);
 
@@ -79,6 +84,44 @@ void JacksRbPort_free(T *_this_p_) {
     T _this_ = *_this_p_;
     free(_this_->framebuf);
     free(_this_);
+}
+
+static void JacksRbPort_latency_listener(jack_latency_callback_mode_t mode, void *arg) {
+    T _this_ = (T) arg;
+
+    //write(_this_->lat_cb_fd[0], "b", 1);
+    raise(SIGUSR2);
+}
+void JacksRbPort_wakeup(T _this_) {
+    JacksRbPort_latency_listener(0, _this_);
+}
+int JacksRbPort_init_latency_listener(T _this_) {
+
+	//fail if fd already set
+    if (_this_->lat_cb_fd[0] != 0) {
+        fprintf (stderr, "latency callback allready registered\n");
+        return -1;
+    }
+
+    int rc = socketpair(AF_UNIX, SOCK_STREAM, 0, _this_->lat_cb_fd);
+    if (rc != 0) {
+        fprintf (stderr, "init unix domain socket pair failed\n");
+        return -1;
+    }
+
+    //register latency callback
+    rc = jack_set_latency_callback(
+                    JacksRbClient_get_client(_this_->jackclient),
+                    JacksRbPort_latency_listener, 
+                    _this_);
+    if (rc != 0) {
+        fprintf (stderr, "set latency callback failed\n");
+        return -1;
+    }
+
+    fprintf (stderr, "latency callback is set\n");
+    //return client end of the pipe
+    return _this_->lat_cb_fd[1];
 }
 
 int JacksRbPort_connect(T _this_, T _that_) {

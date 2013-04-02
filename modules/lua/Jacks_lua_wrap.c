@@ -9,6 +9,7 @@
  * ----------------------------------------------------------------------------- */
 
 #define SWIGLUA
+#define SWIG_LUA_MODULE_GLOBAL
 
 /* -----------------------------------------------------------------------------
  *  This section contains generic SWIG labels for method/variable
@@ -942,7 +943,7 @@ SWIGINTERN int SWIG_Lua_module_set(lua_State* L)
   return 0;
 }
 
-/* registering a module in lua */
+/* registering a module in lua. Pushes the module table on the stack. */
 SWIGINTERN void  SWIG_Lua_module_begin(lua_State* L,const char* name)
 {
   assert(lua_istable(L,-1));  /* just in case */
@@ -959,8 +960,16 @@ SWIGINTERN void  SWIG_Lua_module_begin(lua_State* L,const char* name)
   lua_newtable(L);    /* the .set table */
   lua_rawset(L,-3);  /* add .set into metatable */
   lua_setmetatable(L,-2);  /* sets meta table in module */
+#ifdef SWIG_LUA_MODULE_GLOBAL
+  /* If requested, install the module directly into the global namespace. */
   lua_rawset(L,-3);        /* add module into parent */
   SWIG_Lua_get_table(L,name);   /* get the table back out */
+#else
+  /* Do not install the module table as global name. The stack top has
+     the module table with the name below. We pop the top and replace
+     the name with it. */
+  lua_replace(L,-2);
+#endif
 }
 
 /* ending the register */
@@ -1604,7 +1613,8 @@ SWIGINTERN char *JsPort_name(JsPort *self){
         }
 SWIGINTERN int JsPort_connect(JsPort *self,JsPort *_that_){
 
-            return JacksRbPort_connect(self->impl, _that_->impl);
+            int rc = JacksRbPort_connect(self->impl, _that_->impl);
+            if (rc) throw_exception("can not connect ports");
         }
 SWIGINTERN JsLatencyRange *JsPort_getLatencyRange(JsPort *self,enum JackLatencyCallbackMode mode){
 
@@ -1625,6 +1635,15 @@ SWIGINTERN void JsPort_setLatencyRange(JsPort *self,enum JackLatencyCallbackMode
             range.max = rmax;
             jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port(self->impl),
                                                     mode, &range);
+        }
+SWIGINTERN void JsPort_wakeup(JsPort *self){
+            JacksRbPort_wakeup(self->impl);
+        }
+SWIGINTERN int JsPort_initLatencyListener(JsPort *self){
+
+            int fd = JacksRbPort_init_latency_listener(self->impl);
+            if (fd < 0) throw_exception("can not init latency callback");
+            return fd; //note, I doubt this will work... just stubbing it out for now.
         }
 SWIGINTERN void delete_JsEvent(JsEvent *self){
             JacksEvent_free(&self->impl);
@@ -1766,8 +1785,10 @@ SWIGINTERN jack_transport_state_t JsClient_getTransportState(JsClient *self){
         }
 SWIGINTERN void JsClient_recomputeLatencies(JsClient *self){
 
+            fprintf (stderr, "calling recompute total latencies...\n");
             int rc = jack_recompute_total_latencies(JacksRbClient_get_client(self->impl));
             if (rc) throw_exception("can not recompute total latency");
+            fprintf (stderr, "...recompute total latencies called\n");
 
             return;
         }
@@ -2421,6 +2442,77 @@ fail:
 }
 
 
+static int _wrap_JsPort_wakeup(lua_State* L) {
+  int SWIG_arg = 0;
+  JsPort *arg1 = (JsPort *) 0 ;
+  
+  SWIG_check_num_args("JsPort::wakeup",1,1)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsPort::wakeup",1,"JsPort *");
+  
+  if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsPort,0))){
+    SWIG_fail_ptr("JsPort_wakeup",1,SWIGTYPE_p_JsPort);
+  }
+  
+  {
+    char *err;
+    clear_exception();
+    JsPort_wakeup(arg1);
+    if ((err = check_exception())) {
+      luaL_error(L, err);
+      return -1; 
+      
+      
+      
+      
+    }
+  }
+  
+  return SWIG_arg;
+  
+  if(0) SWIG_fail;
+  
+fail:
+  lua_error(L);
+  return SWIG_arg;
+}
+
+
+static int _wrap_JsPort_initLatencyListener(lua_State* L) {
+  int SWIG_arg = 0;
+  JsPort *arg1 = (JsPort *) 0 ;
+  int result;
+  
+  SWIG_check_num_args("JsPort::initLatencyListener",1,1)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsPort::initLatencyListener",1,"JsPort *");
+  
+  if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsPort,0))){
+    SWIG_fail_ptr("JsPort_initLatencyListener",1,SWIGTYPE_p_JsPort);
+  }
+  
+  {
+    char *err;
+    clear_exception();
+    result = (int)JsPort_initLatencyListener(arg1);
+    if ((err = check_exception())) {
+      luaL_error(L, err);
+      return -1; 
+      
+      
+      
+      
+    }
+  }
+  lua_pushnumber(L, (lua_Number) result); SWIG_arg++;
+  return SWIG_arg;
+  
+  if(0) SWIG_fail;
+  
+fail:
+  lua_error(L);
+  return SWIG_arg;
+}
+
+
 static int _wrap_new_JsPort(lua_State* L) {
   int SWIG_arg = 0;
   JsPort *result = 0 ;
@@ -2460,6 +2552,8 @@ static swig_lua_method swig_JsPort_methods[] = {
     {"connect", _wrap_JsPort_connect}, 
     {"getLatencyRange", _wrap_JsPort_getLatencyRange}, 
     {"setLatencyRange", _wrap_JsPort_setLatencyRange}, 
+    {"wakeup", _wrap_JsPort_wakeup}, 
+    {"initLatencyListener", _wrap_JsPort_initLatencyListener}, 
     {0,0}
 };
 static swig_lua_attribute swig_JsPort_attributes[] = {
@@ -3809,8 +3903,9 @@ SWIGEXPORT int SWIG_init(lua_State* L)
   /* invoke user-specific initialization */
   SWIG_init_user(L);
   /* end module */
-  lua_pop(L,1);  /* tidy stack (remove module table)*/
-  lua_pop(L,1);  /* tidy stack (remove global table)*/
+  /* Note: We do not clean up the stack here (Lua will do this for us). At this
+     point, we have the globals table and out module table on the stack. Returning
+     one value makes the module table the result of the require command. */
   return 1;
 }
 

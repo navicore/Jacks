@@ -161,6 +161,8 @@ class JsPort(_object):
     def connect(self, *args): return _jacks.JsPort_connect(self, *args)
     def getLatencyRange(self, *args): return _jacks.JsPort_getLatencyRange(self, *args)
     def setLatencyRange(self, *args): return _jacks.JsPort_setLatencyRange(self, *args)
+    def wakeup(self): return _jacks.JsPort_wakeup(self)
+    def initLatencyListener(self): return _jacks.JsPort_initLatencyListener(self)
     def __init__(self): 
         this = _jacks.new_JsPort()
         try: self.this.append(this)

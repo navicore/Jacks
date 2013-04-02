@@ -142,7 +142,8 @@ typedef struct {
 
         int connect(JsPort *_that_) {
 
-            return JacksRbPort_connect($self->impl, _that_->impl);
+            int rc = JacksRbPort_connect($self->impl, _that_->impl);
+            if (rc) throw_exception("can not connect ports");
         }
 
         JsLatencyRange *getLatencyRange(enum JackLatencyCallbackMode mode) {
@@ -164,6 +165,15 @@ typedef struct {
             range.max = rmax;
             jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port($self->impl),
                                                     mode, &range);
+        }
+        void wakeup() {
+            JacksRbPort_wakeup($self->impl);
+        }
+        int initLatencyListener() {
+
+            int fd = JacksRbPort_init_latency_listener($self->impl);
+            if (fd < 0) throw_exception("can not init latency callback");
+            return fd; //note, I doubt this will work... just stubbing it out for now.
         }
         /*
         bool hasFlag(enum JackPortFlags flag) {
@@ -353,8 +363,10 @@ typedef struct {
 
         void recomputeLatencies() {
 
+            fprintf (stderr, "calling recompute total latencies...\n");
             int rc = jack_recompute_total_latencies(JacksRbClient_get_client($self->impl));
             if (rc) throw_exception("can not recompute total latency");
+            fprintf (stderr, "...recompute total latencies called\n");
 
             return;
         }

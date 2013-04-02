@@ -7,7 +7,7 @@ noinst_LTLIBRARIES = libjacks.la
 
 MYSOURCES = JacksRbClient.c JacksHelper.c JacksLatch.c JacksEvent.c JacksRbPort.c 
 
-MYHEADERS = Jacks.h JacksRbClient.h JacksLatch.h JacksEvent.h JacksRbPort.h
+MYHEADERS = Jacks.h JacksRbClient.h JacksLatch.h JacksEvent.h JacksRbPort.h JacksExceptions.h
 
 include_HEADERS = ${MYHEADERS}
 

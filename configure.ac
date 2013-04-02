@@ -1,8 +1,8 @@
 AC_PREREQ(2.60)
-AC_INIT([Jacks Pre Alpha], [0.1.4], [info@onextent.com])
+AC_INIT([Jacks Pre Alpha], [0.1.5], [info@onextent.com])
 AC_DEFINE([OE_VERSION_MAJ],[0],[major version])
 AC_DEFINE([OE_VERSION_MIN],[1],[minor version])
-AC_DEFINE([OE_VERSION_UPT],[4],[update version])
+AC_DEFINE([OE_VERSION_UPT],[5],[update version])
 AC_CONFIG_AUX_DIR([scripts])
 AC_PROG_LIBTOOL
 AM_INIT_AUTOMAKE( [-Wall] )
@@ -284,10 +284,6 @@ AC_OUTPUT(
         modules/python2/example-clients/Makefile
         modules/python2/setup.py
         modules/python2/test/Makefile
-        modules/python3/Makefile
-        modules/python3/example-clients/Makefile
-        modules/python3/setup.py
-        modules/python3/test/Makefile
         modules/ruby/Makefile
         modules/ruby/example-clients/Makefile
         modules/ruby/test/Makefile
@@ -305,4 +301,9 @@ AC_OUTPUT(
         modules/perl/OeLinkBin.PL,
         echo timestamp > stamp-h
         )
+
+        #modules/python3/Makefile
+        #modules/python3/example-clients/Makefile
+        #modules/python3/setup.py
+        #modules/python3/test/Makefile
 

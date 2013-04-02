@@ -25,6 +25,12 @@ port_name_list = jc:getPortNames("cap")
 port1 = jc:getPort(port_name_list:get(0))
 assert(port1 ~= nil)
 print("port1 name is ", port1:name())
+
+-- test latency callback reg function
+lat_port = port1:initLatencyListener()
+assert(lat_port ~= nil)
+--lat_port = port1:initLatencyListener()
+
 r = port1:getLatencyRange(jacks.JackCaptureLatency)
 print("port1 latency min ", r:min())
 print("port1 latency max ", r:max())
