@@ -1,0 +1,13 @@
+qjackctl is useful for testing
+jack1 dev
+
+perl:
+
+<dev libs>
+sudo apt-get install libanyevent-perl
+
+lua:
+
+sudo apt-get install lua5.1-dev
+
+
