@@ -86,16 +86,24 @@ void JacksRbPort_free(T *_this_p_) {
     free(_this_);
 }
 
+static void JacksRbPort_latency_listener_fd(jack_latency_callback_mode_t mode, void *arg) {
+    T _this_ = (T) arg;
+
+    write(_this_->lat_cb_fd[0], "b", 1);
+}
 static void JacksRbPort_latency_listener(jack_latency_callback_mode_t mode, void *arg) {
     T _this_ = (T) arg;
 
-    //write(_this_->lat_cb_fd[0], "b", 1);
     raise(SIGUSR2);
+}
+void JacksRbPort_wakeup_fd(T _this_) {
+    JacksRbPort_latency_listener_fd(0, _this_);
 }
 void JacksRbPort_wakeup(T _this_) {
     JacksRbPort_latency_listener(0, _this_);
 }
-int JacksRbPort_init_latency_listener(T _this_) {
+
+int JacksRbPort_init_latency_listener_fd(T _this_) {
 
 	//fail if fd already set
     if (_this_->lat_cb_fd[0] != 0) {
@@ -112,6 +120,22 @@ int JacksRbPort_init_latency_listener(T _this_) {
     //register latency callback
     rc = jack_set_latency_callback(
                     JacksRbClient_get_client(_this_->jackclient),
+                    JacksRbPort_latency_listener_fd, 
+                    _this_);
+    if (rc != 0) {
+        fprintf (stderr, "set latency fd callback failed\n");
+        return -1;
+    }
+
+    fprintf (stderr, "fd latency callback is set\n");
+    return _this_->lat_cb_fd[1];
+}
+
+int JacksRbPort_init_latency_listener(T _this_) {
+
+    //register latency callback
+    int rc = jack_set_latency_callback(
+                    JacksRbClient_get_client(_this_->jackclient),
                     JacksRbPort_latency_listener, 
                     _this_);
     if (rc != 0) {
@@ -120,8 +144,8 @@ int JacksRbPort_init_latency_listener(T _this_) {
     }
 
     fprintf (stderr, "latency callback is set\n");
-    //return client end of the pipe
-    return _this_->lat_cb_fd[1];
+
+    return 0;
 }
 
 int JacksRbPort_connect(T _this_, T _that_) {

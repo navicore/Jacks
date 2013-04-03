@@ -3485,14 +3485,23 @@ SWIGINTERN void JsPort_setLatencyRange(JsPort *self,enum JackLatencyCallbackMode
             jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port(self->impl),
                                                     mode, &range);
         }
+SWIGINTERN void JsPort_wakeupFd(JsPort *self){
+            JacksRbPort_wakeup_fd(self->impl);
+        }
 SWIGINTERN void JsPort_wakeup(JsPort *self){
             JacksRbPort_wakeup(self->impl);
         }
+SWIGINTERN int JsPort_initLatencyListenerFd(JsPort *self){
+
+            int fd = JacksRbPort_init_latency_listener_fd(self->impl);
+            if (fd < 0) throw_exception("can not init fd latency callback");
+            return fd; //note, I doubt this will work... just stubbing it out for now.
+        }
 SWIGINTERN int JsPort_initLatencyListener(JsPort *self){
 
-            int fd = JacksRbPort_init_latency_listener(self->impl);
-            if (fd < 0) throw_exception("can not init latency callback");
-            return fd; //note, I doubt this will work... just stubbing it out for now.
+            int rc = JacksRbPort_init_latency_listener(self->impl);
+            if (rc != 0) throw_exception("can not init latency callback");
+            return rc;
         }
 SWIGINTERN void delete_JsEvent(JsEvent *self){
             JacksEvent_free(&self->impl);
@@ -4563,6 +4572,46 @@ fail:
 }
 
 
+SWIGINTERN PyObject *_wrap_JsPort_wakeupFd(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  JsPort *arg1 = (JsPort *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:JsPort_wakeupFd",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_wakeupFd" "', argument " "1"" of type '" "JsPort *""'"); 
+  }
+  arg1 = (JsPort *)(argp1);
+  {
+    char *err;
+    clear_exception();
+    JsPort_wakeupFd(arg1);
+    if ((err = check_exception())) {
+      PyErr_SetString(PyExc_RuntimeError, err);
+      return NULL;
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    }
+  }
+  resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
 SWIGINTERN PyObject *_wrap_JsPort_wakeup(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
   PyObject *resultobj = 0;
   JsPort *arg1 = (JsPort *) 0 ;
@@ -4597,6 +4646,47 @@ SWIGINTERN PyObject *_wrap_JsPort_wakeup(PyObject *SWIGUNUSEDPARM(self), PyObjec
     }
   }
   resultobj = SWIG_Py_Void();
+  return resultobj;
+fail:
+  return NULL;
+}
+
+
+SWIGINTERN PyObject *_wrap_JsPort_initLatencyListenerFd(PyObject *SWIGUNUSEDPARM(self), PyObject *args) {
+  PyObject *resultobj = 0;
+  JsPort *arg1 = (JsPort *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  PyObject * obj0 = 0 ;
+  int result;
+  
+  if (!PyArg_ParseTuple(args,(char *)"O:JsPort_initLatencyListenerFd",&obj0)) SWIG_fail;
+  res1 = SWIG_ConvertPtr(obj0, &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_initLatencyListenerFd" "', argument " "1"" of type '" "JsPort *""'"); 
+  }
+  arg1 = (JsPort *)(argp1);
+  {
+    char *err;
+    clear_exception();
+    result = (int)JsPort_initLatencyListenerFd(arg1);
+    if ((err = check_exception())) {
+      PyErr_SetString(PyExc_RuntimeError, err);
+      return NULL;
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      
+    }
+  }
+  resultobj = SWIG_From_int((int)(result));
   return resultobj;
 fail:
   return NULL;
@@ -5936,7 +6026,9 @@ static PyMethodDef SwigMethods[] = {
 	 { (char *)"JsPort_connect", _wrap_JsPort_connect, METH_VARARGS, NULL},
 	 { (char *)"JsPort_getLatencyRange", _wrap_JsPort_getLatencyRange, METH_VARARGS, NULL},
 	 { (char *)"JsPort_setLatencyRange", _wrap_JsPort_setLatencyRange, METH_VARARGS, NULL},
+	 { (char *)"JsPort_wakeupFd", _wrap_JsPort_wakeupFd, METH_VARARGS, NULL},
 	 { (char *)"JsPort_wakeup", _wrap_JsPort_wakeup, METH_VARARGS, NULL},
+	 { (char *)"JsPort_initLatencyListenerFd", _wrap_JsPort_initLatencyListenerFd, METH_VARARGS, NULL},
 	 { (char *)"JsPort_initLatencyListener", _wrap_JsPort_initLatencyListener, METH_VARARGS, NULL},
 	 { (char *)"new_JsPort", _wrap_new_JsPort, METH_VARARGS, NULL},
 	 { (char *)"JsPort_swigregister", JsPort_swigregister, METH_VARARGS, NULL},

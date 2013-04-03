@@ -192,7 +192,9 @@ sub DESTROY {
 *connect = *jacksc::JsPort_connect;
 *getLatencyRange = *jacksc::JsPort_getLatencyRange;
 *setLatencyRange = *jacksc::JsPort_setLatencyRange;
+*wakeupFd = *jacksc::JsPort_wakeupFd;
 *wakeup = *jacksc::JsPort_wakeup;
+*initLatencyListenerFd = *jacksc::JsPort_initLatencyListenerFd;
 *initLatencyListener = *jacksc::JsPort_initLatencyListener;
 sub new {
     my $pkg = shift;

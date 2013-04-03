@@ -2030,14 +2030,23 @@ SWIGINTERN void JsPort_setLatencyRange(JsPort *self,enum JackLatencyCallbackMode
             jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port(self->impl),
                                                     mode, &range);
         }
+SWIGINTERN void JsPort_wakeupFd(JsPort *self){
+            JacksRbPort_wakeup_fd(self->impl);
+        }
 SWIGINTERN void JsPort_wakeup(JsPort *self){
             JacksRbPort_wakeup(self->impl);
         }
+SWIGINTERN int JsPort_initLatencyListenerFd(JsPort *self){
+
+            int fd = JacksRbPort_init_latency_listener_fd(self->impl);
+            if (fd < 0) throw_exception("can not init fd latency callback");
+            return fd; //note, I doubt this will work... just stubbing it out for now.
+        }
 SWIGINTERN int JsPort_initLatencyListener(JsPort *self){
 
-            int fd = JacksRbPort_init_latency_listener(self->impl);
-            if (fd < 0) throw_exception("can not init latency callback");
-            return fd; //note, I doubt this will work... just stubbing it out for now.
+            int rc = JacksRbPort_init_latency_listener(self->impl);
+            if (rc != 0) throw_exception("can not init latency callback");
+            return rc;
         }
 SWIGINTERN void delete_JsEvent(JsEvent *self){
             JacksEvent_free(&self->impl);
@@ -3302,6 +3311,55 @@ XS(_wrap_JsPort_setLatencyRange) {
 }
 
 
+XS(_wrap_JsPort_wakeupFd) {
+  {
+    JsPort *arg1 = (JsPort *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: JsPort_wakeupFd(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_wakeupFd" "', argument " "1"" of type '" "JsPort *""'"); 
+    }
+    arg1 = (JsPort *)(argp1);
+    {
+      char *err;
+      clear_exception();
+      JsPort_wakeupFd(arg1);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
 XS(_wrap_JsPort_wakeup) {
   {
     JsPort *arg1 = (JsPort *) 0 ;
@@ -3342,6 +3400,56 @@ XS(_wrap_JsPort_wakeup) {
       }
     }
     ST(argvi) = sv_newmortal();
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_JsPort_initLatencyListenerFd) {
+  {
+    JsPort *arg1 = (JsPort *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: JsPort_initLatencyListenerFd(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_initLatencyListenerFd" "', argument " "1"" of type '" "JsPort *""'"); 
+    }
+    arg1 = (JsPort *)(argp1);
+    {
+      char *err;
+      clear_exception();
+      result = (int)JsPort_initLatencyListenerFd(arg1);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(result)); argvi++ ;
     
     XSRETURN(argvi);
   fail:
@@ -4983,7 +5091,9 @@ static swig_command_info swig_commands[] = {
 {"jacksc::JsPort_connect", _wrap_JsPort_connect},
 {"jacksc::JsPort_getLatencyRange", _wrap_JsPort_getLatencyRange},
 {"jacksc::JsPort_setLatencyRange", _wrap_JsPort_setLatencyRange},
+{"jacksc::JsPort_wakeupFd", _wrap_JsPort_wakeupFd},
 {"jacksc::JsPort_wakeup", _wrap_JsPort_wakeup},
+{"jacksc::JsPort_initLatencyListenerFd", _wrap_JsPort_initLatencyListenerFd},
 {"jacksc::JsPort_initLatencyListener", _wrap_JsPort_initLatencyListener},
 {"jacksc::new_JsPort", _wrap_new_JsPort},
 {"jacksc::delete_JsEvent", _wrap_delete_JsEvent},

@@ -609,10 +609,10 @@ m4_if($#, 0, [LT_FUNC_DLSYM_USCORE], [LT_FUNC_DLSYM_USCORE($@)])])
 m4trace:/usr/share/aclocal-1.11/amversion.m4:17: -1- AC_DEFUN([AM_AUTOMAKE_VERSION], [am__api_version='1.11'
 dnl Some users find AM_AUTOMAKE_VERSION and mistake it for a way to
 dnl require some minimum version.  Point them to the right macro.
-m4_if([$1], [1.11.6], [],
+m4_if([$1], [1.11.3], [],
       [AC_FATAL([Do not call $0, use AM_INIT_AUTOMAKE([$1]).])])dnl
 ])
-m4trace:/usr/share/aclocal-1.11/amversion.m4:36: -1- AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION], [AM_AUTOMAKE_VERSION([1.11.6])dnl
+m4trace:/usr/share/aclocal-1.11/amversion.m4:36: -1- AC_DEFUN([AM_SET_CURRENT_AUTOMAKE_VERSION], [AM_AUTOMAKE_VERSION([1.11.3])dnl
 m4_ifndef([AC_AUTOCONF_VERSION],
   [m4_copy([m4_PACKAGE_VERSION], [AC_AUTOCONF_VERSION])])dnl
 _AM_AUTOCONF_VERSION(m4_defn([AC_AUTOCONF_VERSION]))])
@@ -3083,8 +3083,8 @@ m4trace:configure.ac:7: -1- m4_pattern_allow([^HAVE_DLFCN_H$])
 m4trace:configure.ac:8: -1- AM_INIT_AUTOMAKE([-Wall ])
 m4trace:configure.ac:8: -1- m4_pattern_allow([^AM_[A-Z]+FLAGS$])
 m4trace:configure.ac:8: -1- AM_SET_CURRENT_AUTOMAKE_VERSION
-m4trace:configure.ac:8: -1- AM_AUTOMAKE_VERSION([1.11.6])
-m4trace:configure.ac:8: -1- _AM_AUTOCONF_VERSION([2.69])
+m4trace:configure.ac:8: -1- AM_AUTOMAKE_VERSION([1.11.3])
+m4trace:configure.ac:8: -1- _AM_AUTOCONF_VERSION([2.68])
 m4trace:configure.ac:8: -1- m4_pattern_allow([^INSTALL_PROGRAM$])
 m4trace:configure.ac:8: -1- m4_pattern_allow([^INSTALL_SCRIPT$])
 m4trace:configure.ac:8: -1- m4_pattern_allow([^INSTALL_DATA$])
@@ -3262,8 +3262,8 @@ m4trace:configure.ac:158: -1- _AM_SUBST_NOTMAKE([OE_LUA_SHARED_LIB_ONLY_TRUE])
 m4trace:configure.ac:158: -1- _AM_SUBST_NOTMAKE([OE_LUA_SHARED_LIB_ONLY_FALSE])
 m4trace:configure.ac:158: -1- CHECK_LUA([], [AC_MSG_ERROR([can not find lua])])
 m4trace:configure.ac:158: -1- _m4_warn([obsolete], [The macro `AC_HELP_STRING' is obsolete.
-You should run autoupdate.], [../../lib/autoconf/general.m4:207: AC_HELP_STRING is expanded from...
-../../lib/autoconf/general.m4:1481: AC_ARG_WITH is expanded from...
+You should run autoupdate.], [../../lib/autoconf/general.m4:209: AC_HELP_STRING is expanded from...
+../../lib/autoconf/general.m4:1482: AC_ARG_WITH is expanded from...
 m4/lua.m4:50: CHECK_LUA is expanded from...
 m4/lua.m4:13: CHECK_OE_LUA is expanded from...
 configure.ac:158: the top level])
@@ -3325,7 +3325,7 @@ m4trace:configure.ac:243: -1- m4_pattern_allow([^RUBY_LDFLAGS$])
 m4trace:configure.ac:243: -1- m4_pattern_allow([^RUBY_SITE_PKG$])
 m4trace:configure.ac:243: -1- m4_pattern_allow([^RUBY_EXTRA_LIBS$])
 m4trace:configure.ac:243: -1- _m4_warn([obsolete], [The macro `AC_TRY_LINK' is obsolete.
-You should run autoupdate.], [../../lib/autoconf/general.m4:2687: AC_TRY_LINK is expanded from...
+You should run autoupdate.], [../../lib/autoconf/general.m4:2688: AC_TRY_LINK is expanded from...
 m4/ax_ruby_devel.m4:57: AX_RUBY_DEVEL is expanded from...
 configure.ac:243: the top level])
 m4trace:configure.ac:244: -1- m4_pattern_allow([^RUBY_CPPFLAGS$])

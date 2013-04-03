@@ -2227,14 +2227,23 @@ SWIGINTERN void JsPort_setLatencyRange(JsPort *self,enum JackLatencyCallbackMode
             jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port(self->impl),
                                                     mode, &range);
         }
+SWIGINTERN void JsPort_wakeupFd(JsPort *self){
+            JacksRbPort_wakeup_fd(self->impl);
+        }
 SWIGINTERN void JsPort_wakeup(JsPort *self){
             JacksRbPort_wakeup(self->impl);
         }
+SWIGINTERN int JsPort_initLatencyListenerFd(JsPort *self){
+
+            int fd = JacksRbPort_init_latency_listener_fd(self->impl);
+            if (fd < 0) throw_exception("can not init fd latency callback");
+            return fd; //note, I doubt this will work... just stubbing it out for now.
+        }
 SWIGINTERN int JsPort_initLatencyListener(JsPort *self){
 
-            int fd = JacksRbPort_init_latency_listener(self->impl);
-            if (fd < 0) throw_exception("can not init latency callback");
-            return fd; //note, I doubt this will work... just stubbing it out for now.
+            int rc = JacksRbPort_init_latency_listener(self->impl);
+            if (rc != 0) throw_exception("can not init latency callback");
+            return rc;
         }
 SWIGINTERN enum JACKSCRIPT_EVENT_TYPE JsEvent_getType(JsEvent *self){
 
@@ -3175,6 +3184,43 @@ fail:
 
 
 SWIGINTERN VALUE
+_wrap_JsPort_wakeupFd(int argc, VALUE *argv, VALUE self) {
+  JsPort *arg1 = (JsPort *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "JsPort *","wakeupFd", 1, self )); 
+  }
+  arg1 = (JsPort *)(argp1);
+  {
+    char *err;
+    clear_exception();
+    JsPort_wakeupFd(arg1);
+    if ((err = check_exception())) {
+      void *runerror = rb_define_class("JacksRuntimeError", rb_eStandardError);
+      rb_raise(runerror, err);
+      return;
+      
+      
+      
+      
+      
+      
+      
+    }
+  }
+  return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
 _wrap_JsPort_wakeup(int argc, VALUE *argv, VALUE self) {
   JsPort *arg1 = (JsPort *) 0 ;
   void *argp1 = 0 ;
@@ -3206,6 +3252,46 @@ _wrap_JsPort_wakeup(int argc, VALUE *argv, VALUE self) {
     }
   }
   return Qnil;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_JsPort_initLatencyListenerFd(int argc, VALUE *argv, VALUE self) {
+  JsPort *arg1 = (JsPort *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "JsPort *","initLatencyListenerFd", 1, self )); 
+  }
+  arg1 = (JsPort *)(argp1);
+  {
+    char *err;
+    clear_exception();
+    result = (int)JsPort_initLatencyListenerFd(arg1);
+    if ((err = check_exception())) {
+      void *runerror = rb_define_class("JacksRuntimeError", rb_eStandardError);
+      rb_raise(runerror, err);
+      return;
+      
+      
+      
+      
+      
+      
+      
+    }
+  }
+  vresult = SWIG_From_int((int)(result));
+  return vresult;
 fail:
   return Qnil;
 }
@@ -4832,7 +4918,9 @@ SWIGEXPORT void Init_jacks(void) {
   rb_define_method(SwigClassJsPort.klass, "connect", _wrap_JsPort_connect, -1);
   rb_define_method(SwigClassJsPort.klass, "getLatencyRange", _wrap_JsPort_getLatencyRange, -1);
   rb_define_method(SwigClassJsPort.klass, "setLatencyRange", _wrap_JsPort_setLatencyRange, -1);
+  rb_define_method(SwigClassJsPort.klass, "wakeupFd", _wrap_JsPort_wakeupFd, -1);
   rb_define_method(SwigClassJsPort.klass, "wakeup", _wrap_JsPort_wakeup, -1);
+  rb_define_method(SwigClassJsPort.klass, "initLatencyListenerFd", _wrap_JsPort_initLatencyListenerFd, -1);
   rb_define_method(SwigClassJsPort.klass, "initLatencyListener", _wrap_JsPort_initLatencyListener, -1);
   SwigClassJsPort.mark = 0;
   SwigClassJsPort.destroy = (void (*)(void *)) free_JsPort;

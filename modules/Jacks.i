@@ -166,14 +166,23 @@ typedef struct {
             jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port($self->impl),
                                                     mode, &range);
         }
+        void wakeupFd() {
+            JacksRbPort_wakeup_fd($self->impl);
+        }
         void wakeup() {
             JacksRbPort_wakeup($self->impl);
         }
+        int initLatencyListenerFd() {
+
+            int fd = JacksRbPort_init_latency_listener_fd($self->impl);
+            if (fd < 0) throw_exception("can not init fd latency callback");
+            return fd; //note, I doubt this will work... just stubbing it out for now.
+        }
         int initLatencyListener() {
 
-            int fd = JacksRbPort_init_latency_listener($self->impl);
-            if (fd < 0) throw_exception("can not init latency callback");
-            return fd; //note, I doubt this will work... just stubbing it out for now.
+            int rc = JacksRbPort_init_latency_listener($self->impl);
+            if (rc != 0) throw_exception("can not init latency callback");
+            return rc;
         }
         /*
         bool hasFlag(enum JackPortFlags flag) {

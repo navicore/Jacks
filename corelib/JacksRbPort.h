@@ -47,8 +47,10 @@ extern sample_t*    JacksRbPort_read_from_ringbuffer(T, int*);
 extern void*        JacksRbPort_get_port(T);
 
 extern int          JacksRbPort_init_latency_listener(T);
+extern int          JacksRbPort_init_latency_listener_fd(T);
 
 extern void         JacksRbPort_wakeup(T); //ejs test
+extern void         JacksRbPort_wakeup_fd(T); //ejs test
 
 #undef T
 #endif
