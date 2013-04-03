@@ -24,17 +24,18 @@ extern "C" {
 #define _JS_RB_PORT_H_
 
 #include "config.h"
-#include "JacksRbClient.h"
+//#include "JacksRbClient.h"
 #include <jack/jack.h>
 #include <assert.h>
 
 #define T JacksRbPort
 typedef struct T *T;
 
-extern T            JacksRbPort_new(jack_port_t *, JacksRbClient, jack_nframes_t);
+//extern T            JacksRbPort_new(jack_port_t *, JacksRbClient, jack_nframes_t);
+extern T            JacksRbPort_new(jack_port_t *, void *, jack_nframes_t);
 
-extern T            JacksRbPort_new_port(const char *, 
-                                         unsigned long, JacksRbClient, jack_nframes_t);
+//extern T            JacksRbPort_new_port(const char *, unsigned long, JacksRbClient, jack_nframes_t);
+extern T            JacksRbPort_new_port(const char *, unsigned long, void *, jack_nframes_t);
 
 extern void         JacksRbPort_free(T *);
 
@@ -42,15 +43,16 @@ extern int          JacksRbPort_connect(T, T);
 
 extern int          JacksRbPort_write_to_ringbuffer(T, jack_nframes_t);
 
-extern sample_t*    JacksRbPort_read_from_ringbuffer(T, int*);
+extern jack_default_audio_sample_t*    JacksRbPort_read_from_ringbuffer(T, int*);
 
 extern void*        JacksRbPort_get_port(T);
 
 extern int          JacksRbPort_init_latency_listener(T);
-extern int          JacksRbPort_init_latency_listener_fd(T);
+extern int          JacksRbPort_init_capture_latency_listener(T);
+extern int          JacksRbPort_init_playback_latency_listener(T);
 
-extern void         JacksRbPort_wakeup(T); //ejs test
-extern void         JacksRbPort_wakeup_fd(T); //ejs test
+extern void         JacksRbPort_wakeup_sig_latency_cb(T); //ejs test
+extern void         JacksRbPort_wakeup_latency_callbacks(T); //ejs test
 
 #undef T
 #endif

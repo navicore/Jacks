@@ -2206,6 +2206,7 @@ SWIGINTERN int JsPort_connect(JsPort *self,JsPort *_that_){
 
             int rc = JacksRbPort_connect(self->impl, _that_->impl);
             if (rc) throw_exception("can not connect ports");
+            return rc;
         }
 SWIGINTERN JsLatencyRange *JsPort_getLatencyRange(JsPort *self,enum JackLatencyCallbackMode mode){
 
@@ -2227,17 +2228,23 @@ SWIGINTERN void JsPort_setLatencyRange(JsPort *self,enum JackLatencyCallbackMode
             jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port(self->impl),
                                                     mode, &range);
         }
-SWIGINTERN void JsPort_wakeupFd(JsPort *self){
-            JacksRbPort_wakeup_fd(self->impl);
+SWIGINTERN void JsPort_wakeupLatencyCallbacks(JsPort *self){
+            JacksRbPort_wakeup_latency_callbacks(self->impl);
         }
-SWIGINTERN void JsPort_wakeup(JsPort *self){
-            JacksRbPort_wakeup(self->impl);
+SWIGINTERN void JsPort_wakeupSigLatencyCallback(JsPort *self){
+            JacksRbPort_wakeup_sig_latency_cb(self->impl);
         }
-SWIGINTERN int JsPort_initLatencyListenerFd(JsPort *self){
+SWIGINTERN int JsPort_initCaptureLatencyListener(JsPort *self){
 
-            int fd = JacksRbPort_init_latency_listener_fd(self->impl);
-            if (fd < 0) throw_exception("can not init fd latency callback");
-            return fd; //note, I doubt this will work... just stubbing it out for now.
+            int fd = JacksRbPort_init_capture_latency_listener(self->impl);
+            if (fd < 0) throw_exception("can not init capture latency callback");
+            return fd;
+        }
+SWIGINTERN int JsPort_initPlaybackLatencyListener(JsPort *self){
+
+            int fd = JacksRbPort_init_playback_latency_listener(self->impl);
+            if (fd < 0) throw_exception("can not init playback latency callback");
+            return fd;
         }
 SWIGINTERN int JsPort_initLatencyListener(JsPort *self){
 
@@ -3184,7 +3191,7 @@ fail:
 
 
 SWIGINTERN VALUE
-_wrap_JsPort_wakeupFd(int argc, VALUE *argv, VALUE self) {
+_wrap_JsPort_wakeupLatencyCallbacks(int argc, VALUE *argv, VALUE self) {
   JsPort *arg1 = (JsPort *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -3194,13 +3201,13 @@ _wrap_JsPort_wakeupFd(int argc, VALUE *argv, VALUE self) {
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "JsPort *","wakeupFd", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "JsPort *","wakeupLatencyCallbacks", 1, self )); 
   }
   arg1 = (JsPort *)(argp1);
   {
     char *err;
     clear_exception();
-    JsPort_wakeupFd(arg1);
+    JsPort_wakeupLatencyCallbacks(arg1);
     if ((err = check_exception())) {
       void *runerror = rb_define_class("JacksRuntimeError", rb_eStandardError);
       rb_raise(runerror, err);
@@ -3221,7 +3228,7 @@ fail:
 
 
 SWIGINTERN VALUE
-_wrap_JsPort_wakeup(int argc, VALUE *argv, VALUE self) {
+_wrap_JsPort_wakeupSigLatencyCallback(int argc, VALUE *argv, VALUE self) {
   JsPort *arg1 = (JsPort *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -3231,13 +3238,13 @@ _wrap_JsPort_wakeup(int argc, VALUE *argv, VALUE self) {
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "JsPort *","wakeup", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "JsPort *","wakeupSigLatencyCallback", 1, self )); 
   }
   arg1 = (JsPort *)(argp1);
   {
     char *err;
     clear_exception();
-    JsPort_wakeup(arg1);
+    JsPort_wakeupSigLatencyCallback(arg1);
     if ((err = check_exception())) {
       void *runerror = rb_define_class("JacksRuntimeError", rb_eStandardError);
       rb_raise(runerror, err);
@@ -3258,7 +3265,7 @@ fail:
 
 
 SWIGINTERN VALUE
-_wrap_JsPort_initLatencyListenerFd(int argc, VALUE *argv, VALUE self) {
+_wrap_JsPort_initCaptureLatencyListener(int argc, VALUE *argv, VALUE self) {
   JsPort *arg1 = (JsPort *) 0 ;
   void *argp1 = 0 ;
   int res1 = 0 ;
@@ -3270,13 +3277,53 @@ _wrap_JsPort_initLatencyListenerFd(int argc, VALUE *argv, VALUE self) {
   }
   res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
   if (!SWIG_IsOK(res1)) {
-    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "JsPort *","initLatencyListenerFd", 1, self )); 
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "JsPort *","initCaptureLatencyListener", 1, self )); 
   }
   arg1 = (JsPort *)(argp1);
   {
     char *err;
     clear_exception();
-    result = (int)JsPort_initLatencyListenerFd(arg1);
+    result = (int)JsPort_initCaptureLatencyListener(arg1);
+    if ((err = check_exception())) {
+      void *runerror = rb_define_class("JacksRuntimeError", rb_eStandardError);
+      rb_raise(runerror, err);
+      return;
+      
+      
+      
+      
+      
+      
+      
+    }
+  }
+  vresult = SWIG_From_int((int)(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_JsPort_initPlaybackLatencyListener(int argc, VALUE *argv, VALUE self) {
+  JsPort *arg1 = (JsPort *) 0 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 0) || (argc > 0)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 0)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "JsPort *","initPlaybackLatencyListener", 1, self )); 
+  }
+  arg1 = (JsPort *)(argp1);
+  {
+    char *err;
+    clear_exception();
+    result = (int)JsPort_initPlaybackLatencyListener(arg1);
     if ((err = check_exception())) {
       void *runerror = rb_define_class("JacksRuntimeError", rb_eStandardError);
       rb_raise(runerror, err);
@@ -4918,9 +4965,10 @@ SWIGEXPORT void Init_jacks(void) {
   rb_define_method(SwigClassJsPort.klass, "connect", _wrap_JsPort_connect, -1);
   rb_define_method(SwigClassJsPort.klass, "getLatencyRange", _wrap_JsPort_getLatencyRange, -1);
   rb_define_method(SwigClassJsPort.klass, "setLatencyRange", _wrap_JsPort_setLatencyRange, -1);
-  rb_define_method(SwigClassJsPort.klass, "wakeupFd", _wrap_JsPort_wakeupFd, -1);
-  rb_define_method(SwigClassJsPort.klass, "wakeup", _wrap_JsPort_wakeup, -1);
-  rb_define_method(SwigClassJsPort.klass, "initLatencyListenerFd", _wrap_JsPort_initLatencyListenerFd, -1);
+  rb_define_method(SwigClassJsPort.klass, "wakeupLatencyCallbacks", _wrap_JsPort_wakeupLatencyCallbacks, -1);
+  rb_define_method(SwigClassJsPort.klass, "wakeupSigLatencyCallback", _wrap_JsPort_wakeupSigLatencyCallback, -1);
+  rb_define_method(SwigClassJsPort.klass, "initCaptureLatencyListener", _wrap_JsPort_initCaptureLatencyListener, -1);
+  rb_define_method(SwigClassJsPort.klass, "initPlaybackLatencyListener", _wrap_JsPort_initPlaybackLatencyListener, -1);
   rb_define_method(SwigClassJsPort.klass, "initLatencyListener", _wrap_JsPort_initLatencyListener, -1);
   SwigClassJsPort.mark = 0;
   SwigClassJsPort.destroy = (void (*)(void *)) free_JsPort;

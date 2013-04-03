@@ -26,7 +26,7 @@ my $cmin = $clatency->min();
 my $cmax = $clatency->max();
 print("cport latency [ $cmin $cmax ]\n");
 
-my $pfd = $pport->initLatencyListenerFd();
+my $pfd = $pport->initPlaybackLatencyListener();
 
 my $status = "none";
 my $status_ready = AnyEvent->condvar;
@@ -43,7 +43,7 @@ my $x = AnyEvent->io (fh => $pfd, poll=>"r", cb => sub {
         $status_ready->send;
 });
 
-$pport->wakeupFd();
+$pport->wakeupLatencyCallbacks();
 $status_ready->recv;
 print("done. status1: $status\n");
 

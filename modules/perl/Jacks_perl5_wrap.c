@@ -2009,6 +2009,7 @@ SWIGINTERN int JsPort_connect(JsPort *self,JsPort *_that_){
 
             int rc = JacksRbPort_connect(self->impl, _that_->impl);
             if (rc) throw_exception("can not connect ports");
+            return rc;
         }
 SWIGINTERN JsLatencyRange *JsPort_getLatencyRange(JsPort *self,enum JackLatencyCallbackMode mode){
 
@@ -2030,17 +2031,23 @@ SWIGINTERN void JsPort_setLatencyRange(JsPort *self,enum JackLatencyCallbackMode
             jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port(self->impl),
                                                     mode, &range);
         }
-SWIGINTERN void JsPort_wakeupFd(JsPort *self){
-            JacksRbPort_wakeup_fd(self->impl);
+SWIGINTERN void JsPort_wakeupLatencyCallbacks(JsPort *self){
+            JacksRbPort_wakeup_latency_callbacks(self->impl);
         }
-SWIGINTERN void JsPort_wakeup(JsPort *self){
-            JacksRbPort_wakeup(self->impl);
+SWIGINTERN void JsPort_wakeupSigLatencyCallback(JsPort *self){
+            JacksRbPort_wakeup_sig_latency_cb(self->impl);
         }
-SWIGINTERN int JsPort_initLatencyListenerFd(JsPort *self){
+SWIGINTERN int JsPort_initCaptureLatencyListener(JsPort *self){
 
-            int fd = JacksRbPort_init_latency_listener_fd(self->impl);
-            if (fd < 0) throw_exception("can not init fd latency callback");
-            return fd; //note, I doubt this will work... just stubbing it out for now.
+            int fd = JacksRbPort_init_capture_latency_listener(self->impl);
+            if (fd < 0) throw_exception("can not init capture latency callback");
+            return fd;
+        }
+SWIGINTERN int JsPort_initPlaybackLatencyListener(JsPort *self){
+
+            int fd = JacksRbPort_init_playback_latency_listener(self->impl);
+            if (fd < 0) throw_exception("can not init playback latency callback");
+            return fd;
         }
 SWIGINTERN int JsPort_initLatencyListener(JsPort *self){
 
@@ -3311,7 +3318,7 @@ XS(_wrap_JsPort_setLatencyRange) {
 }
 
 
-XS(_wrap_JsPort_wakeupFd) {
+XS(_wrap_JsPort_wakeupLatencyCallbacks) {
   {
     JsPort *arg1 = (JsPort *) 0 ;
     void *argp1 = 0 ;
@@ -3320,17 +3327,17 @@ XS(_wrap_JsPort_wakeupFd) {
     dXSARGS;
     
     if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: JsPort_wakeupFd(self);");
+      SWIG_croak("Usage: JsPort_wakeupLatencyCallbacks(self);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_wakeupFd" "', argument " "1"" of type '" "JsPort *""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_wakeupLatencyCallbacks" "', argument " "1"" of type '" "JsPort *""'"); 
     }
     arg1 = (JsPort *)(argp1);
     {
       char *err;
       clear_exception();
-      JsPort_wakeupFd(arg1);
+      JsPort_wakeupLatencyCallbacks(arg1);
       if ((err = check_exception())) {
         croak(CROAK, err);
         return;
@@ -3360,7 +3367,7 @@ XS(_wrap_JsPort_wakeupFd) {
 }
 
 
-XS(_wrap_JsPort_wakeup) {
+XS(_wrap_JsPort_wakeupSigLatencyCallback) {
   {
     JsPort *arg1 = (JsPort *) 0 ;
     void *argp1 = 0 ;
@@ -3369,17 +3376,17 @@ XS(_wrap_JsPort_wakeup) {
     dXSARGS;
     
     if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: JsPort_wakeup(self);");
+      SWIG_croak("Usage: JsPort_wakeupSigLatencyCallback(self);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_wakeup" "', argument " "1"" of type '" "JsPort *""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_wakeupSigLatencyCallback" "', argument " "1"" of type '" "JsPort *""'"); 
     }
     arg1 = (JsPort *)(argp1);
     {
       char *err;
       clear_exception();
-      JsPort_wakeup(arg1);
+      JsPort_wakeupSigLatencyCallback(arg1);
       if ((err = check_exception())) {
         croak(CROAK, err);
         return;
@@ -3409,7 +3416,7 @@ XS(_wrap_JsPort_wakeup) {
 }
 
 
-XS(_wrap_JsPort_initLatencyListenerFd) {
+XS(_wrap_JsPort_initCaptureLatencyListener) {
   {
     JsPort *arg1 = (JsPort *) 0 ;
     void *argp1 = 0 ;
@@ -3419,17 +3426,67 @@ XS(_wrap_JsPort_initLatencyListenerFd) {
     dXSARGS;
     
     if ((items < 1) || (items > 1)) {
-      SWIG_croak("Usage: JsPort_initLatencyListenerFd(self);");
+      SWIG_croak("Usage: JsPort_initCaptureLatencyListener(self);");
     }
     res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
     if (!SWIG_IsOK(res1)) {
-      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_initLatencyListenerFd" "', argument " "1"" of type '" "JsPort *""'"); 
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_initCaptureLatencyListener" "', argument " "1"" of type '" "JsPort *""'"); 
     }
     arg1 = (JsPort *)(argp1);
     {
       char *err;
       clear_exception();
-      result = (int)JsPort_initLatencyListenerFd(arg1);
+      result = (int)JsPort_initCaptureLatencyListener(arg1);
+      if ((err = check_exception())) {
+        croak(CROAK, err);
+        return;
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+      }
+    }
+    ST(argvi) = SWIG_From_int  SWIG_PERL_CALL_ARGS_1((int)(result)); argvi++ ;
+    
+    XSRETURN(argvi);
+  fail:
+    
+    SWIG_croak_null();
+  }
+}
+
+
+XS(_wrap_JsPort_initPlaybackLatencyListener) {
+  {
+    JsPort *arg1 = (JsPort *) 0 ;
+    void *argp1 = 0 ;
+    int res1 = 0 ;
+    int argvi = 0;
+    int result;
+    dXSARGS;
+    
+    if ((items < 1) || (items > 1)) {
+      SWIG_croak("Usage: JsPort_initPlaybackLatencyListener(self);");
+    }
+    res1 = SWIG_ConvertPtr(ST(0), &argp1,SWIGTYPE_p_JsPort, 0 |  0 );
+    if (!SWIG_IsOK(res1)) {
+      SWIG_exception_fail(SWIG_ArgError(res1), "in method '" "JsPort_initPlaybackLatencyListener" "', argument " "1"" of type '" "JsPort *""'"); 
+    }
+    arg1 = (JsPort *)(argp1);
+    {
+      char *err;
+      clear_exception();
+      result = (int)JsPort_initPlaybackLatencyListener(arg1);
       if ((err = check_exception())) {
         croak(CROAK, err);
         return;
@@ -5091,9 +5148,10 @@ static swig_command_info swig_commands[] = {
 {"jacksc::JsPort_connect", _wrap_JsPort_connect},
 {"jacksc::JsPort_getLatencyRange", _wrap_JsPort_getLatencyRange},
 {"jacksc::JsPort_setLatencyRange", _wrap_JsPort_setLatencyRange},
-{"jacksc::JsPort_wakeupFd", _wrap_JsPort_wakeupFd},
-{"jacksc::JsPort_wakeup", _wrap_JsPort_wakeup},
-{"jacksc::JsPort_initLatencyListenerFd", _wrap_JsPort_initLatencyListenerFd},
+{"jacksc::JsPort_wakeupLatencyCallbacks", _wrap_JsPort_wakeupLatencyCallbacks},
+{"jacksc::JsPort_wakeupSigLatencyCallback", _wrap_JsPort_wakeupSigLatencyCallback},
+{"jacksc::JsPort_initCaptureLatencyListener", _wrap_JsPort_initCaptureLatencyListener},
+{"jacksc::JsPort_initPlaybackLatencyListener", _wrap_JsPort_initPlaybackLatencyListener},
 {"jacksc::JsPort_initLatencyListener", _wrap_JsPort_initLatencyListener},
 {"jacksc::new_JsPort", _wrap_new_JsPort},
 {"jacksc::delete_JsEvent", _wrap_delete_JsEvent},

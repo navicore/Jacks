@@ -161,9 +161,10 @@ class JsPort(_object):
     def connect(self, *args): return _jacks.JsPort_connect(self, *args)
     def getLatencyRange(self, *args): return _jacks.JsPort_getLatencyRange(self, *args)
     def setLatencyRange(self, *args): return _jacks.JsPort_setLatencyRange(self, *args)
-    def wakeupFd(self): return _jacks.JsPort_wakeupFd(self)
-    def wakeup(self): return _jacks.JsPort_wakeup(self)
-    def initLatencyListenerFd(self): return _jacks.JsPort_initLatencyListenerFd(self)
+    def wakeupLatencyCallbacks(self): return _jacks.JsPort_wakeupLatencyCallbacks(self)
+    def wakeupSigLatencyCallback(self): return _jacks.JsPort_wakeupSigLatencyCallback(self)
+    def initCaptureLatencyListener(self): return _jacks.JsPort_initCaptureLatencyListener(self)
+    def initPlaybackLatencyListener(self): return _jacks.JsPort_initPlaybackLatencyListener(self)
     def initLatencyListener(self): return _jacks.JsPort_initLatencyListener(self)
     def __init__(self): 
         this = _jacks.new_JsPort()

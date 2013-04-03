@@ -35,7 +35,7 @@ my $x = AnyEvent->signal (signal => "USR2", cb => sub {
     $status_ready->send;
 });
 
-$pport->wakeup();
+$pport->wakeupSigLatencyCallback();
 $status_ready->recv;
 print("done. status: $status\n");
 

@@ -144,6 +144,7 @@ typedef struct {
 
             int rc = JacksRbPort_connect($self->impl, _that_->impl);
             if (rc) throw_exception("can not connect ports");
+            return rc;
         }
 
         JsLatencyRange *getLatencyRange(enum JackLatencyCallbackMode mode) {
@@ -166,17 +167,23 @@ typedef struct {
             jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port($self->impl),
                                                     mode, &range);
         }
-        void wakeupFd() {
-            JacksRbPort_wakeup_fd($self->impl);
+        void wakeupLatencyCallbacks() {
+            JacksRbPort_wakeup_latency_callbacks($self->impl);
         }
-        void wakeup() {
-            JacksRbPort_wakeup($self->impl);
+        void wakeupSigLatencyCallback() {
+            JacksRbPort_wakeup_sig_latency_cb($self->impl);
         }
-        int initLatencyListenerFd() {
+        int initCaptureLatencyListener() {
 
-            int fd = JacksRbPort_init_latency_listener_fd($self->impl);
-            if (fd < 0) throw_exception("can not init fd latency callback");
-            return fd; //note, I doubt this will work... just stubbing it out for now.
+            int fd = JacksRbPort_init_capture_latency_listener($self->impl);
+            if (fd < 0) throw_exception("can not init capture latency callback");
+            return fd;
+        }
+        int initPlaybackLatencyListener() {
+
+            int fd = JacksRbPort_init_playback_latency_listener($self->impl);
+            if (fd < 0) throw_exception("can not init playback latency callback");
+            return fd;
         }
         int initLatencyListener() {
 

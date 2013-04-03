@@ -1615,6 +1615,7 @@ SWIGINTERN int JsPort_connect(JsPort *self,JsPort *_that_){
 
             int rc = JacksRbPort_connect(self->impl, _that_->impl);
             if (rc) throw_exception("can not connect ports");
+            return rc;
         }
 SWIGINTERN JsLatencyRange *JsPort_getLatencyRange(JsPort *self,enum JackLatencyCallbackMode mode){
 
@@ -1636,17 +1637,23 @@ SWIGINTERN void JsPort_setLatencyRange(JsPort *self,enum JackLatencyCallbackMode
             jack_port_set_latency_range((jack_port_t *) JacksRbPort_get_port(self->impl),
                                                     mode, &range);
         }
-SWIGINTERN void JsPort_wakeupFd(JsPort *self){
-            JacksRbPort_wakeup_fd(self->impl);
+SWIGINTERN void JsPort_wakeupLatencyCallbacks(JsPort *self){
+            JacksRbPort_wakeup_latency_callbacks(self->impl);
         }
-SWIGINTERN void JsPort_wakeup(JsPort *self){
-            JacksRbPort_wakeup(self->impl);
+SWIGINTERN void JsPort_wakeupSigLatencyCallback(JsPort *self){
+            JacksRbPort_wakeup_sig_latency_cb(self->impl);
         }
-SWIGINTERN int JsPort_initLatencyListenerFd(JsPort *self){
+SWIGINTERN int JsPort_initCaptureLatencyListener(JsPort *self){
 
-            int fd = JacksRbPort_init_latency_listener_fd(self->impl);
-            if (fd < 0) throw_exception("can not init fd latency callback");
-            return fd; //note, I doubt this will work... just stubbing it out for now.
+            int fd = JacksRbPort_init_capture_latency_listener(self->impl);
+            if (fd < 0) throw_exception("can not init capture latency callback");
+            return fd;
+        }
+SWIGINTERN int JsPort_initPlaybackLatencyListener(JsPort *self){
+
+            int fd = JacksRbPort_init_playback_latency_listener(self->impl);
+            if (fd < 0) throw_exception("can not init playback latency callback");
+            return fd;
         }
 SWIGINTERN int JsPort_initLatencyListener(JsPort *self){
 
@@ -2451,21 +2458,21 @@ fail:
 }
 
 
-static int _wrap_JsPort_wakeupFd(lua_State* L) {
+static int _wrap_JsPort_wakeupLatencyCallbacks(lua_State* L) {
   int SWIG_arg = 0;
   JsPort *arg1 = (JsPort *) 0 ;
   
-  SWIG_check_num_args("JsPort::wakeupFd",1,1)
-  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsPort::wakeupFd",1,"JsPort *");
+  SWIG_check_num_args("JsPort::wakeupLatencyCallbacks",1,1)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsPort::wakeupLatencyCallbacks",1,"JsPort *");
   
   if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsPort,0))){
-    SWIG_fail_ptr("JsPort_wakeupFd",1,SWIGTYPE_p_JsPort);
+    SWIG_fail_ptr("JsPort_wakeupLatencyCallbacks",1,SWIGTYPE_p_JsPort);
   }
   
   {
     char *err;
     clear_exception();
-    JsPort_wakeupFd(arg1);
+    JsPort_wakeupLatencyCallbacks(arg1);
     if ((err = check_exception())) {
       luaL_error(L, err);
       return -1; 
@@ -2486,21 +2493,21 @@ fail:
 }
 
 
-static int _wrap_JsPort_wakeup(lua_State* L) {
+static int _wrap_JsPort_wakeupSigLatencyCallback(lua_State* L) {
   int SWIG_arg = 0;
   JsPort *arg1 = (JsPort *) 0 ;
   
-  SWIG_check_num_args("JsPort::wakeup",1,1)
-  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsPort::wakeup",1,"JsPort *");
+  SWIG_check_num_args("JsPort::wakeupSigLatencyCallback",1,1)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsPort::wakeupSigLatencyCallback",1,"JsPort *");
   
   if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsPort,0))){
-    SWIG_fail_ptr("JsPort_wakeup",1,SWIGTYPE_p_JsPort);
+    SWIG_fail_ptr("JsPort_wakeupSigLatencyCallback",1,SWIGTYPE_p_JsPort);
   }
   
   {
     char *err;
     clear_exception();
-    JsPort_wakeup(arg1);
+    JsPort_wakeupSigLatencyCallback(arg1);
     if ((err = check_exception())) {
       luaL_error(L, err);
       return -1; 
@@ -2521,22 +2528,58 @@ fail:
 }
 
 
-static int _wrap_JsPort_initLatencyListenerFd(lua_State* L) {
+static int _wrap_JsPort_initCaptureLatencyListener(lua_State* L) {
   int SWIG_arg = 0;
   JsPort *arg1 = (JsPort *) 0 ;
   int result;
   
-  SWIG_check_num_args("JsPort::initLatencyListenerFd",1,1)
-  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsPort::initLatencyListenerFd",1,"JsPort *");
+  SWIG_check_num_args("JsPort::initCaptureLatencyListener",1,1)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsPort::initCaptureLatencyListener",1,"JsPort *");
   
   if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsPort,0))){
-    SWIG_fail_ptr("JsPort_initLatencyListenerFd",1,SWIGTYPE_p_JsPort);
+    SWIG_fail_ptr("JsPort_initCaptureLatencyListener",1,SWIGTYPE_p_JsPort);
   }
   
   {
     char *err;
     clear_exception();
-    result = (int)JsPort_initLatencyListenerFd(arg1);
+    result = (int)JsPort_initCaptureLatencyListener(arg1);
+    if ((err = check_exception())) {
+      luaL_error(L, err);
+      return -1; 
+      
+      
+      
+      
+    }
+  }
+  lua_pushnumber(L, (lua_Number) result); SWIG_arg++;
+  return SWIG_arg;
+  
+  if(0) SWIG_fail;
+  
+fail:
+  lua_error(L);
+  return SWIG_arg;
+}
+
+
+static int _wrap_JsPort_initPlaybackLatencyListener(lua_State* L) {
+  int SWIG_arg = 0;
+  JsPort *arg1 = (JsPort *) 0 ;
+  int result;
+  
+  SWIG_check_num_args("JsPort::initPlaybackLatencyListener",1,1)
+  if(!SWIG_isptrtype(L,1)) SWIG_fail_arg("JsPort::initPlaybackLatencyListener",1,"JsPort *");
+  
+  if (!SWIG_IsOK(SWIG_ConvertPtr(L,1,(void**)&arg1,SWIGTYPE_p_JsPort,0))){
+    SWIG_fail_ptr("JsPort_initPlaybackLatencyListener",1,SWIGTYPE_p_JsPort);
+  }
+  
+  {
+    char *err;
+    clear_exception();
+    result = (int)JsPort_initPlaybackLatencyListener(arg1);
     if ((err = check_exception())) {
       luaL_error(L, err);
       return -1; 
@@ -2632,9 +2675,10 @@ static swig_lua_method swig_JsPort_methods[] = {
     {"connect", _wrap_JsPort_connect}, 
     {"getLatencyRange", _wrap_JsPort_getLatencyRange}, 
     {"setLatencyRange", _wrap_JsPort_setLatencyRange}, 
-    {"wakeupFd", _wrap_JsPort_wakeupFd}, 
-    {"wakeup", _wrap_JsPort_wakeup}, 
-    {"initLatencyListenerFd", _wrap_JsPort_initLatencyListenerFd}, 
+    {"wakeupLatencyCallbacks", _wrap_JsPort_wakeupLatencyCallbacks}, 
+    {"wakeupSigLatencyCallback", _wrap_JsPort_wakeupSigLatencyCallback}, 
+    {"initCaptureLatencyListener", _wrap_JsPort_initCaptureLatencyListener}, 
+    {"initPlaybackLatencyListener", _wrap_JsPort_initPlaybackLatencyListener}, 
     {"initLatencyListener", _wrap_JsPort_initLatencyListener}, 
     {0,0}
 };

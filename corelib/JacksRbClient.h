@@ -24,6 +24,7 @@ extern "C" {
 
 #include "config.h"
 #include "JacksEvent.h"
+#include "JacksRbPort.h"
 #include <jack/jack.h>
 #include <jack/session.h>
 #include <jack/transport.h>
@@ -60,6 +61,8 @@ extern int              JacksRbClient_activate(T, int);
 extern char            *JacksRbClient_get_name(T);
 
 extern jack_nframes_t   JacksRbClient_get_rb_size(T);
+
+extern JacksRbPort      JacksRbClient_registerPort(T, char *, unsigned long);
 
 #undef T
 #endif
